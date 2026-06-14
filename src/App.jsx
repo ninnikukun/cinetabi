@@ -599,51 +599,83 @@ function LogView({ movies, onAdd, onDelete, onShare }) {
   );
 }
 
-/* ─────────── でかける（エリアの映画館） ─────────── */
+/* ─────────── でかける（近くの映画館） ─────────── */
 function FindView() {
-  const [area, setArea] = useState(AREAS[0]);
+  const [query, setQuery] = useState("");
   const [limit, setLimit] = useState(10);
-  const [results, setResults] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null); // { label, cinemas } | { error } | null
   const walkOptions = [5, 10, 15];
 
-  const search = () => {
-    setResults(CINEMAS.filter(c => c.area === area && c.walk <= limit).sort((a, b) => a.walk - b.walk));
+  const run = async (params) => {
+    setLoading(true); setData(null);
+    try {
+      const r = await fetch(`/api/cinemas?${params}`);
+      setData(await r.json());
+    } catch { setData({ error: "failed" }); }
+    setLoading(false);
   };
+  const searchByText = () => { const q = query.trim(); if (q) run(`q=${encodeURIComponent(q)}`); };
+  const searchByGPS = () => {
+    if (!navigator.geolocation) { alert("この端末では現在地を取得できません。場所を入力して検索してください。"); return; }
+    setLoading(true); setData(null);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => run(`lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`),
+      () => { setLoading(false); alert("現在地を取得できませんでした。場所を入力して検索してください。"); }
+    );
+  };
+
+  const cinemas = (data && data.cinemas) || [];
+  const within = cinemas.filter(c => c.walk <= limit);
+  const show = within.length ? within : cinemas.slice(0, 1);
+  const onlyNearest = cinemas.length > 0 && within.length === 0;
 
   return (
     <div className="reel-narrow" style={{ padding:"4px 16px 110px" }}>
       <div style={{ background:"var(--surface)", border:"1px solid var(--line)", borderRadius:16, padding:"16px 16px 18px", marginBottom:18 }}>
-        <div className="reel-mark" style={{ letterSpacing:".16em", fontSize:11, color:"var(--ink-dim)", marginBottom:14 }}>CINEMAS ／ このエリアの映画館</div>
+        <div className="reel-mark" style={{ letterSpacing:".16em", fontSize:11, color:"var(--ink-dim)", marginBottom:14 }}>CINEMAS ／ 近くの映画館</div>
 
-        <label style={lbl}>エリア</label>
-        <div style={{ display:"flex", flexWrap:"wrap", gap:8, marginBottom:18 }}>
-          {AREAS.map(a => <button key={a} className="reel-tap" onClick={()=>setArea(a)} style={chip(a===area)}>{a}</button>)}
+        <label style={lbl}>場所（駅名・地名）</label>
+        <div style={{ display:"flex", gap:8, marginBottom:10 }}>
+          <input value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{ if (e.key==="Enter") searchByText(); }}
+            placeholder="例：渋谷駅、吉祥寺、横浜" style={{ ...inp, marginBottom:0, flex:1 }} />
+          <button className="reel-btn" onClick={searchByText} style={{ flexShrink:0, padding:"0 18px", borderRadius:10, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:14, cursor:"pointer" }}>さがす</button>
         </div>
+        <button className="reel-tap" onClick={searchByGPS} style={{ width:"100%", marginBottom:18, padding:"11px", borderRadius:10, border:"1px solid var(--line)", background:"var(--surface)", color:"var(--ink)", fontSize:14, cursor:"pointer" }}>📍 現在地から探す</button>
 
-        <label style={lbl}>駅から徒歩での所要時間</label>
-        <div style={{ display:"flex", gap:8, marginBottom:20 }}>
+        <label style={lbl}>徒歩での所要時間（目安）</label>
+        <div style={{ display:"flex", gap:8 }}>
           {walkOptions.map(n => <button key={n} className="reel-tap" onClick={()=>setLimit(n)} style={{ ...chip(n===limit), flex:1, padding:"11px" }}>{n}<span style={{ fontSize:11, marginLeft:2 }}>分以内</span></button>)}
         </div>
-
-        <button className="reel-btn" onClick={search} style={{ width:"100%", padding:"15px", borderRadius:12, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:15, cursor:"pointer" }}>映画館をさがす</button>
       </div>
 
-      {results && (results.length === 0 ? (
-        <p style={{ textAlign:"center", color:"var(--ink-dim)", padding:"30px 10px", lineHeight:1.7 }}>その条件の映画館が見つかりませんでした。<br/>徒歩の時間を延ばすか、エリアを変えてみてください。</p>
-      ) : (
-        <>
-          <div className="reel-mark" style={{ letterSpacing:".14em", fontSize:11, color:"var(--ink-dim)", margin:"4px 4px 12px" }}>{results.length} 館 ／ 近い順</div>
-          <div className="reel-grid">
-          {results.map((c, i) => (
-            <article key={c.id} className="fade-up" style={{ background:"var(--surface)", border:"1px solid var(--line)", borderRadius:14, padding:"14px 16px", animationDelay:`${Math.min(i*45,270)}ms` }}>
-              <h3 style={{ margin:0, fontSize:17, fontWeight:700, lineHeight:1.3 }}>{c.name}</h3>
-              <div style={{ margin:"5px 0 0", fontSize:13, color:"var(--amber-dim)" }}>{c.area}・駅から徒歩{c.walk}分</div>
-            </article>
-          ))}
-          </div>
-          <p style={{ textAlign:"center", color:"var(--line)", fontSize:11, marginTop:14 }}>※ 映画館はデモ用のサンプルです</p>
-        </>
-      ))}
+      {loading && <p style={{ textAlign:"center", color:"var(--ink-dim)", padding:"30px 10px" }}>さがしています…</p>}
+
+      {!loading && data && (
+        data.error === "not_found" ? (
+          <p style={{ textAlign:"center", color:"var(--ink-dim)", padding:"30px 10px", lineHeight:1.7 }}>その場所が見つかりませんでした。<br/>「渋谷駅」「吉祥寺」のように入力してみてください。</p>
+        ) : data.error ? (
+          <p style={{ textAlign:"center", color:"var(--ink-dim)", padding:"30px 10px", lineHeight:1.7 }}>うまく取得できませんでした。<br/>少し時間をおいて、もう一度お試しください。</p>
+        ) : cinemas.length === 0 ? (
+          <p style={{ textAlign:"center", color:"var(--ink-dim)", padding:"30px 10px", lineHeight:1.7 }}>近くに映画館が見つかりませんでした。<br/>別の場所で試してみてください。</p>
+        ) : (
+          <>
+            <div className="reel-mark" style={{ letterSpacing:".14em", fontSize:11, color:"var(--ink-dim)", margin:"4px 4px 12px" }}>
+              {data.label} ／ {onlyNearest ? "一番近い映画館" : `徒歩${limit}分以内 ${show.length}館`}
+            </div>
+            {onlyNearest && <p style={{ color:"var(--ink-dim)", fontSize:12.5, margin:"0 4px 12px", lineHeight:1.6 }}>徒歩{limit}分以内には見つからなかったので、一番近い映画館を表示しています。</p>}
+            <div className="reel-grid">
+            {show.map((c, i) => (
+              <article key={c.id} className="fade-up" style={{ background:"var(--surface)", border:"1px solid var(--line)", borderRadius:14, padding:"14px 16px", animationDelay:`${Math.min(i*45,270)}ms` }}>
+                <h3 style={{ margin:0, fontSize:17, fontWeight:700, lineHeight:1.3 }}>{c.name}</h3>
+                <div style={{ margin:"5px 0 0", fontSize:13, color:"var(--amber-dim)" }}>約 徒歩{c.walk}分（約{c.dist >= 1000 ? (c.dist/1000).toFixed(1)+"km" : c.dist+"m"}）</div>
+              </article>
+            ))}
+            </div>
+            <p style={{ textAlign:"center", color:"var(--line)", fontSize:11, marginTop:14, lineHeight:1.6 }}>映画館データ：OpenStreetMap ／ 徒歩分は直線距離からの概算です</p>
+          </>
+        )
+      )}
     </div>
   );
 }
