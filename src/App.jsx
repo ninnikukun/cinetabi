@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
+import { supabase } from "./supabase.js";
 
 /* ─────────────────────────────────────────────────────────────
    シネたび — 映画の記録と、でかける先の映画館さがし
@@ -680,55 +681,13 @@ function FindView() {
   );
 }
 
-/* ─────────── ルート ─────────── */
-export default function App() {
+/* ─────────── メインの画面（記録/でかける）。データ源に依存しない共通シェル ─────────── */
+function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onLogout }) {
   const [view, setView] = useState("log");
-  const [user, setUser] = useState(null);
-  const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [onboarded, setOnboarded] = useState(true);
   const [adding, setAdding] = useState(false);
   const [sharing, setSharing] = useState(null);
 
-  useEffect(() => {
-    setUser(store.get("cinetabi_user"));
-    setMovies(store.get("cinetabi_movies") || []);
-    setOnboarded(!!store.get("cinetabi_onboarded"));
-    setLoading(false);
-  }, []);
-
-  const persist = (list) => {
-    setMovies(list);
-    if (!store.set("cinetabi_movies", list)) alert("保存に失敗しました。端末の保存容量がいっぱいの可能性があります（写真が多すぎるなど）。");
-  };
-  const addMovie = (m) => persist([m, ...movies]);
-  const deleteMovie = (id) => { if (confirm("この記録を削除しますか？")) persist(movies.filter(x => x.id !== id)); };
-
-  const registerUser = (u) => { setUser(u); setOnboarded(false); store.set("cinetabi_user", u); };
-  const finishOnboarding = (records) => {
-    setOnboarded(true); store.set("cinetabi_onboarded", true);
-    if (records.length) persist([...records, ...movies]);
-  };
-
-  if (!loading && !user) {
-    return (
-      <div className="reel-root">
-        <style>{STYLES}</style>
-        <header style={{ padding:"16px 18px 12px", borderBottom:"1px solid var(--line)" }}><Wordmark /></header>
-        <Registration onRegister={registerUser} />
-      </div>
-    );
-  }
-
-  if (!loading && !onboarded && movies.length === 0) {
-    return (
-      <div className="reel-root">
-        <style>{STYLES}</style>
-        <header style={{ padding:"16px 18px 12px", borderBottom:"1px solid var(--line)" }}><Wordmark /></header>
-        <Onboarding onDone={finishOnboarding} />
-      </div>
-    );
-  }
+  const deleteMovie = async (id) => { if (confirm("この記録を削除しますか？")) await onDeleteMovie(id); };
 
   return (
     <div className="reel-root">
@@ -738,6 +697,7 @@ export default function App() {
           <Wordmark />
           {user && (
             <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+              {onLogout && <button className="reel-tap" onClick={onLogout} style={{ background:"none", border:"none", color:"var(--ink-dim)", fontSize:12, cursor:"pointer" }}>ログアウト</button>}
               <span style={{ fontSize:13, color:"var(--ink-dim)" }}>{user.name}</span>
               <span style={{ width:30, height:30, borderRadius:"50%", background:"var(--amber)", color:"#1a1305", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:14 }}>{[...user.name][0] || "?"}</span>
             </div>
@@ -759,10 +719,184 @@ export default function App() {
           style={{ position:"fixed", bottom:24, left:"50%", transform:"translateX(-50%)", maxWidth:520, width:"calc(100% - 32px)", padding:"15px", borderRadius:14, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:15, cursor:"pointer", boxShadow:"0 8px 30px rgba(232,176,75,.25)" }}>＋ 映画を記録</button>
       )}
 
-      {adding && <AddSheet onClose={()=>setAdding(false)} onSave={addMovie} existingIds={movies.map(m=>m.filmId).filter(Boolean)} />}
+      {adding && <AddSheet onClose={()=>setAdding(false)} onSave={onAddMovie} existingIds={movies.map(m=>m.filmId).filter(Boolean)} />}
       {sharing && <ShareSheet movie={sharing} user={user} onClose={()=>setSharing(null)} />}
     </div>
   );
+}
+
+/* ─────────── 端末保存モード（Supabase未設定時のフォールバック・従来どおり） ─────────── */
+function LocalApp() {
+  const [user, setUser] = useState(null);
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [onboarded, setOnboarded] = useState(true);
+
+  useEffect(() => {
+    setUser(store.get("cinetabi_user"));
+    setMovies(store.get("cinetabi_movies") || []);
+    setOnboarded(!!store.get("cinetabi_onboarded"));
+    setLoading(false);
+  }, []);
+
+  const persist = (list) => {
+    setMovies(list);
+    if (!store.set("cinetabi_movies", list)) alert("保存に失敗しました。端末の保存容量がいっぱいの可能性があります（写真が多すぎるなど）。");
+  };
+  const addMovie = (m) => persist([m, ...movies]);
+  const deleteMovie = (id) => persist(movies.filter(x => x.id !== id));
+  const registerUser = (u) => { setUser(u); setOnboarded(false); store.set("cinetabi_user", u); };
+  const finishOnboarding = (records) => {
+    setOnboarded(true); store.set("cinetabi_onboarded", true);
+    if (records.length) persist([...records, ...movies]);
+  };
+
+  if (!loading && !user) return <Gate><Registration onRegister={registerUser} /></Gate>;
+  if (!loading && !onboarded && movies.length === 0) return <Gate><Onboarding onDone={finishOnboarding} /></Gate>;
+  return <Shell user={user} movies={movies} loading={loading} onAddMovie={addMovie} onDeleteMovie={deleteMovie} />;
+}
+
+/* ─────────── クラウドモード（Supabase：メールログイン＋クラウド保存） ─────────── */
+const toApp = (r) => ({ id:r.id, filmId:r.tmdb_id, title:r.title, year:r.year, posterPath:r.poster_path, genres:r.genres || [], note:r.note || "", image:r.image || null, watchedAt:r.watched_at });
+const toRow = (m, uid) => ({ user_id:uid, tmdb_id:m.filmId, title:m.title, year:m.year || null, poster_path:m.posterPath || null, genres:m.genres || [], note:m.note || "", image:m.image || null, watched_at:m.watchedAt });
+
+function Gate({ children }) {
+  return (
+    <div className="reel-root">
+      <style>{STYLES}</style>
+      <header style={{ padding:"16px 18px 12px", borderBottom:"1px solid var(--line)" }}><Wordmark /></header>
+      {children}
+    </div>
+  );
+}
+
+function EmailLogin() {
+  const [email, setEmail] = useState("");
+  const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  const send = async () => {
+    if (!email.trim()) return;
+    setBusy(true);
+    const { error } = await supabase.auth.signInWithOtp({ email: email.trim(), options: { emailRedirectTo: window.location.origin } });
+    setBusy(false);
+    if (error) alert("送信に失敗しました：" + error.message);
+    else setSent(true);
+  };
+
+  return (
+    <Gate>
+      <div style={{ padding:"40px 24px" }}>
+        <div className="reel-mark" style={{ letterSpacing:".18em", fontSize:12, color:"var(--amber)" }}>LOGIN</div>
+        {sent ? (
+          <>
+            <h2 style={{ margin:"8px 0 6px", fontSize:22, lineHeight:1.4 }}>メールを確認してください</h2>
+            <p style={{ margin:"0 0 22px", color:"var(--ink-dim)", fontSize:14, lineHeight:1.8 }}>{email} 宛にログイン用のリンクを送りました。メール内のリンクを押すと、ここに戻ってログインが完了します。<br/><br/>※ 届かない時は迷惑メールフォルダもご確認ください。</p>
+            <button className="reel-tap" onClick={()=>setSent(false)} style={{ background:"none", border:"none", color:"var(--ink-dim)", fontSize:14, cursor:"pointer", padding:0 }}>← メールアドレスを入れ直す</button>
+          </>
+        ) : (
+          <>
+            <h2 style={{ margin:"8px 0 6px", fontSize:22, lineHeight:1.4 }}>メールでログイン</h2>
+            <p style={{ margin:"0 0 22px", color:"var(--ink-dim)", fontSize:14, lineHeight:1.7 }}>パスワードは不要です。届くリンクを押すだけでログインできます。メールアドレスは他のユーザーには公開されません。</p>
+            <label style={lbl}>メールアドレス</label>
+            <input autoFocus type="email" value={email} onChange={e=>setEmail(e.target.value)} onKeyDown={e=>{ if (e.key==="Enter") send(); }} placeholder="you@example.com" style={inp} />
+            <button className="reel-btn" disabled={!email.trim()||busy} onClick={send}
+              style={{ width:"100%", padding:"15px", borderRadius:12, border:"none", cursor:"pointer", fontSize:15, fontWeight:700, background: email.trim()&&!busy?"var(--amber)":"var(--surface2)", color: email.trim()&&!busy?"#1a1305":"var(--ink-dim)" }}>
+              {busy ? "送信中…" : "ログインリンクを送る"}
+            </button>
+          </>
+        )}
+      </div>
+    </Gate>
+  );
+}
+
+function NameSetup({ onDone }) {
+  const [name, setName] = useState("");
+  const [busy, setBusy] = useState(false);
+  const submit = async () => { if (!name.trim()) return; setBusy(true); await onDone(name.trim()); setBusy(false); };
+  return (
+    <Gate>
+      <div style={{ padding:"40px 24px" }}>
+        <div className="reel-mark" style={{ letterSpacing:".18em", fontSize:12, color:"var(--amber)" }}>CREATE PROFILE</div>
+        <h2 style={{ margin:"8px 0 6px", fontSize:22, lineHeight:1.4 }}>お名前を教えてください</h2>
+        <p style={{ margin:"0 0 22px", color:"var(--ink-dim)", fontSize:14, lineHeight:1.7 }}>表示名は記録に表示されます。あとから変更できます。</p>
+        <label style={lbl}>名前（表示名）</label>
+        <input autoFocus value={name} onChange={e=>setName(e.target.value)} maxLength={24} placeholder="例：たろう" style={inp} />
+        <button className="reel-btn" disabled={!name.trim()||busy} onClick={submit}
+          style={{ width:"100%", padding:"15px", borderRadius:12, border:"none", cursor:"pointer", fontSize:15, fontWeight:700, background: name.trim()&&!busy?"var(--amber)":"var(--surface2)", color: name.trim()&&!busy?"#1a1305":"var(--ink-dim)" }}>
+          {busy ? "作成中…" : "はじめる"}
+        </button>
+      </div>
+    </Gate>
+  );
+}
+
+function CloudApp() {
+  const [session, setSession] = useState(undefined); // undefined=確認中, null=未ログイン
+  const [profile, setProfile] = useState(undefined); // undefined=確認中, null=未作成
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setSession(data.session ?? null));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSession(s ?? null));
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (session === undefined) return;
+    if (session === null) { setProfile(null); setLoading(false); return; }
+    (async () => {
+      setLoading(true);
+      const { data: prof } = await supabase.from("profiles").select("*").eq("id", session.user.id).maybeSingle();
+      setProfile(prof || null);
+      if (prof) {
+        const { data: recs } = await supabase.from("records").select("*").order("watched_at", { ascending: false });
+        setMovies((recs || []).map(toApp));
+      }
+      setLoading(false);
+    })();
+  }, [session]);
+
+  const createProfile = async (name) => {
+    const { data, error } = await supabase.from("profiles").insert({ id: session.user.id, display_name: name }).select().single();
+    if (error) { alert("プロフィール作成に失敗しました：" + error.message); return; }
+    setProfile(data);
+  };
+  const addMovie = async (m) => {
+    const { data, error } = await supabase.from("records").insert(toRow(m, session.user.id)).select().single();
+    if (error) { alert("保存に失敗しました：" + error.message); return; }
+    setMovies(prev => [toApp(data), ...prev]);
+  };
+  const deleteMovie = async (id) => {
+    const { error } = await supabase.from("records").delete().eq("id", id);
+    if (error) { alert("削除に失敗しました：" + error.message); return; }
+    setMovies(prev => prev.filter(x => x.id !== id));
+  };
+  const finishOnboarding = async (records) => {
+    if (records.length) {
+      const { data } = await supabase.from("records").insert(records.map(r => toRow(r, session.user.id))).select();
+      setMovies(prev => [...(data || []).map(toApp), ...prev]);
+    }
+    await supabase.from("profiles").update({ onboarded: true }).eq("id", session.user.id);
+    setProfile(p => ({ ...p, onboarded: true }));
+  };
+  const logout = async () => { if (confirm("ログアウトしますか？")) { await supabase.auth.signOut(); setProfile(undefined); setMovies([]); } };
+
+  if (session === undefined || (session && profile === undefined)) {
+    return <Gate><p style={{ textAlign:"center", color:"var(--ink-dim)", padding:"60px" }}>読み込み中…</p></Gate>;
+  }
+  if (session === null) return <EmailLogin />;
+  if (profile === null) return <NameSetup onDone={createProfile} />;
+  if (!loading && !profile.onboarded && movies.length === 0) return <Gate><Onboarding onDone={finishOnboarding} /></Gate>;
+
+  return <Shell user={{ name: profile.display_name }} movies={movies} loading={loading} onAddMovie={addMovie} onDeleteMovie={deleteMovie} onLogout={logout} />;
+}
+
+/* ─────────── ルート：Supabase設定があればクラウド、無ければ端末保存 ─────────── */
+export default function App() {
+  return supabase ? <CloudApp /> : <LocalApp />;
 }
 
 const lbl = { display:"block", fontSize:12, color:"var(--ink-dim)", margin:"0 0 7px", letterSpacing:".02em" };
