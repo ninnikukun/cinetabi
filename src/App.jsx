@@ -682,10 +682,11 @@ function FindView() {
 }
 
 /* ─────────── メインの画面（記録/でかける）。データ源に依存しない共通シェル ─────────── */
-function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onLogout }) {
+function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onLogout, isAnonymous }) {
   const [view, setView] = useState("log");
   const [adding, setAdding] = useState(false);
   const [sharing, setSharing] = useState(null);
+  const [connecting, setConnecting] = useState(false);
 
   const deleteMovie = async (id) => { if (confirm("この記録を削除しますか？")) await onDeleteMovie(id); };
 
@@ -710,6 +711,15 @@ function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onLogout }) {
         </div>
       </header>
 
+      {isAnonymous && (
+        <div className="reel-narrow" style={{ padding:"10px 16px 0" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:10, background:"rgba(232,176,75,.08)", border:"1px solid var(--amber-dim)", borderRadius:12, padding:"10px 13px" }}>
+            <span style={{ fontSize:12.5, color:"var(--ink-dim)", lineHeight:1.6, flex:1 }}>いまは匿名（この端末だけ）です。別の端末でも使う・バックアップするには</span>
+            <button className="reel-tap" onClick={()=>setConnecting(true)} style={{ flexShrink:0, padding:"7px 12px", borderRadius:9, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:12.5, cursor:"pointer" }}>つなぐ</button>
+          </div>
+        </div>
+      )}
+
       {loading ? <p style={{ textAlign:"center", color:"var(--ink-dim)", padding:"60px" }}>読み込み中…</p>
         : view === "log" ? <LogView movies={movies} onAdd={()=>setAdding(true)} onDelete={deleteMovie} onShare={setSharing} />
         : <FindView />}
@@ -721,6 +731,7 @@ function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onLogout }) {
 
       {adding && <AddSheet onClose={()=>setAdding(false)} onSave={onAddMovie} existingIds={movies.map(m=>m.filmId).filter(Boolean)} />}
       {sharing && <ShareSheet movie={sharing} user={user} onClose={()=>setSharing(null)} />}
+      {connecting && <ConnectSheet onClose={()=>setConnecting(false)} />}
     </div>
   );
 }
@@ -770,46 +781,115 @@ function Gate({ children }) {
   );
 }
 
-function EmailLogin() {
+function Welcome() {
+  const [mode, setMode] = useState("home"); // home | login
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
 
-  const send = async () => {
+  const startAnon = async () => {
+    setBusy(true);
+    const { error } = await supabase.auth.signInAnonymously();
+    setBusy(false);
+    if (error) alert("開始に失敗しました：" + error.message);
+  };
+  const google = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin } });
+    if (error) alert("Googleログインに失敗しました：" + error.message);
+  };
+  const sendEmail = async () => {
     if (!email.trim()) return;
     setBusy(true);
     const { error } = await supabase.auth.signInWithOtp({ email: email.trim(), options: { emailRedirectTo: window.location.origin } });
     setBusy(false);
-    if (error) alert("送信に失敗しました：" + error.message);
-    else setSent(true);
+    if (error) alert("送信に失敗しました：" + error.message); else setSent(true);
   };
 
   return (
     <Gate>
       <div style={{ padding:"40px 24px" }}>
-        <div className="reel-mark" style={{ letterSpacing:".18em", fontSize:12, color:"var(--amber)" }}>LOGIN</div>
-        {sent ? (
+        {mode === "home" ? (
           <>
+            <div className="reel-mark" style={{ letterSpacing:".18em", fontSize:12, color:"var(--amber)" }}>WELCOME</div>
+            <h2 style={{ margin:"8px 0 6px", fontSize:22, lineHeight:1.4 }}>シネたびへようこそ</h2>
+            <p style={{ margin:"0 0 26px", color:"var(--ink-dim)", fontSize:14, lineHeight:1.8 }}>登録なしですぐ始められます。あとから「アカウントをつなぐ」と、別の端末でも使えてデータも守られます。</p>
+            <button className="reel-btn" disabled={busy} onClick={startAnon}
+              style={{ width:"100%", padding:"15px", borderRadius:12, border:"none", cursor:"pointer", fontSize:15, fontWeight:700, background:"var(--amber)", color:"#1a1305", marginBottom:14 }}>
+              {busy ? "準備中…" : "このまま はじめる"}
+            </button>
+            <button className="reel-tap" onClick={()=>setMode("login")} style={{ width:"100%", background:"none", border:"none", color:"var(--ink-dim)", fontSize:14, cursor:"pointer", padding:"6px" }}>
+              すでにアカウントがある方はこちら →
+            </button>
+          </>
+        ) : sent ? (
+          <>
+            <div className="reel-mark" style={{ letterSpacing:".18em", fontSize:12, color:"var(--amber)" }}>LOGIN</div>
             <h2 style={{ margin:"8px 0 6px", fontSize:22, lineHeight:1.4 }}>メールを確認してください</h2>
             <p style={{ margin:"0 0 22px", color:"var(--ink-dim)", fontSize:14, lineHeight:1.8 }}>{email} 宛にログイン用のリンクを送りました。メール内のリンクを押すと、ここに戻ってログインが完了します。<br/><br/>※ 届かない時は迷惑メールフォルダもご確認ください。</p>
-            <button className="reel-tap" onClick={()=>setSent(false)} style={{ background:"none", border:"none", color:"var(--ink-dim)", fontSize:14, cursor:"pointer", padding:0 }}>← メールアドレスを入れ直す</button>
+            <button className="reel-tap" onClick={()=>setSent(false)} style={{ background:"none", border:"none", color:"var(--ink-dim)", fontSize:14, cursor:"pointer", padding:0 }}>← 入れ直す</button>
           </>
         ) : (
           <>
-            <h2 style={{ margin:"8px 0 6px", fontSize:22, lineHeight:1.4 }}>メールでログイン</h2>
-            <p style={{ margin:"0 0 22px", color:"var(--ink-dim)", fontSize:14, lineHeight:1.7 }}>パスワードは不要です。届くリンクを押すだけでログインできます。メールアドレスは他のユーザーには公開されません。</p>
+            <div className="reel-mark" style={{ letterSpacing:".18em", fontSize:12, color:"var(--amber)" }}>LOGIN</div>
+            <h2 style={{ margin:"8px 0 16px", fontSize:22, lineHeight:1.4 }}>ログイン / 引き継ぐ</h2>
+            <button className="reel-tap" onClick={google} style={{ width:"100%", padding:"13px", borderRadius:12, border:"1px solid var(--line)", background:"var(--surface)", color:"var(--ink)", fontSize:15, fontWeight:700, cursor:"pointer", marginBottom:18 }}>Googleでログイン</button>
+            <div style={{ display:"flex", alignItems:"center", gap:10, margin:"0 0 18px", color:"var(--ink-dim)", fontSize:12 }}><span style={{ flex:1, height:1, background:"var(--line)" }} />または<span style={{ flex:1, height:1, background:"var(--line)" }} /></div>
             <label style={lbl}>メールアドレス</label>
-            <input autoFocus type="email" value={email} onChange={e=>setEmail(e.target.value)} onKeyDown={e=>{ if (e.key==="Enter") send(); }} placeholder="you@example.com" style={inp} />
-            <button className="reel-btn" disabled={!email.trim()||busy} onClick={send}
-              style={{ width:"100%", padding:"15px", borderRadius:12, border:"none", cursor:"pointer", fontSize:15, fontWeight:700, background: email.trim()&&!busy?"var(--amber)":"var(--surface2)", color: email.trim()&&!busy?"#1a1305":"var(--ink-dim)" }}>
-              {busy ? "送信中…" : "ログインリンクを送る"}
+            <input type="email" value={email} onChange={e=>setEmail(e.target.value)} onKeyDown={e=>{ if (e.key==="Enter") sendEmail(); }} placeholder="you@example.com" style={inp} />
+            <button className="reel-btn" disabled={!email.trim()||busy} onClick={sendEmail}
+              style={{ width:"100%", padding:"15px", borderRadius:12, border:"none", cursor:"pointer", fontSize:15, fontWeight:700, background: email.trim()&&!busy?"var(--amber)":"var(--surface2)", color: email.trim()&&!busy?"#1a1305":"var(--ink-dim)", marginBottom:14 }}>
+              {busy ? "送信中…" : "メールでログインリンクを送る"}
             </button>
+            <button className="reel-tap" onClick={()=>setMode("home")} style={{ width:"100%", background:"none", border:"none", color:"var(--ink-dim)", fontSize:14, cursor:"pointer", padding:"6px" }}>← もどる</button>
           </>
         )}
       </div>
     </Gate>
   );
 }
+
+function ConnectSheet({ onClose }) {
+  const [email, setEmail] = useState("");
+  const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  const google = async () => {
+    const { error } = await supabase.auth.linkIdentity({ provider: "google", options: { redirectTo: window.location.origin } });
+    if (error) alert("Google連携に失敗しました：" + error.message);
+  };
+  const linkEmail = async () => {
+    if (!email.trim()) return;
+    setBusy(true);
+    const { error } = await supabase.auth.updateUser({ email: email.trim() });
+    setBusy(false);
+    if (error) alert("メール連携に失敗しました：" + error.message); else setSent(true);
+  };
+
+  return (
+    <div style={{ position:"fixed", inset:0, zIndex:60, display:"flex", flexDirection:"column", justifyContent:"flex-end", alignItems:"center", background:"rgba(4,5,10,.66)" }} onClick={onClose}>
+      <div className="fade-up reel-sheet" onClick={e=>e.stopPropagation()} style={{ background:"var(--bg2)", borderTop:"1px solid var(--line)", borderRadius:"22px 22px 0 0", maxHeight:"92vh", overflowY:"auto", padding:"8px 20px 28px" }}>
+        <div style={{ width:42, height:4, borderRadius:4, background:"var(--line)", margin:"10px auto 18px" }} />
+        <div className="reel-mark" style={{ letterSpacing:".18em", fontSize:12, color:"var(--amber)", marginBottom:14 }}>CONNECT ／ アカウントをつなぐ</div>
+        {sent ? (
+          <p style={{ color:"var(--ink-dim)", fontSize:14, lineHeight:1.8, padding:"10px 0 6px" }}>{email} に確認メールを送りました。リンクを押すと連携が完了し、別の端末でもこのメールでログインできるようになります。<br/><br/>※ 届かない時は迷惑メールもご確認ください。</p>
+        ) : (
+          <>
+            <p style={{ margin:"0 0 20px", color:"var(--ink-dim)", fontSize:14, lineHeight:1.8 }}>つなぐと、別の端末でも同じ記録が使え、データのバックアップにもなります。メールアドレスは他のユーザーには公開されません。</p>
+            <button className="reel-tap" onClick={google} style={{ width:"100%", padding:"13px", borderRadius:12, border:"1px solid var(--line)", background:"var(--surface)", color:"var(--ink)", fontSize:15, fontWeight:700, cursor:"pointer", marginBottom:18 }}>Googleでつなぐ</button>
+            <div style={{ display:"flex", alignItems:"center", gap:10, margin:"0 0 18px", color:"var(--ink-dim)", fontSize:12 }}><span style={{ flex:1, height:1, background:"var(--line)" }} />または<span style={{ flex:1, height:1, background:"var(--line)" }} /></div>
+            <label style={lbl}>メールでつなぐ</label>
+            <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com" style={inp} />
+            <button className="reel-btn" disabled={!email.trim()||busy} onClick={linkEmail}
+              style={{ width:"100%", padding:"15px", borderRadius:12, border:"none", cursor:"pointer", fontSize:15, fontWeight:700, background: email.trim()&&!busy?"var(--amber)":"var(--surface2)", color: email.trim()&&!busy?"#1a1305":"var(--ink-dim)" }}>
+              {busy ? "送信中…" : "確認メールを送る"}
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 
 function NameSetup({ onDone }) {
   const [name, setName] = useState("");
@@ -887,11 +967,12 @@ function CloudApp() {
   if (session === undefined || (session && profile === undefined)) {
     return <Gate><p style={{ textAlign:"center", color:"var(--ink-dim)", padding:"60px" }}>読み込み中…</p></Gate>;
   }
-  if (session === null) return <EmailLogin />;
+  if (session === null) return <Welcome />;
   if (profile === null) return <NameSetup onDone={createProfile} />;
   if (!loading && !profile.onboarded && movies.length === 0) return <Gate><Onboarding onDone={finishOnboarding} /></Gate>;
 
-  return <Shell user={{ name: profile.display_name }} movies={movies} loading={loading} onAddMovie={addMovie} onDeleteMovie={deleteMovie} onLogout={logout} />;
+  const isAnonymous = !!session.user?.is_anonymous;
+  return <Shell user={{ name: profile.display_name }} movies={movies} loading={loading} onAddMovie={addMovie} onDeleteMovie={deleteMovie} onLogout={isAnonymous ? undefined : logout} isAnonymous={isAnonymous} />;
 }
 
 /* ─────────── ルート：Supabase設定があればクラウド、無ければ端末保存 ─────────── */
