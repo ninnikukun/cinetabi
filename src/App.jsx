@@ -191,8 +191,9 @@ body { margin:0; }
 .reel-narrow { max-width:560px; margin:0 auto; }
 .reel-sheet { width:100%; max-width:560px; margin:0 auto; }
 .reel-photo-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
-@media (prefers-reduced-motion: no-preference){ .fade-up{ animation:fadeUp .42s cubic-bezier(.2,.7,.2,1) both; } }
+@media (prefers-reduced-motion: no-preference){ .fade-up{ animation:fadeUp .42s cubic-bezier(.2,.7,.2,1) both; } .reel-detail-enter{ animation:detailIn .3s cubic-bezier(.2,.8,.2,1) both; } }
 @keyframes fadeUp{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;} }
+@keyframes detailIn{ from{opacity:0; transform:scale(.96);} to{opacity:1; transform:none;} }
 @media (min-width: 900px){
   .reel-root { max-width:1000px; }
   .reel-grid { display:grid; grid-template-columns:1fr 1fr; align-items:start; }
@@ -200,6 +201,8 @@ body { margin:0; }
   .reel-fab { left:auto !important; right:32px !important; transform:none !important; width:auto !important; padding-left:28px !important; padding-right:28px !important; }
 }
 .reel-btn:focus-visible, .reel-tap:focus-visible, input:focus-visible, textarea:focus-visible { outline:2px solid var(--amber); outline-offset:2px; }
+.reel-btn, .reel-tap { transition:transform .12s ease, opacity .12s ease; -webkit-tap-highlight-color:transparent; }
+.reel-btn:active, .reel-tap:active { transform:scale(.96); opacity:.88; }
 `;
 
 /* ─────────── ロゴ ─────────── */
@@ -630,6 +633,34 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate }) {
     window.addEventListener("keydown", h); return () => window.removeEventListener("keydown", h);
   }, [movies.length, onClose]);
   const [editing, setEditing] = useState(false);
+
+  // スワイプ操作：横＝前後の記録へ、下＝閉じる（インスタの写真ビュー的な操作感）
+  const startRef = useRef(null);
+  const [drag, setDrag] = useState({ x:0, y:0, axis:null, active:false });
+  const onTouchStart = (e) => {
+    const t = e.touches[0];
+    startRef.current = { x:t.clientX, y:t.clientY };
+    setDrag({ x:0, y:0, axis:null, active:true });
+  };
+  const onTouchMove = (e) => {
+    if (!startRef.current) return;
+    const t = e.touches[0];
+    const dx = t.clientX - startRef.current.x;
+    const dy = t.clientY - startRef.current.y;
+    let axis = drag.axis;
+    if (!axis && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+    if (axis === "x") setDrag({ x:dx, y:0, axis, active:true });
+    else if (axis === "y" && dy > 0) setDrag({ x:0, y:dy, axis, active:true });
+  };
+  const onTouchEnd = () => {
+    const { x, y, axis } = drag;
+    if (axis === "x" && x < -70 && i < movies.length-1) setI(i+1);
+    else if (axis === "x" && x > 70 && i > 0) setI(i-1);
+    else if (axis === "y" && y > 110) { onClose(); return; }
+    setDrag({ x:0, y:0, axis:null, active:false });
+    startRef.current = null;
+  };
+
   if (!m) return null;
   const film = { title:m.title, posterPath:m.posterPath || null, year:m.year };
   const showPhoto = mode === "photo" && m.image;
@@ -637,17 +668,24 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate }) {
   const q = encodeURIComponent(m.title);
   const openExt = (url) => { try { window.open(url, "_blank", "noopener"); } catch {} };
 
+  const closeProgress = Math.min(1, drag.y / 240);
+  const sheetTransform = drag.axis === "y" ? `translateY(${drag.y}px) scale(${1 - closeProgress*0.05})` : "none";
+  const mediaTransform = drag.axis === "x" ? `translateX(${drag.x}px)` : "none";
+
   return (
-    <div style={{ position:"fixed", inset:0, zIndex:70, background:"var(--bg)", overflowY:"auto" }}>
+    <div className="reel-detail-enter" style={{ position:"fixed", inset:0, zIndex:70, background:"var(--bg)", overflowY: drag.active ? "hidden" : "auto",
+      opacity: drag.axis === "y" ? 1 - closeProgress*0.5 : 1, transition: drag.active ? "none" : "transform .25s ease, opacity .25s ease", transform: sheetTransform }}>
       <div className="reel-sheet" style={{ padding:"calc(env(safe-area-inset-top, 0px) + 14px) 16px 44px" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
           <button className="reel-tap" onClick={onClose} style={{ background:"none", border:"none", color:"var(--ink)", fontSize:15, cursor:"pointer" }}>‹ もどる</button>
           <span className="reel-mark" style={{ fontSize:11, color:"var(--ink-dim)" }}>{i+1} / {movies.length}</span>
         </div>
-        <div style={{ position:"relative" }}>
-          {showPhoto
-            ? <img src={m.image} alt="" style={{ width:"100%", maxHeight:"62vh", objectFit:"cover", borderRadius:16, display:"block" }} />
-            : <Poster film={film} big style={{ width:"100%", maxWidth:340, margin:"0 auto" }} />}
+        <div style={{ position:"relative", touchAction:"pan-y" }} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
+          <div style={{ transform:mediaTransform, transition: drag.active ? "none" : "transform .22s ease", opacity: drag.axis==="x" ? Math.max(.4, 1 - Math.abs(drag.x)/500) : 1 }}>
+            {showPhoto
+              ? <img src={m.image} alt="" style={{ width:"100%", maxHeight:"62vh", objectFit:"cover", borderRadius:16, display:"block" }} />
+              : <Poster film={film} big style={{ width:"100%", maxWidth:340, margin:"0 auto" }} />}
+          </div>
           {i>0 && <button className="reel-tap" onClick={()=>setI(i-1)} aria-label="前へ" style={navBtn("left")}>‹</button>}
           {i<movies.length-1 && <button className="reel-tap" onClick={()=>setI(i+1)} aria-label="次へ" style={navBtn("right")}>›</button>}
         </div>
@@ -689,9 +727,24 @@ function RecapView({ movies, user, onClose }) {
   const extra = list.length - tiles.length;
   const share = async () => { try { if (navigator.share) await navigator.share({ title:"シネたび", text:`${now.getMonth()+1}月は ${list.length}本 観ました🎬 #シネたび` }); } catch {} };
 
+  const startRef = useRef(null);
+  const [dragY, setDragY] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const onTouchStart = (e) => { startRef.current = e.touches[0].clientY; setDragging(true); };
+  const onTouchMove = (e) => {
+    if (startRef.current == null) return;
+    const dy = e.touches[0].clientY - startRef.current;
+    if (dy > 0) setDragY(dy);
+  };
+  const onTouchEnd = () => { if (dragY > 100) { onClose(); return; } setDragY(0); setDragging(false); startRef.current = null; };
+
   return (
-    <div style={{ position:"fixed", inset:0, zIndex:70, background:"rgba(4,5,10,.82)", overflowY:"auto", padding:"calc(env(safe-area-inset-top, 0px) + 20px) 0 20px" }} onClick={onClose}>
-      <div className="reel-sheet" onClick={e=>e.stopPropagation()} style={{ padding:"0 16px" }}>
+    <div className="reel-detail-enter" style={{ position:"fixed", inset:0, zIndex:70, background:"rgba(4,5,10,.82)", overflowY:"auto", padding:"calc(env(safe-area-inset-top, 0px) + 20px) 0 20px" }} onClick={onClose}>
+      <div className="reel-sheet" onClick={e=>e.stopPropagation()} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}
+        style={{ padding:"0 16px", transform:`translateY(${dragY}px)`, opacity: 1 - Math.min(1,dragY/300)*0.6, transition: dragging && dragY>0 ? "none" : "transform .25s ease, opacity .25s ease" }}>
+        <div style={{ display:"flex", justifyContent:"center", marginBottom:8 }}>
+          <div style={{ width:36, height:4, borderRadius:4, background:"rgba(255,255,255,.25)" }} />
+        </div>
         <div style={{ display:"flex", justifyContent:"flex-end", marginBottom:8 }}>
           <button className="reel-tap" onClick={onClose} style={{ background:"none", border:"none", color:"#fff", fontSize:14, cursor:"pointer" }}>✕ 閉じる</button>
         </div>
