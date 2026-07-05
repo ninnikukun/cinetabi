@@ -639,7 +639,7 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate }) {
 
   return (
     <div style={{ position:"fixed", inset:0, zIndex:70, background:"var(--bg)", overflowY:"auto" }}>
-      <div className="reel-sheet" style={{ padding:"14px 16px 44px" }}>
+      <div className="reel-sheet" style={{ padding:"calc(env(safe-area-inset-top, 0px) + 14px) 16px 44px" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
           <button className="reel-tap" onClick={onClose} style={{ background:"none", border:"none", color:"var(--ink)", fontSize:15, cursor:"pointer" }}>‹ もどる</button>
           <span className="reel-mark" style={{ fontSize:11, color:"var(--ink-dim)" }}>{i+1} / {movies.length}</span>
@@ -690,7 +690,7 @@ function RecapView({ movies, user, onClose }) {
   const share = async () => { try { if (navigator.share) await navigator.share({ title:"シネたび", text:`${now.getMonth()+1}月は ${list.length}本 観ました🎬 #シネたび` }); } catch {} };
 
   return (
-    <div style={{ position:"fixed", inset:0, zIndex:70, background:"rgba(4,5,10,.82)", overflowY:"auto", padding:"20px 0" }} onClick={onClose}>
+    <div style={{ position:"fixed", inset:0, zIndex:70, background:"rgba(4,5,10,.82)", overflowY:"auto", padding:"calc(env(safe-area-inset-top, 0px) + 20px) 0 20px" }} onClick={onClose}>
       <div className="reel-sheet" onClick={e=>e.stopPropagation()} style={{ padding:"0 16px" }}>
         <div style={{ display:"flex", justifyContent:"flex-end", marginBottom:8 }}>
           <button className="reel-tap" onClick={onClose} style={{ background:"none", border:"none", color:"#fff", fontSize:14, cursor:"pointer" }}>✕ 閉じる</button>
@@ -871,7 +871,7 @@ function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onUpdateMovie
   return (
     <div className="reel-root">
       <style>{STYLES}</style>
-      <header style={{ position:"sticky", top:0, zIndex:20, background:"linear-gradient(180deg, rgba(232,176,75,.10), rgba(12,13,22,0) 70%), var(--bg)", borderBottom:"1px solid var(--line)", padding:"16px 18px 12px" }}>
+      <header style={{ position:"sticky", top:0, zIndex:20, background:"linear-gradient(180deg, rgba(232,176,75,.10), rgba(12,13,22,0) 70%), var(--bg)", borderBottom:"1px solid var(--line)", padding:"calc(env(safe-area-inset-top, 0px) + 16px) 18px 12px" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
           <Wordmark />
           {user && (
@@ -954,7 +954,7 @@ function Gate({ children }) {
   return (
     <div className="reel-root">
       <style>{STYLES}</style>
-      <header style={{ padding:"16px 18px 12px", borderBottom:"1px solid var(--line)" }}><Wordmark /></header>
+      <header style={{ padding:"calc(env(safe-area-inset-top, 0px) + 16px) 18px 12px", borderBottom:"1px solid var(--line)" }}><Wordmark /></header>
       {children}
     </div>
   );
