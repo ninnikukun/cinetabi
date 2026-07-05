@@ -559,7 +559,68 @@ function PhotoTile({ m, mode, onClick }) {
   );
 }
 
-function DetailView({ movies, index, onClose, onShare, onDelete }) {
+function EditSheet({ movie, onClose, onSave }) {
+  const [note, setNote] = useState(movie.note || "");
+  const [image, setImage] = useState(movie.image || null);
+  const [date, setDate] = useState(() => { try { return new Date(movie.watchedAt).toISOString().slice(0,10); } catch { return ""; } });
+  const [busy, setBusy] = useState(false);
+  const fileRef = useRef(null);
+
+  const pickImage = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try { setImage(await resizeImage(file)); } catch { alert("写真の読み込みに失敗しました"); }
+    e.target.value = "";
+  };
+  const save = async () => {
+    setBusy(true);
+    let watchedAt = movie.watchedAt;
+    if (date) { const d = new Date(date + "T12:00:00"); if (!isNaN(d)) watchedAt = d.toISOString(); }
+    await onSave({ ...movie, note: note.trim(), image, watchedAt });
+    setBusy(false);
+    onClose();
+  };
+
+  return (
+    <div style={{ position:"fixed", inset:0, zIndex:80, display:"flex", flexDirection:"column", justifyContent:"flex-end", alignItems:"center", background:"rgba(4,5,10,.66)" }} onClick={onClose}>
+      <div className="fade-up reel-sheet" onClick={e=>e.stopPropagation()} style={{ background:"var(--bg2)", borderTop:"1px solid var(--line)", borderRadius:"22px 22px 0 0", maxHeight:"92vh", overflowY:"auto", padding:"8px 20px 28px" }}>
+        <div style={{ width:42, height:4, borderRadius:4, background:"var(--line)", margin:"10px auto 18px" }} />
+        <div className="reel-mark" style={{ letterSpacing:".18em", fontSize:12, color:"var(--amber)", marginBottom:6 }}>EDIT ／ 記録を編集</div>
+        <div style={{ fontWeight:900, fontSize:17, marginBottom:16 }}>{movie.title}</div>
+
+        <label style={lbl}>観た日</label>
+        <input type="date" value={date} onChange={e=>setDate(e.target.value)} style={{ ...inp, colorScheme:"dark" }} />
+
+        <label style={lbl}>ひとことメモ</label>
+        <textarea value={note} onChange={e=>setNote(e.target.value)} rows={4} maxLength={500} placeholder="感想や、いっしょに観た人のことなど"
+          style={{ ...inp, resize:"vertical", lineHeight:1.7 }} />
+
+        <label style={lbl}>おもいで（写真1枚）</label>
+        <input ref={fileRef} type="file" accept="image/*" onChange={pickImage} style={{ display:"none" }} />
+        {image ? (
+          <div style={{ position:"relative", marginBottom:14 }}>
+            <img src={image} alt="" style={{ width:"100%", borderRadius:12, display:"block", maxHeight:320, objectFit:"cover" }} />
+            <div style={{ display:"flex", gap:8, marginTop:8 }}>
+              <button className="reel-tap" onClick={()=>fileRef.current?.click()} style={{ flex:1, padding:"10px", borderRadius:9, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:13, cursor:"pointer" }}>写真を変更</button>
+              <button className="reel-tap" onClick={()=>setImage(null)} style={{ flex:1, padding:"10px", borderRadius:9, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:13, cursor:"pointer" }}>写真を削除</button>
+            </div>
+          </div>
+        ) : (
+          <button className="reel-tap" onClick={()=>fileRef.current?.click()} style={{ width:"100%", padding:"14px", borderRadius:12, border:"1px dashed var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:13.5, cursor:"pointer", marginBottom:14 }}>
+            ＋ おもいでの写真を追加（チケット・劇場など）
+          </button>
+        )}
+
+        <button className="reel-btn" disabled={busy} onClick={save}
+          style={{ width:"100%", padding:"15px", borderRadius:12, border:"none", cursor:"pointer", fontSize:15, fontWeight:700, background: busy?"var(--surface2)":"var(--amber)", color: busy?"var(--ink-dim)":"#1a1305" }}>
+          {busy ? "保存中…" : "保存する"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate }) {
   const [i, setI] = useState(index);
   const m = movies[i];
   const [mode, setMode] = useState(m && m.image ? "photo" : "poster");
@@ -568,10 +629,13 @@ function DetailView({ movies, index, onClose, onShare, onDelete }) {
     const h = (e) => { if (e.key === "ArrowLeft") setI(x=>Math.max(0,x-1)); else if (e.key === "ArrowRight") setI(x=>Math.min(movies.length-1,x+1)); else if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", h); return () => window.removeEventListener("keydown", h);
   }, [movies.length, onClose]);
+  const [editing, setEditing] = useState(false);
   if (!m) return null;
   const film = { title:m.title, posterPath:m.posterPath || null, year:m.year };
   const showPhoto = mode === "photo" && m.image;
   const del = () => { onDelete(m.id); onClose(); };
+  const q = encodeURIComponent(m.title);
+  const openExt = (url) => { try { window.open(url, "_blank", "noopener"); } catch {} };
 
   return (
     <div style={{ position:"fixed", inset:0, zIndex:70, background:"var(--bg)", overflowY:"auto" }}>
@@ -602,11 +666,17 @@ function DetailView({ movies, index, onClose, onShare, onDelete }) {
           </div>
         )}
         {m.note && <p style={{ margin:"14px 0 0", fontSize:15, lineHeight:1.75, whiteSpace:"pre-wrap" }}>{m.note}</p>}
-        <div style={{ display:"flex", gap:10, marginTop:22 }}>
+        <div style={{ display:"flex", gap:8, marginTop:18 }}>
+          <button className="reel-tap" onClick={()=>openExt(`https://eiga.com/search/${q}/`)} style={{ flex:1, padding:"11px", borderRadius:10, border:"1px solid var(--line)", background:"var(--surface)", color:"var(--ink-dim)", fontSize:12.5, fontWeight:700, cursor:"pointer" }}>映画.comで探す ↗</button>
+          <button className="reel-tap" onClick={()=>openExt(`https://filmarks.com/search/movies?q=${q}`)} style={{ flex:1, padding:"11px", borderRadius:10, border:"1px solid var(--line)", background:"var(--surface)", color:"var(--ink-dim)", fontSize:12.5, fontWeight:700, cursor:"pointer" }}>Filmarksで探す ↗</button>
+        </div>
+        <div style={{ display:"flex", gap:10, marginTop:10 }}>
           <button className="reel-btn" onClick={()=>onShare(m)} style={{ flex:1, padding:"13px", borderRadius:11, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:14, cursor:"pointer" }}>共有する</button>
+          <button className="reel-tap" onClick={()=>setEditing(true)} style={{ padding:"13px 18px", borderRadius:11, border:"1px solid var(--line)", background:"transparent", color:"var(--ink)", fontSize:14, fontWeight:700, cursor:"pointer" }}>編集</button>
           <button className="reel-tap" onClick={del} style={{ padding:"13px 18px", borderRadius:11, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:14, cursor:"pointer" }}>削除</button>
         </div>
       </div>
+      {editing && <EditSheet movie={m} onClose={()=>setEditing(false)} onSave={onUpdate} />}
     </div>
   );
 }
@@ -654,7 +724,7 @@ function RecapView({ movies, user, onClose }) {
   );
 }
 
-function LogView({ movies, user, onAdd, onDelete, onShare }) {
+function LogView({ movies, user, onAdd, onDelete, onShare, onUpdate }) {
   const [thumb, setThumb] = useState("poster"); // "poster" | "photo"
   const [detail, setDetail] = useState(null);    // index or null
   const [recap, setRecap] = useState(false);
@@ -702,7 +772,7 @@ function LogView({ movies, user, onAdd, onDelete, onShare }) {
         {movies.map((m, i) => <PhotoTile key={m.id} m={m} mode={thumb} onClick={()=>setDetail(i)} />)}
       </div>
 
-      {detail !== null && <DetailView movies={movies} index={detail} onClose={()=>setDetail(null)} onShare={onShare} onDelete={onDelete} />}
+      {detail !== null && <DetailView movies={movies} index={detail} onClose={()=>setDetail(null)} onShare={onShare} onDelete={onDelete} onUpdate={onUpdate} />}
       {recap && <RecapView movies={movies} user={user} onClose={()=>setRecap(false)} />}
     </div>
   );
@@ -790,7 +860,7 @@ function FindView() {
 }
 
 /* ─────────── メインの画面（記録/でかける）。データ源に依存しない共通シェル ─────────── */
-function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onLogout, isAnonymous }) {
+function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onUpdateMovie, onLogout, isAnonymous }) {
   const [view, setView] = useState("log");
   const [adding, setAdding] = useState(false);
   const [sharing, setSharing] = useState(null);
@@ -829,7 +899,7 @@ function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onLogout, isA
       )}
 
       {loading ? <p style={{ textAlign:"center", color:"var(--ink-dim)", padding:"60px" }}>読み込み中…</p>
-        : view === "log" ? <LogView movies={movies} user={user} onAdd={()=>setAdding(true)} onDelete={deleteMovie} onShare={setSharing} />
+        : view === "log" ? <LogView movies={movies} user={user} onAdd={()=>setAdding(true)} onDelete={deleteMovie} onShare={setSharing} onUpdate={onUpdateMovie} />
         : <FindView />}
 
       {view === "log" && !loading && movies.length > 0 && (
@@ -864,6 +934,7 @@ function LocalApp() {
   };
   const addMovie = (m) => persist([m, ...movies]);
   const deleteMovie = (id) => persist(movies.filter(x => x.id !== id));
+  const updateMovie = (m) => persist(movies.map(x => x.id === m.id ? m : x));
   const registerUser = (u) => { setUser(u); setOnboarded(false); store.set("cinetabi_user", u); };
   const finishOnboarding = (records) => {
     setOnboarded(true); store.set("cinetabi_onboarded", true);
@@ -872,7 +943,7 @@ function LocalApp() {
 
   if (!loading && !user) return <Gate><Registration onRegister={registerUser} /></Gate>;
   if (!loading && !onboarded && movies.length === 0) return <Gate><Onboarding onDone={finishOnboarding} /></Gate>;
-  return <Shell user={user} movies={movies} loading={loading} onAddMovie={addMovie} onDeleteMovie={deleteMovie} />;
+  return <Shell user={user} movies={movies} loading={loading} onAddMovie={addMovie} onDeleteMovie={deleteMovie} onUpdateMovie={updateMovie} />;
 }
 
 /* ─────────── クラウドモード（Supabase：メールログイン＋クラウド保存） ─────────── */
@@ -1062,6 +1133,11 @@ function CloudApp() {
     if (error) { alert("削除に失敗しました：" + error.message); return; }
     setMovies(prev => prev.filter(x => x.id !== id));
   };
+  const updateMovie = async (m) => {
+    const { data, error } = await supabase.from("records").update({ note:m.note, image:m.image, watched_at:m.watchedAt }).eq("id", m.id).select().single();
+    if (error) { alert("保存に失敗しました：" + error.message); return; }
+    setMovies(prev => prev.map(x => x.id === m.id ? toApp(data) : x));
+  };
   const finishOnboarding = async (records) => {
     if (records.length) {
       const { data } = await supabase.from("records").insert(records.map(r => toRow(r, session.user.id))).select();
@@ -1080,7 +1156,7 @@ function CloudApp() {
   if (!loading && !profile.onboarded && movies.length === 0) return <Gate><Onboarding onDone={finishOnboarding} /></Gate>;
 
   const isAnonymous = !!session.user?.is_anonymous;
-  return <Shell user={{ name: profile.display_name }} movies={movies} loading={loading} onAddMovie={addMovie} onDeleteMovie={deleteMovie} onLogout={isAnonymous ? undefined : logout} isAnonymous={isAnonymous} />;
+  return <Shell user={{ name: profile.display_name }} movies={movies} loading={loading} onAddMovie={addMovie} onDeleteMovie={deleteMovie} onUpdateMovie={updateMovie} onLogout={isAnonymous ? undefined : logout} isAnonymous={isAnonymous} />;
 }
 
 /* ─────────── ルート：Supabase設定があればクラウド、無ければ端末保存 ─────────── */
