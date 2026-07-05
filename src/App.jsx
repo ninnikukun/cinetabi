@@ -1134,9 +1134,9 @@ function CloudApp() {
     setMovies(prev => prev.filter(x => x.id !== id));
   };
   const updateMovie = async (m) => {
-    const { data, error } = await supabase.from("records").update({ note:m.note, image:m.image, watched_at:m.watchedAt }).eq("id", m.id).select().single();
+    const { error } = await supabase.from("records").update({ note:m.note, image:m.image, watched_at:m.watchedAt }).eq("id", m.id);
     if (error) { alert("保存に失敗しました：" + error.message); return; }
-    setMovies(prev => prev.map(x => x.id === m.id ? toApp(data) : x));
+    setMovies(prev => prev.map(x => x.id === m.id ? { ...x, note:m.note, image:m.image, watchedAt:m.watchedAt } : x));
   };
   const finishOnboarding = async (records) => {
     if (records.length) {
