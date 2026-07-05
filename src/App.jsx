@@ -380,7 +380,7 @@ function ShareSheet({ movie, user, onClose }) {
 
   return (
     <div style={{ position:"fixed", inset:0, zIndex:60, display:"flex", flexDirection:"column", justifyContent:"flex-end", alignItems:"center", background:"rgba(4,5,10,.66)" }} onClick={onClose}>
-      <div className="fade-up reel-sheet" onClick={e=>e.stopPropagation()} style={{ background:"var(--bg2)", borderTop:"1px solid var(--line)", borderRadius:"22px 22px 0 0", maxHeight:"92vh", overflowY:"auto", padding:"8px 20px 28px" }}>
+      <div className="fade-up reel-sheet" onClick={e=>e.stopPropagation()} style={{ background:"var(--bg2)", borderTop:"1px solid var(--line)", borderRadius:"22px 22px 0 0", maxHeight:"92vh", overflowY:"auto", touchAction:"pan-y", overscrollBehaviorX:"none", padding:"8px 20px 28px" }}>
         <div style={{ width:42, height:4, borderRadius:4, background:"var(--line)", margin:"10px auto 18px" }} />
         <div className="reel-mark" style={{ letterSpacing:".18em", fontSize:12, color:"var(--amber)", marginBottom:14 }}>SHARE ／ この記録を共有</div>
 
@@ -516,7 +516,7 @@ function AddSheet({ onClose, onSave, existingIds }) {
     <div style={{ position:"fixed", inset:0, zIndex:50, display:"flex", flexDirection:"column", justifyContent:"flex-end", alignItems:"center", background:"rgba(4,5,10,.66)" }} onClick={requestClose}>
       <div ref={sheetRef} className="fade-up reel-sheet" onClick={e=>e.stopPropagation()}
         onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}
-        style={{ background:"var(--bg2)", borderTop:"1px solid var(--line)", borderRadius:"22px 22px 0 0", maxHeight:"92vh", overflowY:"auto", touchAction:"pan-y", overscrollBehaviorX:"none",
+        style={{ background:"var(--bg2)", borderTop:"1px solid var(--line)", borderRadius:"22px 22px 0 0", maxHeight:"92vh", height: selected ? "auto" : "75vh", overflowY:"auto", touchAction:"pan-y", overscrollBehaviorX:"none",
           padding: selected ? "8px 20px 28px" : "0 0 28px",
           transform: pull>0 ? `translateY(${pull}px)` : "none", opacity: pull>0 ? 1-closeProgress*0.3 : 1,
           transition: pulling ? "none" : "transform .2s ease, opacity .2s ease" }}>
@@ -650,7 +650,7 @@ function EditSheet({ movie, onClose, onSave }) {
 
   return (
     <div style={{ position:"fixed", inset:0, zIndex:80, display:"flex", flexDirection:"column", justifyContent:"flex-end", alignItems:"center", background:"rgba(4,5,10,.66)" }} onClick={onClose}>
-      <div className="fade-up reel-sheet" onClick={e=>e.stopPropagation()} style={{ background:"var(--bg2)", borderTop:"1px solid var(--line)", borderRadius:"22px 22px 0 0", maxHeight:"92vh", overflowY:"auto", padding:"8px 20px 28px" }}>
+      <div className="fade-up reel-sheet" onClick={e=>e.stopPropagation()} style={{ background:"var(--bg2)", borderTop:"1px solid var(--line)", borderRadius:"22px 22px 0 0", maxHeight:"92vh", overflowY:"auto", touchAction:"pan-y", overscrollBehaviorX:"none", padding:"8px 20px 28px" }}>
         <div style={{ width:42, height:4, borderRadius:4, background:"var(--line)", margin:"10px auto 18px" }} />
         <div className="reel-mark" style={{ letterSpacing:".18em", fontSize:12, color:"var(--amber)", marginBottom:6 }}>EDIT ／ 記録を編集</div>
         <div style={{ fontWeight:900, fontSize:17, marginBottom:16 }}>{movie.title}</div>
@@ -666,7 +666,7 @@ function EditSheet({ movie, onClose, onSave }) {
         <input ref={fileRef} type="file" accept="image/*" onChange={pickImage} style={{ display:"none" }} />
         {image ? (
           <div style={{ position:"relative", marginBottom:14 }}>
-            <img src={image} alt="" style={{ width:"100%", borderRadius:12, display:"block", maxHeight:320, objectFit:"cover" }} />
+            <img src={image} alt="" draggable={false} style={{ width:"100%", borderRadius:12, display:"block", maxHeight:320, objectFit:"cover" }} />
             <div style={{ display:"flex", gap:8, marginTop:8 }}>
               <button className="reel-tap" onClick={()=>fileRef.current?.click()} style={{ flex:1, padding:"10px", borderRadius:9, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:13, cursor:"pointer" }}>写真を変更</button>
               <button className="reel-tap" onClick={()=>setImage(null)} style={{ flex:1, padding:"10px", borderRadius:9, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:13, cursor:"pointer" }}>写真を削除</button>
@@ -768,8 +768,14 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate }) {
   const startRef = useRef(null);
   const [pull, setPull] = useState(0);
   const [pulling, setPulling] = useState(false);
+  const [closing, setClosing] = useState(false);
+  const requestClose = () => {
+    setPulling(false);
+    setClosing(true);
+    setTimeout(onClose, 240); // アニメーションが最後まで終わってから実際に閉じる（切れ目を作らない）
+  };
   const onTouchStart = (e) => {
-    if ((feedRef.current?.scrollTop || 0) > 2) { startRef.current = null; return; }
+    if (closing || (feedRef.current?.scrollTop || 0) > 2) { startRef.current = null; return; }
     startRef.current = e.touches[0].clientY;
   };
   const onTouchMove = (e) => {
@@ -778,7 +784,7 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate }) {
     if (dy > 0) { setPull(dy); setPulling(true); } else { setPull(0); setPulling(false); }
   };
   const onTouchEnd = () => {
-    if (pull > 100) { onClose(); }
+    if (pull > 100) { requestClose(); return; }
     setPull(0); setPulling(false); startRef.current = null;
   };
 
@@ -788,10 +794,10 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate }) {
 
   return (
     <div className="reel-detail-enter" style={{ position:"fixed", inset:0, zIndex:70, background:"var(--bg)",
-      transform: pull>0 ? `translateY(${pull}px) scale(${1-closeProgress*0.04})` : "none",
-      opacity: pull>0 ? 1-closeProgress*0.4 : 1,
-      transition: pulling ? "none" : "transform .22s ease, opacity .22s ease" }}>
-      <button className="reel-tap" onClick={onClose} aria-label="もどる"
+      transform: closing ? "translateY(100%) scale(.92)" : pull>0 ? `translateY(${pull}px) scale(${1-closeProgress*0.04})` : "none",
+      opacity: closing ? 0 : pull>0 ? 1-closeProgress*0.4 : 1,
+      transition: closing ? "transform .24s cubic-bezier(.3,.7,.4,1), opacity .24s ease" : pulling ? "none" : "transform .22s ease, opacity .22s ease" }}>
+      <button className="reel-tap" onClick={requestClose} aria-label="もどる"
         style={{ position:"absolute", top:"calc(env(safe-area-inset-top, 0px) + 12px)", left:12, zIndex:5, width:36, height:36, borderRadius:"50%", border:"none", background:"rgba(12,13,22,.55)", color:"#fff", fontSize:19, fontWeight:900, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", backdropFilter:"blur(2px)" }}>‹</button>
       <div ref={feedRef} className="reel-feed" style={{ height:"100%", overflowY:"auto", scrollSnapType:"y mandatory", WebkitOverflowScrolling:"touch", touchAction:"pan-y" }}
         onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
@@ -1182,7 +1188,7 @@ function ConnectSheet({ onClose }) {
 
   return (
     <div style={{ position:"fixed", inset:0, zIndex:60, display:"flex", flexDirection:"column", justifyContent:"flex-end", alignItems:"center", background:"rgba(4,5,10,.66)" }} onClick={onClose}>
-      <div className="fade-up reel-sheet" onClick={e=>e.stopPropagation()} style={{ background:"var(--bg2)", borderTop:"1px solid var(--line)", borderRadius:"22px 22px 0 0", maxHeight:"92vh", overflowY:"auto", padding:"8px 20px 28px" }}>
+      <div className="fade-up reel-sheet" onClick={e=>e.stopPropagation()} style={{ background:"var(--bg2)", borderTop:"1px solid var(--line)", borderRadius:"22px 22px 0 0", maxHeight:"92vh", overflowY:"auto", touchAction:"pan-y", overscrollBehaviorX:"none", padding:"8px 20px 28px" }}>
         <div style={{ width:42, height:4, borderRadius:4, background:"var(--line)", margin:"10px auto 18px" }} />
         <div className="reel-mark" style={{ letterSpacing:".18em", fontSize:12, color:"var(--amber)", marginBottom:14 }}>CONNECT ／ アカウントをつなぐ</div>
         {sent ? (
