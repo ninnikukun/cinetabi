@@ -191,6 +191,11 @@ body { margin:0; }
 .reel-narrow { max-width:560px; margin:0 auto; }
 .reel-sheet { width:100%; max-width:560px; margin:0 auto; }
 .reel-photo-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
+.reel-feed { scrollbar-width:none; }
+.reel-feed::-webkit-scrollbar { display:none; }
+.reel-post { min-height:100vh; min-height:100dvh; }
+.reel-carousel { scrollbar-width:none; }
+.reel-carousel::-webkit-scrollbar { display:none; }
 @media (prefers-reduced-motion: no-preference){ .fade-up{ animation:fadeUp .42s cubic-bezier(.2,.7,.2,1) both; } .reel-detail-enter{ animation:detailIn .3s cubic-bezier(.2,.8,.2,1) both; } }
 @keyframes fadeUp{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;} }
 @keyframes detailIn{ from{opacity:0; transform:scale(.96);} to{opacity:1; transform:none;} }
@@ -547,8 +552,14 @@ function AddSheet({ onClose, onSave, existingIds }) {
   );
 }
 
+// 対応ブラウザでは画面の切り替わりをふわっとクロスフェードさせ、「パッ」と切り替わる瞬間を無くす。
+// 未対応ブラウザでは通常の即時切り替え（見た目が変わるだけで機能は変わらない）。
+function withViewTransition(fn) {
+  if (typeof document !== "undefined" && document.startViewTransition) document.startViewTransition(fn);
+  else fn();
+}
+
 /* ─────────── 記録一覧 ─────────── */
-const navBtn = (side) => ({ position:"absolute", top:"50%", [side]:8, transform:"translateY(-50%)", width:38, height:38, borderRadius:"50%", border:"none", background:"rgba(12,13,22,.62)", color:"#fff", fontSize:22, fontWeight:900, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", backdropFilter:"blur(2px)" });
 
 function PhotoTile({ m, mode, onClick }) {
   const showPhoto = mode === "photo" && m.image;
@@ -623,80 +634,47 @@ function EditSheet({ movie, onClose, onSave }) {
   );
 }
 
-function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate }) {
-  const [i, setI] = useState(index);
-  const m = movies[i];
-  const [mode, setMode] = useState(m && m.image ? "photo" : "poster");
-  useEffect(() => { const mm = movies[i]; setMode(mm && mm.image ? "photo" : "poster"); }, [i, movies]);
-  useEffect(() => {
-    const h = (e) => { if (e.key === "ArrowLeft") setI(x=>Math.max(0,x-1)); else if (e.key === "ArrowRight") setI(x=>Math.min(movies.length-1,x+1)); else if (e.key === "Escape") onClose(); };
-    window.addEventListener("keydown", h); return () => window.removeEventListener("keydown", h);
-  }, [movies.length, onClose]);
-  const [editing, setEditing] = useState(false);
-
-  // スワイプ操作：横＝前後の記録へ、下＝閉じる（インスタの写真ビュー的な操作感）
-  const startRef = useRef(null);
-  const [drag, setDrag] = useState({ x:0, y:0, axis:null, active:false });
-  const onTouchStart = (e) => {
-    const t = e.touches[0];
-    startRef.current = { x:t.clientX, y:t.clientY };
-    setDrag({ x:0, y:0, axis:null, active:true });
+function PostCard({ m, onShare, onDelete, onEdit }) {
+  const trackRef = useRef(null);
+  const [page, setPage] = useState(0);
+  const pages = m.image ? ["poster", "photo"] : ["poster"];
+  const onScroll = () => {
+    const el = trackRef.current;
+    if (!el) return;
+    setPage(Math.round(el.scrollLeft / el.clientWidth));
   };
-  const onTouchMove = (e) => {
-    if (!startRef.current) return;
-    const t = e.touches[0];
-    const dx = t.clientX - startRef.current.x;
-    const dy = t.clientY - startRef.current.y;
-    let axis = drag.axis;
-    if (!axis && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
-    if (axis === "x") setDrag({ x:dx, y:0, axis, active:true });
-    else if (axis === "y" && dy > 0) setDrag({ x:0, y:dy, axis, active:true });
-  };
-  const onTouchEnd = () => {
-    const { x, y, axis } = drag;
-    if (axis === "x" && x < -70 && i < movies.length-1) setI(i+1);
-    else if (axis === "x" && x > 70 && i > 0) setI(i-1);
-    else if (axis === "y" && y > 110) { onClose(); return; }
-    setDrag({ x:0, y:0, axis:null, active:false });
-    startRef.current = null;
-  };
-
-  if (!m) return null;
   const film = { title:m.title, posterPath:m.posterPath || null, year:m.year };
-  const showPhoto = mode === "photo" && m.image;
-  const del = () => { onDelete(m.id); onClose(); };
+  const del = () => onDelete(m.id);
   const q = encodeURIComponent(m.title);
   const openExt = (url) => { try { window.open(url, "_blank", "noopener"); } catch {} };
 
-  const closeProgress = Math.min(1, drag.y / 240);
-  const sheetTransform = drag.axis === "y" ? `translateY(${drag.y}px) scale(${1 - closeProgress*0.05})` : "none";
-  const mediaTransform = drag.axis === "x" ? `translateX(${drag.x}px)` : "none";
-
   return (
-    <div className="reel-detail-enter" style={{ position:"fixed", inset:0, zIndex:70, background:"var(--bg)", overflowY: drag.active ? "hidden" : "auto",
-      opacity: drag.axis === "y" ? 1 - closeProgress*0.5 : 1, transition: drag.active ? "none" : "transform .25s ease, opacity .25s ease", transform: sheetTransform }}>
-      <div className="reel-sheet" style={{ padding:"calc(env(safe-area-inset-top, 0px) + 14px) 16px 44px" }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
-          <button className="reel-tap" onClick={onClose} style={{ background:"none", border:"none", color:"var(--ink)", fontSize:15, cursor:"pointer" }}>‹ もどる</button>
-          <span className="reel-mark" style={{ fontSize:11, color:"var(--ink-dim)" }}>{i+1} / {movies.length}</span>
-        </div>
-        <div style={{ position:"relative", touchAction:"pan-y" }} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
-          <div style={{ transform:mediaTransform, transition: drag.active ? "none" : "transform .22s ease", opacity: drag.axis==="x" ? Math.max(.4, 1 - Math.abs(drag.x)/500) : 1 }}>
-            {showPhoto
-              ? <img src={m.image} alt="" style={{ width:"100%", maxHeight:"62vh", objectFit:"cover", borderRadius:16, display:"block" }} />
-              : <Poster film={film} big style={{ width:"100%", maxWidth:340, margin:"0 auto" }} />}
+    <section className="reel-post" style={{ scrollSnapAlign:"start", scrollSnapStop:"always" }}>
+      <div style={{ position:"relative" }}>
+        <div ref={trackRef} onScroll={onScroll} className="reel-carousel" style={{ display:"flex", overflowX: pages.length>1 ? "auto" : "hidden", scrollSnapType:"x mandatory", WebkitOverflowScrolling:"touch" }}>
+          <div style={{ minWidth:"100%", scrollSnapAlign:"start" }}>
+            <Poster film={film} big style={{ width:"100%", aspectRatio:"2 / 3", borderRadius:0 }} />
           </div>
-          {i>0 && <button className="reel-tap" onClick={()=>setI(i-1)} aria-label="前へ" style={navBtn("left")}>‹</button>}
-          {i<movies.length-1 && <button className="reel-tap" onClick={()=>setI(i+1)} aria-label="次へ" style={navBtn("right")}>›</button>}
+          {m.image && (
+            <div style={{ minWidth:"100%", scrollSnapAlign:"start" }}>
+              <img src={m.image} alt="" style={{ width:"100%", aspectRatio:"2 / 3", objectFit:"cover", display:"block" }} />
+            </div>
+          )}
         </div>
-        {m.image && (
-          <div style={{ display:"flex", gap:6, marginTop:12 }}>
-            {[["poster","ポスター"],["photo","おもいで"]].map(([v,t]) => (
-              <button key={v} className="reel-tap" onClick={()=>setMode(v)} style={{ flex:1, padding:"8px", borderRadius:9, border:"1px solid var(--line)", cursor:"pointer", fontSize:12.5, fontWeight:700, background: mode===v?"var(--surface2)":"transparent", color: mode===v?"var(--ink)":"var(--ink-dim)" }}>{t}</button>
-            ))}
+        {pages.length>1 && (
+          <div style={{ position:"absolute", top:10, left:0, right:0, display:"flex", justifyContent:"center", gap:5 }}>
+            {pages.map((p,idx) => <span key={p} style={{ width: idx===page?16:5, height:5, borderRadius:3, background: idx===page?"var(--amber)":"rgba(255,255,255,.45)", transition:"width .2s ease" }} />)}
           </div>
         )}
-        <h2 style={{ margin:"16px 0 4px", fontSize:22, fontWeight:900, lineHeight:1.3 }}>{m.title}</h2>
+        {pages.length>1 && (
+          <span style={{ position:"absolute", bottom:10, right:10, fontSize:9, color:"#fff", background:"rgba(0,0,0,.45)", padding:"2px 7px", borderRadius:20 }}>
+            {page===0 ? "ポスター" : "おもいで"} ・ スワイプで切替
+          </span>
+        )}
+      </div>
+
+      <div className="reel-narrow" style={{ padding:"16px 16px 40px" }}>
+        <h2 style={{ margin:"0 0 4px", fontSize:22, fontWeight:900, lineHeight:1.3 }}>{m.title}</h2>
         <div className="reel-mark" style={{ fontSize:12.5, color:"var(--ink-dim)" }}>{new Date(m.watchedAt).toLocaleDateString("ja-JP")}{m.year ? ` ・ ${m.year}` : ""}</div>
         {m.genres?.length>0 && (
           <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginTop:10 }}>
@@ -710,11 +688,40 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate }) {
         </div>
         <div style={{ display:"flex", gap:10, marginTop:10 }}>
           <button className="reel-btn" onClick={()=>onShare(m)} style={{ flex:1, padding:"13px", borderRadius:11, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:14, cursor:"pointer" }}>共有する</button>
-          <button className="reel-tap" onClick={()=>setEditing(true)} style={{ padding:"13px 18px", borderRadius:11, border:"1px solid var(--line)", background:"transparent", color:"var(--ink)", fontSize:14, fontWeight:700, cursor:"pointer" }}>編集</button>
+          <button className="reel-tap" onClick={onEdit} style={{ padding:"13px 18px", borderRadius:11, border:"1px solid var(--line)", background:"transparent", color:"var(--ink)", fontSize:14, fontWeight:700, cursor:"pointer" }}>編集</button>
           <button className="reel-tap" onClick={del} style={{ padding:"13px 18px", borderRadius:11, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:14, cursor:"pointer" }}>削除</button>
         </div>
       </div>
-      {editing && <EditSheet movie={m} onClose={()=>setEditing(false)} onSave={onUpdate} />}
+    </section>
+  );
+}
+
+function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate }) {
+  const feedRef = useRef(null);
+  const [editingId, setEditingId] = useState(null);
+
+  useEffect(() => {
+    const el = feedRef.current;
+    const child = el?.children?.[index];
+    if (child) child.scrollIntoView({ block:"start" });
+  }, []); // 初回だけ、タップした記録の位置までジャンプ
+
+  useEffect(() => {
+    const h = (e) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", h); return () => window.removeEventListener("keydown", h);
+  }, [onClose]);
+
+  const del = (id) => { onDelete(id); };
+  const editingMovie = movies.find(x => x.id === editingId) || null;
+
+  return (
+    <div className="reel-detail-enter" style={{ position:"fixed", inset:0, zIndex:70, background:"var(--bg)" }}>
+      <button className="reel-tap" onClick={onClose} aria-label="もどる"
+        style={{ position:"absolute", top:"calc(env(safe-area-inset-top, 0px) + 12px)", left:12, zIndex:5, width:36, height:36, borderRadius:"50%", border:"none", background:"rgba(12,13,22,.55)", color:"#fff", fontSize:19, fontWeight:900, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", backdropFilter:"blur(2px)" }}>‹</button>
+      <div ref={feedRef} className="reel-feed" style={{ height:"100%", overflowY:"auto", scrollSnapType:"y mandatory", WebkitOverflowScrolling:"touch" }}>
+        {movies.map(m => <PostCard key={m.id} m={m} onShare={onShare} onDelete={del} onEdit={()=>setEditingId(m.id)} />)}
+      </div>
+      {editingMovie && <EditSheet movie={editingMovie} onClose={()=>setEditingId(null)} onSave={onUpdate} />}
     </div>
   );
 }
@@ -822,10 +829,10 @@ function LogView({ movies, user, onAdd, onDelete, onShare, onUpdate }) {
       </div>
 
       <div className="reel-photo-grid reel-narrow">
-        {movies.map((m, i) => <PhotoTile key={m.id} m={m} mode={thumb} onClick={()=>setDetail(i)} />)}
+        {movies.map((m, i) => <PhotoTile key={m.id} m={m} mode={thumb} onClick={()=>withViewTransition(()=>setDetail(i))} />)}
       </div>
 
-      {detail !== null && <DetailView movies={movies} index={detail} onClose={()=>setDetail(null)} onShare={onShare} onDelete={onDelete} onUpdate={onUpdate} />}
+      {detail !== null && <DetailView movies={movies} index={detail} onClose={()=>withViewTransition(()=>setDetail(null))} onShare={onShare} onDelete={onDelete} onUpdate={onUpdate} />}
       {recap && <RecapView movies={movies} user={user} onClose={()=>setRecap(false)} />}
     </div>
   );
