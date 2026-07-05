@@ -632,6 +632,12 @@ function EditSheet({ movie, onClose, onSave }) {
   const [date, setDate] = useState(() => { try { return new Date(movie.watchedAt).toISOString().slice(0,10); } catch { return ""; } });
   const [busy, setBusy] = useState(false);
   const fileRef = useRef(null);
+  const sheetRef = useRef(null);
+  const [confirmLeave, setConfirmLeave] = useState(false);
+
+  const origDate = (() => { try { return new Date(movie.watchedAt).toISOString().slice(0,10); } catch { return ""; } })();
+  const isDirty = note !== (movie.note || "") || image !== (movie.image || null) || date !== origDate;
+  const requestClose = () => { if (isDirty) setConfirmLeave(true); else onClose(); };
 
   const pickImage = async (e) => {
     const file = e.target.files?.[0];
@@ -648,9 +654,33 @@ function EditSheet({ movie, onClose, onSave }) {
     onClose();
   };
 
+  // 先頭までスクロールした状態で下に引っ張るとホーム画面へ戻る（変更があれば確認）
+  const startRef = useRef(null);
+  const [pull, setPull] = useState(0);
+  const [pulling, setPulling] = useState(false);
+  const onTouchStart = (e) => {
+    if ((sheetRef.current?.scrollTop || 0) > 2) { startRef.current = null; return; }
+    startRef.current = e.touches[0].clientY;
+  };
+  const onTouchMove = (e) => {
+    if (startRef.current == null) return;
+    const dy = e.touches[0].clientY - startRef.current;
+    if (dy > 0) { setPull(dy); setPulling(true); } else { setPull(0); setPulling(false); }
+  };
+  const onTouchEnd = () => {
+    if (pull > 90) requestClose();
+    setPull(0); setPulling(false); startRef.current = null;
+  };
+  const closeProgress = Math.min(1, pull / 220);
+
   return (
-    <div style={{ position:"fixed", inset:0, zIndex:80, display:"flex", flexDirection:"column", justifyContent:"flex-end", alignItems:"center", background:"rgba(4,5,10,.66)" }} onClick={onClose}>
-      <div className="fade-up reel-sheet" onClick={e=>e.stopPropagation()} style={{ background:"var(--bg2)", borderTop:"1px solid var(--line)", borderRadius:"22px 22px 0 0", maxHeight:"92vh", overflowY:"auto", touchAction:"pan-y", overscrollBehaviorX:"none", padding:"8px 20px 28px" }}>
+    <div style={{ position:"fixed", inset:0, zIndex:80, display:"flex", flexDirection:"column", justifyContent:"flex-end", alignItems:"center", background:"rgba(4,5,10,.66)" }} onClick={requestClose}>
+      <div ref={sheetRef} className="fade-up reel-sheet" onClick={e=>e.stopPropagation()}
+        onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}
+        style={{ background:"var(--bg2)", borderTop:"1px solid var(--line)", borderRadius:"22px 22px 0 0", maxHeight:"92vh", overflowY:"auto", touchAction:"pan-y", overscrollBehaviorX:"none",
+          padding:"8px 20px 28px",
+          transform: pull>0 ? `translateY(${pull}px)` : "none", opacity: pull>0 ? 1-closeProgress*0.3 : 1,
+          transition: pulling ? "none" : "transform .2s ease, opacity .2s ease" }}>
         <div style={{ width:42, height:4, borderRadius:4, background:"var(--line)", margin:"10px auto 18px" }} />
         <div className="reel-mark" style={{ letterSpacing:".18em", fontSize:12, color:"var(--amber)", marginBottom:6 }}>EDIT ／ 記録を編集</div>
         <div style={{ fontWeight:900, fontSize:17, marginBottom:16 }}>{movie.title}</div>
@@ -683,6 +713,17 @@ function EditSheet({ movie, onClose, onSave }) {
           {busy ? "保存中…" : "保存する"}
         </button>
       </div>
+
+      {confirmLeave && (
+        <div style={{ position:"fixed", inset:0, zIndex:90, display:"flex", alignItems:"center", justifyContent:"center", background:"rgba(4,5,10,.7)", padding:24 }} onClick={e=>e.stopPropagation()}>
+          <div className="fade-up" style={{ width:"100%", maxWidth:340, background:"var(--bg2)", border:"1px solid var(--line)", borderRadius:16, padding:"22px 20px" }}>
+            <div style={{ fontWeight:700, fontSize:16, marginBottom:8 }}>編集内容が保存されていません</div>
+            <p style={{ color:"var(--ink-dim)", fontSize:13.5, lineHeight:1.7, margin:"0 0 20px" }}>ホーム画面に戻ると、変更した内容は失われます。</p>
+            <button className="reel-btn" onClick={()=>setConfirmLeave(false)} style={{ width:"100%", padding:"12px", borderRadius:10, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:14, cursor:"pointer", marginBottom:8 }}>編集を続ける</button>
+            <button className="reel-tap" onClick={()=>{ setConfirmLeave(false); onClose(); }} style={{ width:"100%", padding:"12px", borderRadius:10, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:14, cursor:"pointer" }}>ホーム画面に戻る</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -769,39 +810,55 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate }) {
   const [pull, setPull] = useState(0);
   const [pulling, setPulling] = useState(false);
   const [closing, setClosing] = useState(false);
+  const [bouncing, setBouncing] = useState(false);
   const requestClose = () => {
     setPulling(false);
     setClosing(true);
-    setTimeout(onClose, 240); // アニメーションが最後まで終わってから実際に閉じる（切れ目を作らない）
+    setTimeout(onClose, 260); // アニメーションが最後まで終わってから実際に閉じる（切れ目を作らない）
   };
   const onTouchStart = (e) => {
     if (closing || (feedRef.current?.scrollTop || 0) > 2) { startRef.current = null; return; }
     startRef.current = e.touches[0].clientY;
+    setBouncing(false);
   };
   const onTouchMove = (e) => {
     if (startRef.current == null) return;
-    const dy = e.touches[0].clientY - startRef.current;
-    if (dy > 0) { setPull(dy); setPulling(true); } else { setPull(0); setPulling(false); }
+    const raw = e.touches[0].clientY - startRef.current;
+    if (raw <= 0) { setPull(0); setPulling(false); return; }
+    // ゴムのような伸び：最初は指にほぼ1:1、伸びるほど重くなる（引っ張り抵抗）
+    const eased = raw < 180 ? raw : 180 + (raw - 180) * 0.28;
+    setPull(eased); setPulling(true);
   };
   const onTouchEnd = () => {
-    if (pull > 100) { requestClose(); return; }
-    setPull(0); setPulling(false); startRef.current = null;
+    if (pull > 92) { requestClose(); return; }
+    setPulling(false); setBouncing(true); setPull(0);
+    startRef.current = null;
   };
 
   const del = (id) => { onDelete(id); };
   const editingMovie = movies.find(x => x.id === editingId) || null;
-  const closeProgress = Math.min(1, pull / 260);
+  const closeProgress = Math.min(1, pull / 220);
+  const cardRadius = closing ? 30 : Math.round(closeProgress * 26);
+  const cardScale = closing ? 0.9 : 1 - closeProgress * 0.075;
+  const cardShadow = pull>4 || closing ? `0 ${18+closeProgress*20}px ${50+closeProgress*40}px rgba(0,0,0,${0.25+closeProgress*0.25})` : "none";
 
   return (
-    <div className="reel-detail-enter" style={{ position:"fixed", inset:0, zIndex:70, background:"var(--bg)",
-      transform: closing ? "translateY(100%) scale(.92)" : pull>0 ? `translateY(${pull}px) scale(${1-closeProgress*0.04})` : "none",
-      opacity: closing ? 0 : pull>0 ? 1-closeProgress*0.4 : 1,
-      transition: closing ? "transform .24s cubic-bezier(.3,.7,.4,1), opacity .24s ease" : pulling ? "none" : "transform .22s ease, opacity .22s ease" }}>
-      <button className="reel-tap" onClick={requestClose} aria-label="もどる"
-        style={{ position:"absolute", top:"calc(env(safe-area-inset-top, 0px) + 12px)", left:12, zIndex:5, width:36, height:36, borderRadius:"50%", border:"none", background:"rgba(12,13,22,.55)", color:"#fff", fontSize:19, fontWeight:900, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", backdropFilter:"blur(2px)" }}>‹</button>
-      <div ref={feedRef} className="reel-feed" style={{ height:"100%", overflowY:"auto", scrollSnapType:"y mandatory", WebkitOverflowScrolling:"touch", touchAction:"pan-y" }}
-        onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
-        {movies.map(m => <PostCard key={m.id} m={m} onShare={onShare} onDelete={del} onEdit={()=>setEditingId(m.id)} />)}
+    <div style={{ position:"fixed", inset:0, zIndex:70, background:"var(--bg)" }}>
+      <div className="reel-detail-enter" style={{ position:"absolute", inset:0, overflow:"hidden", background:"var(--bg)",
+        borderRadius: cardRadius, boxShadow: cardShadow,
+        transform: closing ? "translateY(100%) scale(.9)" : `translateY(${pull}px) scale(${cardScale})`,
+        transformOrigin:"50% 0%",
+        opacity: closing ? 0 : 1,
+        transition: closing ? "transform .26s cubic-bezier(.32,.72,.35,1), opacity .26s ease, border-radius .26s ease"
+          : bouncing ? "transform .38s cubic-bezier(.34,1.56,.64,1), border-radius .38s ease, box-shadow .38s ease"
+          : pulling ? "none" : "transform .22s ease, border-radius .22s ease, box-shadow .22s ease" }}
+        onTransitionEnd={()=>setBouncing(false)}>
+        <button className="reel-tap" onClick={requestClose} aria-label="もどる"
+          style={{ position:"absolute", top:"calc(env(safe-area-inset-top, 0px) + 12px)", left:12, zIndex:5, width:36, height:36, borderRadius:"50%", border:"none", background:"rgba(12,13,22,.55)", color:"#fff", fontSize:19, fontWeight:900, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", backdropFilter:"blur(2px)" }}>‹</button>
+        <div ref={feedRef} className="reel-feed" style={{ height:"100%", overflowY:"auto", scrollSnapType:"y mandatory", WebkitOverflowScrolling:"touch", touchAction:"pan-y" }}
+          onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
+          {movies.map(m => <PostCard key={m.id} m={m} onShare={onShare} onDelete={del} onEdit={()=>setEditingId(m.id)} />)}
+        </div>
       </div>
       {editingMovie && <EditSheet movie={editingMovie} onClose={()=>setEditingId(null)} onSave={onUpdate} />}
     </div>
