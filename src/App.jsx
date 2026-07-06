@@ -147,7 +147,38 @@ function Poster({ film, big, style }) {
   );
 }
 
-/* ── 端末保存（localStorage） ── */
+/* ── フィルムのコマ（16:9）：ぼかし背景＋中央ポスター、または おもいで写真を全面 ── */
+function FilmFrame({ m, showPhoto, code, style, onClick }) {
+  const usePhoto = showPhoto && m.image;
+  const posterUrl = m.posterPath ? TMDB_IMG + m.posterPath : null;
+  const c = posterColors(m.title);
+  return (
+    <div className="film-frame" style={style} onClick={onClick}>
+      {usePhoto ? (
+        <img src={m.image} alt="" draggable={false} style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover" }} />
+      ) : posterUrl ? (
+        <>
+          <div className="blur" style={{ backgroundImage:`url(${posterUrl})` }} />
+          <img className="core" src={posterUrl} alt={m.title} loading="lazy" draggable={false} />
+        </>
+      ) : (
+        <>
+          <div className="blur" style={{ background:`linear-gradient(120deg, ${c.a}, ${c.b})` }} />
+          <div className="core" style={{ background:`linear-gradient(160deg, ${c.a}, ${c.b})`, display:"flex", alignItems:"flex-end", padding:6 }}>
+            <span style={{ fontWeight:900, fontSize:11, color:"#fff", lineHeight:1.2, textShadow:"0 1px 6px rgba(0,0,0,.6)" }}>{m.title}</span>
+          </div>
+        </>
+      )}
+      {m.image && !usePhoto && <span className="mem">MEM</span>}
+      {usePhoto && <span className="mem">MEM</span>}
+      {code && <span className="no">{code}</span>}
+    </div>
+  );
+}
+
+/* フィルムのコマ番号（12A形式）。indexから通し番号を作る */
+function frameCode(i) { return String(i + 1).padStart(2, "0") + "A"; }
+
 const store = {
   get(key) { try { const v = localStorage.getItem(key); return v == null ? null : JSON.parse(v); } catch { return null; } },
   set(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); return true; } catch { return false; } },
@@ -175,7 +206,7 @@ function resizeImage(file, maxDim = 1000, quality = 0.72) {
 }
 
 const STYLES = `
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap');
 * { box-sizing: border-box; }
 body { margin:0; }
 img { -webkit-user-drag:none; user-select:none; }
@@ -197,6 +228,16 @@ img { -webkit-user-drag:none; user-select:none; }
 .reel-post { min-height:100vh; min-height:100dvh; }
 .reel-carousel { scrollbar-width:none; }
 .reel-carousel::-webkit-scrollbar { display:none; }
+/* ── フィルム・ルック ── */
+.film-body { display:flex; background:#0e0c07; }
+.film-spro { width:12px; flex-shrink:0; background-color:#17130b; background-image:repeating-linear-gradient(180deg, transparent 0 10px, #0a0a09 10px 20px); }
+.film-track { flex:1; min-width:0; display:flex; flex-direction:column; gap:4px; padding:5px 3px; }
+.film-frame { position:relative; overflow:hidden; aspect-ratio:16/9; background:#101010; }
+.film-frame .blur { position:absolute; inset:-16px; filter:blur(11px) brightness(.55) saturate(.9); background-size:cover; background-position:center; }
+.film-frame .core { position:absolute; top:0; bottom:0; left:50%; transform:translateX(-50%); aspect-ratio:2/3; height:100%; box-shadow:0 0 0 1px rgba(0,0,0,.55); object-fit:cover; }
+.film-frame .no { position:absolute; bottom:3px; right:5px; font-family:'Space Mono',ui-monospace,monospace; font-size:8px; color:#a9863c; letter-spacing:.04em; }
+.film-frame .mem { position:absolute; bottom:3px; left:5px; font-family:'Space Mono',ui-monospace,monospace; font-size:8px; color:#a9863c; letter-spacing:.06em; }
+.mono { font-family:'Space Mono',ui-monospace,monospace; }
 @media (prefers-reduced-motion: no-preference){ .fade-up{ animation:fadeUp .42s cubic-bezier(.2,.7,.2,1) both; } .reel-detail-enter{ animation:detailIn .3s cubic-bezier(.2,.8,.2,1) both; } }
 @keyframes fadeUp{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;} }
 @keyframes detailIn{ from{opacity:0; transform:scale(.96);} to{opacity:1; transform:none;} }
@@ -614,18 +655,6 @@ function withViewTransition(fn) {
 
 /* ─────────── 記録一覧 ─────────── */
 
-function PhotoTile({ m, mode, onClick }) {
-  const showPhoto = mode === "photo" && m.image;
-  return (
-    <button className="reel-tap" onClick={onClick} style={{ padding:0, border:"none", cursor:"pointer", display:"block", position:"relative", background:"var(--surface2)", overflow:"hidden" }}>
-      {showPhoto
-        ? <img src={m.image} alt="" loading="lazy" style={{ width:"100%", aspectRatio:"2 / 3", objectFit:"cover", display:"block" }} />
-        : <Poster film={{ title:m.title, posterPath:m.posterPath || null, year:m.year }} style={{ width:"100%", borderRadius:0 }} />}
-      {m.image && <span style={{ position:"absolute", top:5, right:5, fontSize:9, background:"rgba(0,0,0,.5)", padding:"2px 5px", borderRadius:10 }}>📸</span>}
-    </button>
-  );
-}
-
 function EditSheet({ movie, onClose, onSave }) {
   const [note, setNote] = useState(movie.note || "");
   const [image, setImage] = useState(movie.image || null);
@@ -866,12 +895,14 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate }) {
 }
 
 const RECAP_MONTHS = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
-function RecapView({ movies, user, onClose }) {
+function RecapView({ movies, user, onClose, year, month }) {
   const now = new Date();
-  const list = movies.filter(m => { const d = new Date(m.watchedAt); return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear(); });
+  const ty = year ?? now.getFullYear();
+  const tm = month ?? now.getMonth();
+  const list = movies.filter(m => { const d = new Date(m.watchedAt); return d.getMonth()===tm && d.getFullYear()===ty; });
   const tiles = list.slice(0, 5);
   const extra = list.length - tiles.length;
-  const share = async () => { try { if (navigator.share) await navigator.share({ title:"シネたび", text:`${now.getMonth()+1}月は ${list.length}本 観ました🎬 #シネたび` }); } catch {} };
+  const share = async () => { try { if (navigator.share) await navigator.share({ title:"シネたび", text:`${tm+1}月は ${list.length}本 観ました🎬 #シネたび` }); } catch {} };
 
   const startRef = useRef(null);
   const [dragY, setDragY] = useState(0);
@@ -896,8 +927,8 @@ function RecapView({ movies, user, onClose }) {
         </div>
         <div style={{ border:"1px solid var(--line)", borderRadius:18, overflow:"hidden", background:"linear-gradient(180deg, rgba(232,176,75,.12), transparent 42%), var(--surface)" }}>
           <div style={{ padding:"18px 18px 10px" }}>
-            <div className="reel-mark" style={{ letterSpacing:".2em", fontSize:11, color:"var(--amber)" }}>{RECAP_MONTHS[now.getMonth()]} {now.getFullYear()}</div>
-            <div style={{ fontWeight:900, fontSize:22 }}>{now.getMonth()+1}月は {list.length}本 観ました🎬</div>
+            <div className="reel-mark" style={{ letterSpacing:".2em", fontSize:11, color:"var(--amber)" }}>{RECAP_MONTHS[tm]} {ty}</div>
+            <div style={{ fontWeight:900, fontSize:22 }}>{tm+1}月は {list.length}本 観ました🎬</div>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"2fr 1fr 1fr", gridAutoRows:"92px", gap:4, padding:"10px 14px" }}>
             {tiles.map((m, idx) => (
@@ -926,7 +957,7 @@ function RecapView({ movies, user, onClose }) {
 function LogView({ movies, user, onAdd, onDelete, onShare, onUpdate }) {
   const [thumb, setThumb] = useState("poster"); // "poster" | "photo"
   const [detail, setDetail] = useState(null);    // index or null
-  const [recap, setRecap] = useState(false);
+  const [recap, setRecap] = useState(null);       // {year, month} or null
   const hasAnyPhoto = movies.some(m => m.image);
 
   if (movies.length === 0) {
@@ -941,38 +972,64 @@ function LogView({ movies, user, onAdd, onDelete, onShare, onUpdate }) {
 
   const now = new Date();
   const yearCount = movies.filter(m => new Date(m.watchedAt).getFullYear() === now.getFullYear()).length;
-  const monthCount = movies.filter(m => { const d = new Date(m.watchedAt); return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear(); }).length;
+
+  // 各記録に「コマ番号（01A…）」を月ごとに割り当て（同月内で古い順に採番）
+  const mkey = (d) => `${d.getFullYear()}-${d.getMonth()}`;
+  const groups = {};
+  movies.forEach((m, i) => { (groups[mkey(new Date(m.watchedAt))] ||= []).push(i); });
+  const codeOf = {};
+  const countOf = {};
+  Object.values(groups).forEach(idxs => {
+    const sorted = [...idxs].sort((a,b)=> new Date(movies[a].watchedAt) - new Date(movies[b].watchedAt));
+    sorted.forEach((idx,n)=> { codeOf[idx] = frameCode(n); });
+    idxs.forEach(idx => { countOf[idx] = idxs.length; });
+  });
+
+  // 表示リスト（新しい順のまま）を走査し、月が変わる位置に「継ぎ目（英語月名）」を差し込む
+  const rows = [];
+  let prevKey = null;
+  movies.forEach((m, i) => {
+    const d = new Date(m.watchedAt);
+    const k = mkey(d);
+    if (k !== prevKey) {
+      rows.push({ type:"seam", key:"seam-"+k, year:d.getFullYear(), month:d.getMonth(), count:countOf[i] });
+      prevKey = k;
+    }
+    rows.push({ type:"frame", key:m.id, m, code:codeOf[i], index:i });
+  });
 
   return (
-    <div style={{ padding:"10px 0 110px" }}>
-      <div className="reel-narrow" style={{ padding:"0 12px" }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
-          <span className="reel-mark" style={{ fontSize:12.5, color:"var(--ink-dim)", letterSpacing:".06em" }}>{now.getFullYear()}年 {yearCount}本</span>
-          {hasAnyPhoto && (
-            <div style={{ display:"flex", border:"1px solid var(--line)", borderRadius:9, overflow:"hidden" }}>
-              {[["poster","ポスター"],["photo","おもいで"]].map(([v,t]) => (
-                <button key={v} className="reel-tap" onClick={()=>setThumb(v)} style={{ padding:"6px 13px", border:"none", cursor:"pointer", fontSize:12, fontWeight:700, background: thumb===v?"var(--amber)":"transparent", color: thumb===v?"#1a1305":"var(--ink-dim)" }}>{t}</button>
-              ))}
-            </div>
-          )}
-        </div>
-        {monthCount>0 && (
-          <button className="reel-tap" onClick={()=>setRecap(true)} style={{ width:"100%", textAlign:"left", cursor:"pointer", border:"1px solid var(--amber-dim)", background:"linear-gradient(180deg, rgba(232,176,75,.10), transparent)", borderRadius:14, padding:"12px 15px", marginBottom:10, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-            <span>
-              <span className="reel-mark" style={{ fontSize:10, letterSpacing:".2em", color:"var(--amber)" }}>THIS MONTH</span>
-              <span style={{ display:"block", fontWeight:900, fontSize:15, marginTop:3 }}>{now.getMonth()+1}月は {monthCount}本 観ました🎬</span>
-            </span>
-            <span style={{ color:"var(--amber)", fontWeight:900, fontSize:18 }}>›</span>
-          </button>
+    <div style={{ padding:"0 0 110px" }}>
+      <div className="reel-narrow" style={{ padding:"12px 14px 8px", display:"flex", justifyContent:"space-between", alignItems:"center", borderBottom:"1px solid #17130b" }}>
+        <span className="mono" style={{ fontSize:11, color:"var(--ink-dim)", letterSpacing:".06em" }}>{now.getFullYear()} — {yearCount} FILMS</span>
+        {hasAnyPhoto && (
+          <div style={{ display:"flex", border:"1px solid var(--line)", borderRadius:8, overflow:"hidden" }}>
+            {[["poster","POSTER"],["photo","MEM"]].map(([v,t]) => (
+              <button key={v} className="reel-tap mono" onClick={()=>setThumb(v)} style={{ padding:"5px 11px", border:"none", cursor:"pointer", fontSize:10.5, fontWeight:700, letterSpacing:".08em", background: thumb===v?"var(--amber)":"transparent", color: thumb===v?"#1a1305":"var(--ink-dim)" }}>{t}</button>
+            ))}
+          </div>
         )}
       </div>
 
-      <div className="reel-photo-grid reel-narrow">
-        {movies.map((m, i) => <PhotoTile key={m.id} m={m} mode={thumb} onClick={()=>withViewTransition(()=>setDetail(i))} />)}
+      <div className="reel-narrow film-body">
+        <div className="film-spro" />
+        <div className="film-track">
+          {rows.map(r => r.type === "seam" ? (
+            <button key={r.key} className="reel-tap film-frame" onClick={()=>setRecap({ year:r.year, month:r.month })}
+              style={{ background:"#0a0a09", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", border:"none" }}>
+              <span className="mono" style={{ fontWeight:700, fontSize:26, letterSpacing:".28em", textIndent:".28em", color:"var(--amber)" }}>{RECAP_MONTHS[r.month]}</span>
+              <span className="mem">{r.count} EXP</span>
+            </button>
+          ) : (
+            <FilmFrame key={r.key} m={r.m} showPhoto={thumb==="photo"} code={r.code} onClick={()=>withViewTransition(()=>setDetail(r.index))} style={{ cursor:"pointer" }} />
+          ))}
+        </div>
+        <div className="film-spro" />
       </div>
+      <div className="reel-narrow mono" style={{ textAlign:"center", color:"#6f6a58", fontSize:10, padding:"10px 0 0", letterSpacing:".1em" }}>SLIDE ▼</div>
 
       {detail !== null && <DetailView movies={movies} index={detail} onClose={()=>withViewTransition(()=>setDetail(null))} onShare={onShare} onDelete={onDelete} onUpdate={onUpdate} />}
-      {recap && <RecapView movies={movies} user={user} onClose={()=>setRecap(false)} />}
+      {recap && <RecapView movies={movies} user={user} year={recap.year} month={recap.month} onClose={()=>setRecap(null)} />}
     </div>
   );
 }
