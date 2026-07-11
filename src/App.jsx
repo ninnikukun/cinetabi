@@ -757,7 +757,7 @@ function EditSheet({ movie, onClose, onSave }) {
   );
 }
 
-function PostCard({ m, onShare, onDelete, onEdit }) {
+function PostCard({ m, onShare, onDelete, onEdit, readOnly }) {
   const trackRef = useRef(null);
   const [page, setPage] = useState(0);
   const pages = m.image ? ["poster", "photo"] : ["poster"];
@@ -809,17 +809,19 @@ function PostCard({ m, onShare, onDelete, onEdit }) {
           <button className="reel-tap" onClick={()=>openExt(`https://eiga.com/search/${q}/`)} style={{ flex:1, padding:"11px", borderRadius:10, border:"1px solid var(--line)", background:"var(--surface)", color:"var(--ink-dim)", fontSize:12.5, fontWeight:700, cursor:"pointer" }}>映画.comで探す ↗</button>
           <button className="reel-tap" onClick={()=>openExt(`https://filmarks.com/search/movies?q=${q}`)} style={{ flex:1, padding:"11px", borderRadius:10, border:"1px solid var(--line)", background:"var(--surface)", color:"var(--ink-dim)", fontSize:12.5, fontWeight:700, cursor:"pointer" }}>Filmarksで探す ↗</button>
         </div>
-        <div style={{ display:"flex", gap:10, marginTop:10 }}>
-          <button className="reel-btn" onClick={()=>onShare(m)} style={{ flex:1, padding:"13px", borderRadius:11, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:14, cursor:"pointer" }}>共有する</button>
-          <button className="reel-tap" onClick={onEdit} style={{ padding:"13px 18px", borderRadius:11, border:"1px solid var(--line)", background:"transparent", color:"var(--ink)", fontSize:14, fontWeight:700, cursor:"pointer" }}>編集</button>
-          <button className="reel-tap" onClick={del} style={{ padding:"13px 18px", borderRadius:11, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:14, cursor:"pointer" }}>削除</button>
-        </div>
+        {!readOnly && (
+          <div style={{ display:"flex", gap:10, marginTop:10 }}>
+            <button className="reel-btn" onClick={()=>onShare(m)} style={{ flex:1, padding:"13px", borderRadius:11, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:14, cursor:"pointer" }}>共有する</button>
+            <button className="reel-tap" onClick={onEdit} style={{ padding:"13px 18px", borderRadius:11, border:"1px solid var(--line)", background:"transparent", color:"var(--ink)", fontSize:14, fontWeight:700, cursor:"pointer" }}>編集</button>
+            <button className="reel-tap" onClick={del} style={{ padding:"13px 18px", borderRadius:11, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:14, cursor:"pointer" }}>削除</button>
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
-function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate }) {
+function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate, readOnly }) {
   const feedRef = useRef(null);
   const [editingId, setEditingId] = useState(null);
 
@@ -886,7 +888,7 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate }) {
           style={{ position:"absolute", top:"calc(env(safe-area-inset-top, 0px) + 12px)", left:12, zIndex:5, width:36, height:36, borderRadius:"50%", border:"none", background:"rgba(12,13,22,.55)", color:"#fff", fontSize:19, fontWeight:900, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", backdropFilter:"blur(2px)" }}>‹</button>
         <div ref={feedRef} className="reel-feed" style={{ height:"100%", overflowY:"auto", scrollSnapType:"y mandatory", WebkitOverflowScrolling:"touch", touchAction:"pan-y" }}
           onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
-          {movies.map(m => <PostCard key={m.id} m={m} onShare={onShare} onDelete={del} onEdit={()=>setEditingId(m.id)} />)}
+          {movies.map(m => <PostCard key={m.id} m={m} readOnly={readOnly} onShare={onShare} onDelete={del} onEdit={()=>setEditingId(m.id)} />)}
         </div>
       </div>
       {editingMovie && <EditSheet movie={editingMovie} onClose={()=>setEditingId(null)} onSave={onUpdate} />}
@@ -1116,7 +1118,7 @@ function FindView() {
 }
 
 /* ─────────── メインの画面（記録/でかける）。データ源に依存しない共通シェル ─────────── */
-function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onUpdateMovie, onLogout, isAnonymous }) {
+function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onUpdateMovie, onLogout, isAnonymous, followInfo, followLink, onFollowLinkDone }) {
   const [view, setView] = useState("log");
   const [adding, setAdding] = useState(false);
   const [sharing, setSharing] = useState(null);
@@ -1139,7 +1141,7 @@ function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onUpdateMovie
           )}
         </div>
         <div style={{ display:"flex", gap:24, marginTop:10 }}>
-          {[["log","記録"],["find","でかける"]].map(([v,t]) => (
+          {[["log","記録"],["find","でかける"], ...(followInfo ? [["follow","フォロー"]] : [])].map(([v,t]) => (
             <button key={v} className="reel-tap" onClick={()=>setView(v)} style={{ background:"none", border:"none", cursor:"pointer", padding:"4px 0", fontSize:15, fontWeight:700, color: view===v?"var(--ink)":"var(--ink-dim)", borderBottom: view===v?"2px solid var(--amber)":"2px solid transparent" }}>{t}</button>
           ))}
         </div>
@@ -1156,7 +1158,9 @@ function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onUpdateMovie
 
       {loading ? <p style={{ textAlign:"center", color:"var(--ink-dim)", padding:"60px" }}>読み込み中…</p>
         : view === "log" ? <LogView movies={movies} user={user} onAdd={()=>setAdding(true)} onDelete={deleteMovie} onShare={setSharing} onUpdate={onUpdateMovie} />
-        : <FindView />}
+        : view === "find" ? <FindView />
+        : isAnonymous ? <FollowLockedNotice onConnect={()=>setConnecting(true)} />
+        : <FollowView me={followInfo} />}
 
       {view === "log" && !loading && movies.length > 0 && (
         <button className="reel-btn reel-fab" onClick={()=>setAdding(true)} aria-label="記録を追加"
@@ -1166,6 +1170,11 @@ function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onUpdateMovie
       {adding && <AddSheet onClose={()=>setAdding(false)} onSave={onAddMovie} existingIds={movies.map(m=>m.filmId).filter(Boolean)} />}
       {sharing && <ShareSheet movie={sharing} user={user} onClose={()=>setSharing(null)} />}
       {connecting && <ConnectSheet onClose={()=>setConnecting(false)} />}
+      {followLink && followInfo && (
+        <LinkConfirmSheet payload={followLink} isAnonymous={isAnonymous}
+          onClose={()=>onFollowLinkDone(true)}
+          onConnect={()=>{ onFollowLinkDone(false); setConnecting(true); }} />
+      )}
     </div>
   );
 }
@@ -1326,6 +1335,352 @@ function ConnectSheet({ onClose }) {
 }
 
 
+/* ─────────── フォロー機能（クラウドモード専用） ───────────
+   ・全員が鍵垢：記録はデフォルト非公開。承認された相手だけが読める
+   ・申請は「相手のID＋名前の両方一致」が必要（RPCでサーバー側チェック）
+   ・拒否＝行の削除（相手に通知は出ず、申請中の表示が消えるだけ）      */
+
+// RPCの結果コード → 表示文言
+const FOLLOW_ERR = {
+  not_found: "IDと名前の組み合わせが見つかりませんでした。相手に教えてもらったとおり、正確に入力してください。",
+  self: "自分自身はフォローできません。",
+  already_requested: "すでに申請ずみです。相手の承認をお待ちください。",
+  already_following: "すでにフォローしています。",
+  not_signed_in: "ログイン状態を確認できませんでした。アプリを開き直してもう一度お試しください。",
+  anonymous: "フォロー機能は、アカウントをつないでから使えます。",
+};
+
+// フォロー申請（ID＋名前の一致チェックはサーバー側のRPCが強制する）
+async function requestFollow(publicId, name) {
+  try {
+    const { data, error } = await supabase.rpc("request_follow", { target_public_id: publicId.trim(), target_name: name.trim() });
+    if (error || !data) return { ok:false, code:"rpc_error" };
+    return data;
+  } catch { return { ok:false, code:"rpc_error" }; }
+}
+
+// 招待リンク（/#f=…）。開いた相手には申請の確認画面が出る
+function inviteLink(me) {
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  try { return origin + "/#f=" + btoa(unescape(encodeURIComponent(JSON.stringify({ i: me.publicId, n: me.name })))); }
+  catch { return origin; }
+}
+
+/* ── フォローを申請（ID＋名前の入力フォーム） ── */
+function FollowRequestSheet({ onClose }) {
+  const [pid, setPid] = useState("");
+  const [name, setName] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState(false);
+  const [err, setErr] = useState("");
+  const canSend = pid.trim() !== "" && name.trim() !== "" && !busy;
+
+  const send = async () => {
+    if (!canSend) return;
+    setBusy(true); setErr("");
+    const r = await requestFollow(pid, name);
+    setBusy(false);
+    if (r.ok) setDone(true);
+    else setErr(FOLLOW_ERR[r.code] || "送信に失敗しました。時間をおいてもう一度お試しください。");
+  };
+
+  return (
+    <div style={{ position:"fixed", inset:0, zIndex:60, display:"flex", flexDirection:"column", justifyContent:"flex-end", alignItems:"center", background:"rgba(4,5,10,.66)" }} onClick={onClose}>
+      <div className="fade-up reel-sheet" onClick={e=>e.stopPropagation()} style={{ background:"var(--bg2)", borderTop:"1px solid var(--line)", borderRadius:"22px 22px 0 0", maxHeight:"92vh", overflowY:"auto", touchAction:"pan-y", overscrollBehaviorX:"none", padding:"8px 20px 28px" }}>
+        <div style={{ width:42, height:4, borderRadius:4, background:"var(--line)", margin:"10px auto 18px" }} />
+        <div className="reel-mark" style={{ letterSpacing:".18em", fontSize:12, color:"var(--amber)", marginBottom:14 }}>FOLLOW ／ フォローを申請</div>
+        {done ? (
+          <>
+            <p style={{ margin:"0 0 20px", color:"var(--ink)", fontSize:14.5, lineHeight:1.8 }}>申請を送りました。<br/>相手が承認すると、その人の記録を見られるようになります。</p>
+            <button className="reel-btn" onClick={onClose} style={{ width:"100%", padding:"15px", borderRadius:12, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:15, cursor:"pointer" }}>閉じる</button>
+          </>
+        ) : (
+          <>
+            <p style={{ margin:"0 0 18px", color:"var(--ink-dim)", fontSize:13, lineHeight:1.8 }}>このアプリにユーザー検索はありません。相手から教えてもらった「ID」と「名前」の<b style={{ color:"var(--ink)" }}>両方が一致した時だけ</b>、申請が届きます。</p>
+            <label style={lbl}>相手のID</label>
+            <input value={pid} onChange={e=>setPid(e.target.value)} placeholder="usr_xxxxxxxxxxxx" autoCapitalize="off" autoCorrect="off" spellCheck={false}
+              style={{ ...inp, fontFamily:"'Space Mono',ui-monospace,monospace" }} />
+            <label style={lbl}>相手の名前（表示名）</label>
+            <input value={name} onChange={e=>setName(e.target.value)} placeholder="例：たろう" maxLength={24} style={inp} />
+            {err && <p style={{ margin:"0 0 14px", color:"var(--rose)", fontSize:13, lineHeight:1.7 }}>{err}</p>}
+            <button className="reel-btn" disabled={!canSend} onClick={send}
+              style={{ width:"100%", padding:"15px", borderRadius:12, border:"none", cursor:"pointer", fontSize:15, fontWeight:700,
+                background: canSend?"var(--amber)":"var(--surface2)", color: canSend?"#1a1305":"var(--ink-dim)" }}>
+              {busy ? "送信中…" : "申請を送る"}
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ── 匿名ユーザー向け：フォロー機能はアカウント連携後に使える ── */
+function FollowLockedNotice({ onConnect }) {
+  return (
+    <div className="reel-narrow" style={{ padding:"4px 16px 110px" }}>
+      <div style={{ textAlign:"center", background:"var(--surface)", border:"1px solid var(--line)", borderRadius:16, padding:"44px 24px" }}>
+        <div style={{ fontSize:30, marginBottom:12 }}>🔗</div>
+        <div style={{ fontWeight:700, fontSize:16, marginBottom:10 }}>フォロー機能は「つないだ後」に使えます</div>
+        <p style={{ margin:"0 0 22px", color:"var(--ink-dim)", fontSize:13.5, lineHeight:1.8 }}>いまは匿名（この端末だけ）の状態です。<br/>メールまたはGoogleでアカウントをつなぐと、<br/>フォローの申請・承認ができるようになります。</p>
+        <button className="reel-btn" onClick={onConnect} style={{ padding:"13px 28px", borderRadius:12, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:14, cursor:"pointer" }}>アカウントをつなぐ</button>
+      </div>
+    </div>
+  );
+}
+
+/* ── 招待リンクを開いた時の確認画面 ── */
+function LinkConfirmSheet({ payload, onClose, isAnonymous, onConnect }) {
+  const [phase, setPhase] = useState("confirm"); // confirm | busy | done | error
+  const [err, setErr] = useState("");
+  const send = async () => {
+    setPhase("busy");
+    const r = await requestFollow(payload.i, payload.n);
+    if (r.ok) setPhase("done");
+    else { setErr(FOLLOW_ERR[r.code] || "送信に失敗しました。時間をおいてもう一度お試しください。"); setPhase("error"); }
+  };
+  return (
+    <div style={{ position:"fixed", inset:0, zIndex:90, display:"flex", alignItems:"center", justifyContent:"center", background:"rgba(4,5,10,.7)", padding:24 }} onClick={phase==="busy"?undefined:onClose}>
+      <div className="fade-up" onClick={e=>e.stopPropagation()} style={{ width:"100%", maxWidth:360, background:"var(--bg2)", border:"1px solid var(--line)", borderRadius:16, padding:"22px 20px" }}>
+        <div className="reel-mark" style={{ letterSpacing:".18em", fontSize:11, color:"var(--amber)", marginBottom:12 }}>FOLLOW REQUEST ／ リンクから申請</div>
+        {isAnonymous ? (
+          <>
+            <div style={{ fontWeight:700, fontSize:16, marginBottom:6 }}>「{payload.n}」さんへのフォロー申請</div>
+            <p style={{ margin:"0 0 20px", color:"var(--ink-dim)", fontSize:13, lineHeight:1.8 }}>フォロー機能は、アカウントをつないでから使えます。<br/>つないだ後に、もう一度この確認が表示されます。</p>
+            <button className="reel-btn" onClick={onConnect} style={{ width:"100%", padding:"13px", borderRadius:10, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:14, cursor:"pointer", marginBottom:8 }}>アカウントをつなぐ</button>
+            <button className="reel-tap" onClick={onClose} style={{ width:"100%", padding:"13px", borderRadius:10, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:14, cursor:"pointer" }}>あとで</button>
+          </>
+        ) : phase === "done" ? (
+          <>
+            <p style={{ margin:"0 0 20px", fontSize:14.5, lineHeight:1.8 }}>「{payload.n}」さんに申請を送りました。<br/>承認されると記録を見られるようになります。</p>
+            <button className="reel-btn" onClick={onClose} style={{ width:"100%", padding:"13px", borderRadius:10, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:14, cursor:"pointer" }}>閉じる</button>
+          </>
+        ) : phase === "error" ? (
+          <>
+            <p style={{ margin:"0 0 20px", color:"var(--rose)", fontSize:13.5, lineHeight:1.8 }}>{err}</p>
+            <button className="reel-tap" onClick={onClose} style={{ width:"100%", padding:"13px", borderRadius:10, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:14, cursor:"pointer" }}>閉じる</button>
+          </>
+        ) : (
+          <>
+            <div style={{ fontWeight:700, fontSize:16, marginBottom:6 }}>「{payload.n}」さんをフォローしますか？</div>
+            <div className="mono" style={{ fontSize:12.5, color:"var(--ink-dim)", marginBottom:12 }}>{payload.i}</div>
+            <p style={{ margin:"0 0 20px", color:"var(--ink-dim)", fontSize:13, lineHeight:1.7 }}>相手が承認するまで、記録は見られません。</p>
+            <button className="reel-btn" disabled={phase==="busy"} onClick={send} style={{ width:"100%", padding:"13px", borderRadius:10, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:14, cursor:"pointer", marginBottom:8 }}>
+              {phase==="busy" ? "送信中…" : "フォローを申請する"}
+            </button>
+            <button className="reel-tap" onClick={onClose} style={{ width:"100%", padding:"13px", borderRadius:10, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:14, cursor:"pointer" }}>やめる</button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ── フォロー相手の画面：承認待ちなら非公開表示、承認後は記録を閲覧 ── */
+function FriendView({ row, profile, onClose, onRemove }) {
+  const accepted = row.status === "accepted";
+  const [recs, setRecs] = useState(null); // null=読み込み中
+  const [detail, setDetail] = useState(null);
+
+  useEffect(() => {
+    if (!accepted) { setRecs([]); return; }
+    let alive = true;
+    (async () => {
+      const { data } = await supabase.from("records").select("*").eq("user_id", row.followee_id).order("watched_at", { ascending:false });
+      if (alive) setRecs((data || []).map(toApp));
+    })();
+    return () => { alive = false; };
+  }, []);
+
+  const name = profile?.display_name || "（名前を取得できません）";
+  const remove = () => {
+    if (confirm(accepted ? `${name} さんのフォローをやめますか？` : "この申請を取り下げますか？")) onRemove(row.id);
+  };
+
+  return (
+    <div className="reel-detail-enter" style={{ position:"fixed", inset:0, zIndex:65, background:"var(--bg)", overflowY:"auto" }}>
+      <div style={{ maxWidth:560, margin:"0 auto", padding:"calc(env(safe-area-inset-top, 0px) + 14px) 16px 40px" }}>
+        <button className="reel-tap" onClick={onClose} style={{ background:"none", border:"none", color:"var(--ink-dim)", fontSize:14, cursor:"pointer", padding:"6px 0", marginBottom:8 }}>‹ もどる</button>
+
+        <div style={{ display:"flex", alignItems:"center", gap:12, background:"var(--surface)", border:"1px solid var(--line)", borderRadius:16, padding:"16px", marginBottom:16 }}>
+          <span style={{ width:44, height:44, borderRadius:"50%", background:"var(--amber)", color:"#1a1305", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:19, flexShrink:0 }}>{[...name][0] || "?"}</span>
+          <div style={{ minWidth:0, flex:1 }}>
+            <div style={{ fontWeight:900, fontSize:17 }}>{name}</div>
+            {profile?.public_id && <div className="mono" style={{ fontSize:11.5, color:"var(--ink-dim)" }}>{profile.public_id}</div>}
+          </div>
+          <span style={{ flexShrink:0, fontSize:11.5, fontWeight:700, borderRadius:20, padding:"4px 10px",
+            background: accepted?"rgba(232,176,75,.14)":"var(--surface2)", color: accepted?"var(--amber)":"var(--ink-dim)", border:`1px solid ${accepted?"var(--amber-dim)":"var(--line)"}` }}>
+            {accepted ? "フォロー中" : "承認待ち"}
+          </span>
+        </div>
+
+        {!accepted ? (
+          <div style={{ textAlign:"center", background:"var(--surface)", border:"1px solid var(--line)", borderRadius:16, padding:"38px 20px" }}>
+            <div style={{ fontSize:30, marginBottom:10 }}>🔒</div>
+            <div style={{ fontWeight:700, fontSize:15, marginBottom:8 }}>このユーザーの記録は非公開です</div>
+            <p style={{ margin:0, color:"var(--ink-dim)", fontSize:13, lineHeight:1.8 }}>{name} さんが申請を承認すると、<br/>ここに記録が表示されます。</p>
+          </div>
+        ) : recs === null ? (
+          <p style={{ textAlign:"center", color:"var(--ink-dim)", padding:"40px 0" }}>読み込み中…</p>
+        ) : recs.length === 0 ? (
+          <p style={{ textAlign:"center", color:"var(--ink-dim)", padding:"40px 0", lineHeight:1.8 }}>まだ記録がありません。</p>
+        ) : (
+          <div className="film-body" style={{ borderRadius:12, overflow:"hidden" }}>
+            <div className="film-spro" />
+            <div className="film-track">
+              {recs.map((m, i) => <FilmFrame key={m.id} m={m} showPhoto={false} code={frameCode(i)} onClick={()=>setDetail(i)} style={{ cursor:"pointer" }} />)}
+            </div>
+            <div className="film-spro" />
+          </div>
+        )}
+
+        <button className="reel-tap" onClick={remove} style={{ width:"100%", marginTop:22, padding:"13px", borderRadius:11, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:13.5, cursor:"pointer" }}>
+          {accepted ? "フォローをやめる" : "申請を取り下げる"}
+        </button>
+      </div>
+      {detail !== null && recs && <DetailView movies={recs} index={detail} readOnly onClose={()=>setDetail(null)} />}
+    </div>
+  );
+}
+
+/* ── 「フォロー」タブ本体：自分のプロフィール・申請の承認/拒否・フォロー中一覧 ── */
+function FollowView({ me }) {
+  const [rows, setRows] = useState(null);     // follows の自分が当事者の行（null=読み込み中）
+  const [people, setPeople] = useState({});   // 相手のプロフィール { uid: {display_name, public_id} }
+  const [requesting, setRequesting] = useState(false);
+  const [viewing, setViewing] = useState(null); // フォロー中一覧でタップした follows 行
+  const [copied, setCopied] = useState(false);
+
+  const load = async () => {
+    const { data } = await supabase.from("follows").select("*")
+      .or(`follower_id.eq.${me.uid},followee_id.eq.${me.uid}`)
+      .order("created_at", { ascending:false });
+    const fs = data || [];
+    const ids = [...new Set(fs.map(r => r.follower_id === me.uid ? r.followee_id : r.follower_id))];
+    const map = {};
+    if (ids.length) {
+      const { data: ps } = await supabase.from("profiles").select("id, display_name, public_id").in("id", ids);
+      (ps || []).forEach(p => { map[p.id] = p; });
+    }
+    setPeople(map); setRows(fs);
+  };
+  useEffect(() => { load(); }, []);
+
+  const incoming = (rows || []).filter(r => r.followee_id === me.uid);
+  const requestsIn = incoming.filter(r => r.status === "pending"); // とどいた申請
+  const followers = incoming.filter(r => r.status === "accepted");  // フォロワー（数のみ表示）
+  const outgoing = (rows || []).filter(r => r.follower_id === me.uid); // フォロー中＋申請中
+  const followingCount = outgoing.filter(r => r.status === "accepted").length;
+
+  const accept = async (id) => {
+    const { error } = await supabase.from("follows").update({ status:"accepted" }).eq("id", id);
+    if (error) { alert("承認に失敗しました：" + error.message); return; }
+    load();
+  };
+  const reject = async (id) => {
+    if (!confirm("この申請を削除しますか？（相手に通知はされません）")) return;
+    const { error } = await supabase.from("follows").delete().eq("id", id);
+    if (error) { alert("削除に失敗しました：" + error.message); return; }
+    load();
+  };
+  const removeFollow = async (id) => {
+    const { error } = await supabase.from("follows").delete().eq("id", id);
+    if (error) { alert("解除に失敗しました：" + error.message); return; }
+    setViewing(null); load();
+  };
+
+  const link = inviteLink(me);
+  const copyLink = async () => { try { await navigator.clipboard.writeText(link); setCopied(true); setTimeout(()=>setCopied(false), 1600); } catch {} };
+  const shareLink = async () => { try { if (navigator.share) await navigator.share({ title:"シネたび", text:`シネたびで「${me.name}」をフォローする`, url:link }); } catch {} };
+
+  return (
+    <div className="reel-narrow" style={{ padding:"4px 16px 110px" }}>
+      {/* 自分のプロフィール */}
+      <div style={{ background:"var(--surface)", border:"1px solid var(--line)", borderRadius:16, padding:"16px", marginBottom:14 }}>
+        <div className="reel-mark" style={{ letterSpacing:".16em", fontSize:11, color:"var(--ink-dim)", marginBottom:12 }}>MY PROFILE ／ 自分のプロフィール</div>
+        <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12 }}>
+          <span style={{ width:44, height:44, borderRadius:"50%", background:"var(--amber)", color:"#1a1305", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:19, flexShrink:0 }}>{[...me.name][0] || "?"}</span>
+          <div style={{ minWidth:0 }}>
+            <div style={{ fontWeight:900, fontSize:17 }}>{me.name}</div>
+            <div style={{ fontSize:12.5, color:"var(--ink-dim)", marginTop:2 }}>フォロー中 {followingCount} ・ フォロワー {followers.length}<span style={{ fontSize:11, marginLeft:6, opacity:.8 }}>（あなたにだけ表示）</span></div>
+          </div>
+        </div>
+        <label style={lbl}>あなたのID（相手に教えて、フォローしてもらう）</label>
+        <div style={{ display:"flex", gap:8, marginBottom:10 }}>
+          <div className="mono" style={{ flex:1, minWidth:0, padding:"11px 13px", background:"var(--bg)", border:"1px solid var(--line)", borderRadius:10, fontSize:13.5, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{me.publicId}</div>
+          <button className="reel-tap" onClick={async()=>{ try { await navigator.clipboard.writeText(me.publicId); setCopied(true); setTimeout(()=>setCopied(false),1600); } catch {} }}
+            style={{ flexShrink:0, padding:"0 14px", borderRadius:10, border:"1px solid var(--line)", background: copied?"var(--amber)":"var(--surface2)", color: copied?"#1a1305":"var(--ink)", fontWeight:700, fontSize:13, cursor:"pointer" }}>{copied?"コピー済":"コピー"}</button>
+        </div>
+        <p style={{ margin:"0 0 12px", color:"var(--ink-dim)", fontSize:12, lineHeight:1.7 }}>フォローには「ID」と「名前（{me.name}）」の両方が必要です。IDだけでは申請できません。</p>
+        <div style={{ display:"flex", gap:8 }}>
+          <button className="reel-tap" onClick={copyLink} style={{ flex:1, padding:"11px", borderRadius:10, border:"1px solid var(--line)", background:"var(--surface2)", color:"var(--ink)", fontSize:13, fontWeight:700, cursor:"pointer" }}>招待リンクをコピー</button>
+          {typeof navigator !== "undefined" && navigator.share && (
+            <button className="reel-tap" onClick={shareLink} style={{ flex:1, padding:"11px", borderRadius:10, border:"1px solid var(--line)", background:"var(--surface2)", color:"var(--ink)", fontSize:13, fontWeight:700, cursor:"pointer" }}>リンクを共有</button>
+          )}
+        </div>
+      </div>
+
+      {/* とどいた申請 */}
+      {requestsIn.length > 0 && (
+        <div style={{ background:"var(--surface)", border:"1px solid var(--amber-dim)", borderRadius:16, padding:"16px", marginBottom:14 }}>
+          <div className="reel-mark" style={{ letterSpacing:".16em", fontSize:11, color:"var(--amber)", marginBottom:12 }}>REQUESTS ／ とどいた申請</div>
+          <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+            {requestsIn.map(r => {
+              const p = people[r.follower_id];
+              return (
+                <div key={r.id} style={{ display:"flex", alignItems:"center", gap:10 }}>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ fontWeight:700, fontSize:14.5, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{p?.display_name || "（不明）"}</div>
+                    {p?.public_id && <div className="mono" style={{ fontSize:11, color:"var(--ink-dim)" }}>{p.public_id}</div>}
+                  </div>
+                  <button className="reel-btn" onClick={()=>accept(r.id)} style={{ flexShrink:0, padding:"9px 16px", borderRadius:9, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:13, cursor:"pointer" }}>承認</button>
+                  <button className="reel-tap" onClick={()=>reject(r.id)} style={{ flexShrink:0, padding:"9px 14px", borderRadius:9, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:13, cursor:"pointer" }}>拒否</button>
+                </div>
+              );
+            })}
+          </div>
+          <p style={{ margin:"12px 0 0", color:"var(--ink-dim)", fontSize:11.5, lineHeight:1.7 }}>承認すると、相手はあなたの記録を見られるようになります。拒否は相手に通知されません。</p>
+        </div>
+      )}
+
+      {/* フォロー中（申請中も含む） */}
+      <div style={{ background:"var(--surface)", border:"1px solid var(--line)", borderRadius:16, padding:"16px", marginBottom:18 }}>
+        <div className="reel-mark" style={{ letterSpacing:".16em", fontSize:11, color:"var(--ink-dim)", marginBottom:12 }}>FOLLOWING ／ フォロー中</div>
+        {rows === null ? (
+          <p style={{ margin:0, textAlign:"center", color:"var(--ink-dim)", fontSize:13, padding:"14px 0" }}>読み込み中…</p>
+        ) : outgoing.length === 0 ? (
+          <p style={{ margin:0, color:"var(--ink-dim)", fontSize:13, lineHeight:1.8 }}>まだ誰もフォローしていません。<br/>下のボタンから、相手のIDと名前で申請できます。</p>
+        ) : (
+          <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+            {outgoing.map(r => {
+              const p = people[r.followee_id];
+              const nm = p?.display_name || "（不明）";
+              const pending = r.status === "pending";
+              return (
+                <button key={r.id} className="reel-tap" onClick={()=>setViewing(r)}
+                  style={{ display:"flex", alignItems:"center", gap:11, textAlign:"left", background:"var(--surface2)", border:"1px solid var(--line)", borderRadius:12, padding:"11px 13px", cursor:"pointer" }}>
+                  <span style={{ width:34, height:34, borderRadius:"50%", background: pending?"var(--surface)":"var(--amber)", color: pending?"var(--ink-dim)":"#1a1305", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:15, flexShrink:0, border: pending?"1px solid var(--line)":"none" }}>{[...nm][0] || "?"}</span>
+                  <span style={{ flex:1, minWidth:0, fontWeight:700, fontSize:14.5, color:"var(--ink)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{nm}</span>
+                  {pending
+                    ? <span style={{ flexShrink:0, fontSize:11, color:"var(--ink-dim)", border:"1px solid var(--line)", borderRadius:20, padding:"3px 9px" }}>承認待ち</span>
+                    : <span style={{ flexShrink:0, color:"var(--ink-dim)", fontSize:16 }}>›</span>}
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      <button className="reel-btn" onClick={()=>setRequesting(true)}
+        style={{ width:"100%", padding:"15px", borderRadius:12, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:15, cursor:"pointer" }}>＋ フォローを申請</button>
+      <p style={{ textAlign:"center", color:"var(--ink-dim)", fontSize:11.5, margin:"10px 0 0", lineHeight:1.7 }}>ユーザー検索はできません。相手からIDと名前を教えてもらって申請します。</p>
+
+      {requesting && <FollowRequestSheet onClose={()=>{ setRequesting(false); load(); }} />}
+      {viewing && <FriendView row={viewing} profile={people[viewing.followee_id]} onClose={()=>setViewing(null)} onRemove={removeFollow} />}
+    </div>
+  );
+}
+
 function NameSetup({ onDone }) {
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
@@ -1353,6 +1708,27 @@ function CloudApp() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // 招待リンク（/#f=…）で開かれた場合、その中身を保持しておく。
+  // Googleログイン等のリダイレクトでURLのハッシュが消えるため localStorage にも退避し、
+  // 戻ってきた時に復元する（ログイン・プロフィール作成が済んでから確認画面を出す）
+  const [followLink, setFollowLink] = useState(() => {
+    try {
+      if (typeof window !== "undefined" && window.location.hash.startsWith("#f=")) {
+        const d = JSON.parse(decodeURIComponent(escape(atob(window.location.hash.slice(3)))));
+        if (d && d.i && d.n) { const v = { i: String(d.i), n: String(d.n) }; store.set("cinetabi_follow_link", v); return v; }
+      }
+    } catch {}
+    const saved = store.get("cinetabi_follow_link");
+    return (saved && saved.i && saved.n) ? saved : null;
+  });
+  // clear=false は「アカウントをつなぐ」へ進んだ時：確認画面は閉じるが退避は残し、
+  // 連携が終わってアプリに戻ってきた時にもう一度確認を表示する
+  const finishFollowLink = (clear) => {
+    setFollowLink(null);
+    if (clear) { try { localStorage.removeItem("cinetabi_follow_link"); } catch {} }
+    try { history.replaceState(null, "", window.location.pathname + window.location.search); } catch {}
+  };
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session ?? null));
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSession(s ?? null));
@@ -1367,7 +1743,9 @@ function CloudApp() {
       const { data: prof } = await supabase.from("profiles").select("*").eq("id", session.user.id).maybeSingle();
       setProfile(prof || null);
       if (prof) {
-        const { data: recs } = await supabase.from("records").select("*").order("watched_at", { ascending: false });
+        // 自分の記録だけに絞る（フォロー機能のRLS拡張で、承認済みフォロー相手の記録も
+        // 読める＝select("*")だけだと他人の記録が自分のログに混ざるため）
+        const { data: recs } = await supabase.from("records").select("*").eq("user_id", session.user.id).order("watched_at", { ascending: false });
         setMovies((recs || []).map(toApp));
       }
       setLoading(false);
@@ -1412,7 +1790,9 @@ function CloudApp() {
   if (!loading && !profile.onboarded && movies.length === 0) return <Gate><Onboarding onDone={finishOnboarding} /></Gate>;
 
   const isAnonymous = !!session.user?.is_anonymous;
-  return <Shell user={{ name: profile.display_name }} movies={movies} loading={loading} onAddMovie={addMovie} onDeleteMovie={deleteMovie} onUpdateMovie={updateMovie} onLogout={isAnonymous ? undefined : logout} isAnonymous={isAnonymous} />;
+  return <Shell user={{ name: profile.display_name }} movies={movies} loading={loading} onAddMovie={addMovie} onDeleteMovie={deleteMovie} onUpdateMovie={updateMovie} onLogout={isAnonymous ? undefined : logout} isAnonymous={isAnonymous}
+    followInfo={{ uid: session.user.id, name: profile.display_name, publicId: profile.public_id || "" }}
+    followLink={followLink} onFollowLinkDone={finishFollowLink} />;
 }
 
 /* ─────────── ルート：Supabase設定があればクラウド、無ければ端末保存 ─────────── */
