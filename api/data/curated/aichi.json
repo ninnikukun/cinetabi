@@ -1,0 +1,128 @@
+[
+  {
+    "name": "センチュリーシネマ",
+    "address": "愛知県名古屋市中区栄3-29-1 名古屋パルコ東館8階",
+    "lat": 35.1634086,
+    "lon": 136.9074027,
+    "precision": "poi",
+    "website": "http://www.eigaya.com/theater/century/",
+    "sourcePage": "名古屋市中区"
+  },
+  {
+    "name": "伏見ミリオン座",
+    "address": "愛知県名古屋市中区錦2-15-5",
+    "lat": 35.1700679,
+    "lon": 136.8991019,
+    "precision": "poi",
+    "website": "http://www.eigaya.com/theater/million/",
+    "sourcePage": "名古屋市中区"
+  },
+  {
+    "name": "シネマスコーレ",
+    "address": "愛知県名古屋市中村区椿町8-12",
+    "lat": 35.1690566,
+    "lon": 136.8801894,
+    "precision": "neighbourhood",
+    "website": "http://www.cinemaskhole.co.jp/",
+    "sourcePage": "名古屋市中村区"
+  },
+  {
+    "name": "109シネマズ名古屋",
+    "address": "愛知県名古屋市中村区平池町4-60-14 マーケットスクエアささしま2階",
+    "lat": 35.1624524,
+    "lon": 136.8849781,
+    "precision": "poi",
+    "website": "https://www.market-square.jp/sasashima/",
+    "sourcePage": "名古屋市中村区"
+  },
+  {
+    "name": "ミッドランドスクエアシネマ",
+    "address": "愛知県名古屋市中村区名駅4-7-1 ミッドランドスクエア商業棟5階",
+    "lat": 35.17019,
+    "lon": 136.8849399,
+    "precision": "poi",
+    "website": "https://www.nakanihonkogyo.co.jp/",
+    "sourcePage": "名古屋市中村区"
+  },
+  {
+    "name": "ミッドランドスクエアシネマ2",
+    "address": "愛知県名古屋市中村区名駅4-11-27 シンフォニー豊田ビル2階",
+    "lat": 35.1692357,
+    "lon": 136.887076,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "名古屋市中村区"
+  },
+  {
+    "name": "中村映劇",
+    "address": "愛知県名古屋市中村区名楽町1-23",
+    "lat": 35.168574,
+    "lon": 136.867101,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "名古屋市中村区"
+  },
+  {
+    "name": "ナゴヤキネマ・ノイ",
+    "address": "愛知県名古屋市千種区今池1-6-13 今池スタービル2階",
+    "lat": 35.168448,
+    "lon": 136.933626,
+    "precision": "neighbourhood",
+    "website": "http://cineaste.jp/",
+    "sourcePage": "名古屋市千種区"
+  },
+  {
+    "name": "三越映画劇場",
+    "address": "愛知県名古屋市千種区星が丘元町14-14 星ヶ丘三越9階",
+    "lat": 35.160549,
+    "lon": 136.98452,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "名古屋市千種区"
+  },
+  {
+    "name": "春日井ユニオン劇場",
+    "address": "愛知県春日井市八事町1-45",
+    "lat": 35.244549,
+    "lon": 136.976442,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "春日井市"
+  },
+  {
+    "name": "鶴城映劇",
+    "address": "愛知県西尾市菅原町60",
+    "lat": 34.8744935,
+    "lon": 137.0555377,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "西尾市"
+  },
+  {
+    "name": "ユナイテッド・シネマ豊橋18",
+    "address": "愛知県豊橋市藤沢町141 ホリディ・スクエア",
+    "lat": 34.7441461,
+    "lon": 137.371764,
+    "precision": "poi",
+    "website": "https://www.unitedcinemas.jp/toyohashi/index.html",
+    "sourcePage": "豊橋市"
+  },
+  {
+    "name": "イオンシネマ豊田KiTARA",
+    "address": "愛知県豊田市喜多町2丁目170番地 KiTARA5階",
+    "lat": 35.0872676,
+    "lon": 137.1578962,
+    "precision": "poi",
+    "website": "https://kitara-toyota.com/",
+    "sourcePage": "豊田市"
+  },
+  {
+    "name": "TOHOシネマズ名古屋栄",
+    "address": "愛知県名古屋市中区錦3-25-1 ザ・ランドマーク名古屋栄内",
+    "lat": 35.1711032,
+    "lon": 136.9058688,
+    "precision": "neighbourhood",
+    "website": "https://www.tohotheater.jp/theater/091/",
+    "sourcePage": "名古屋市中区"
+  }
+]

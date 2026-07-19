@@ -1,0 +1,101 @@
+[
+  {
+    "name": "上田映劇",
+    "address": "長野県上田市中央2-12-30",
+    "lat": 36.3993855,
+    "lon": 138.253765,
+    "precision": "poi",
+    "website": "http://www.uedaeigeki.com/",
+    "sourcePage": "上田市"
+  },
+  {
+    "name": "トラゥム・ライゼ",
+    "address": "長野県上田市中央1-6-13",
+    "lat": 36.3976541,
+    "lon": 138.25257,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "上田市"
+  },
+  {
+    "name": "TOHOシネマズ上田",
+    "address": "長野県上田市天神3-5-1 アリオ上田内",
+    "lat": 36.400319,
+    "lon": 138.241204,
+    "precision": "neighbourhood",
+    "website": "https://ueda.ario.jp/",
+    "sourcePage": "上田市"
+  },
+  {
+    "name": "岡谷スカラ座",
+    "address": "長野県岡谷市中央町2-4-14",
+    "lat": 36.060151,
+    "lon": 138.049875,
+    "precision": "neighbourhood",
+    "website": "http://www.alles.or.jp/~scalaza/",
+    "sourcePage": "岡谷市"
+  },
+  {
+    "name": "松本シネマライツ8",
+    "address": "長野県松本市高宮中116-2",
+    "lat": 36.2144012,
+    "lon": 137.9613289,
+    "precision": "poi",
+    "website": "http://cinema-lights8.com/",
+    "sourcePage": "松本市"
+  },
+  {
+    "name": "イオンシネマ松本",
+    "address": "長野県松本市中央4-9-51 イオンモール松本空庭2階",
+    "lat": 36.232076,
+    "lon": 137.9787272,
+    "precision": "poi",
+    "website": "https://cinema.aeoncinema.com/wm/matsumoto/",
+    "sourcePage": "松本市"
+  },
+  {
+    "name": "長野ロキシー1・2・長野松竹相生座",
+    "address": "長野県長野市権堂町2255",
+    "lat": 36.6523742,
+    "lon": 138.190662,
+    "precision": "neighbourhood",
+    "website": "http://www.naganoaioiza.com/",
+    "sourcePage": "長野市"
+  },
+  {
+    "name": "長野千石劇場",
+    "address": "長野県長野市南石堂町1367",
+    "lat": 36.6445137,
+    "lon": 138.1871028,
+    "precision": "poi",
+    "website": "http://www.sengokugekijyou.com/",
+    "sourcePage": "長野市"
+  },
+  {
+    "name": "長野グランドシネマズ",
+    "address": "長野県長野市権堂町1506",
+    "lat": 36.6541877,
+    "lon": 138.1928157,
+    "precision": "poi",
+    "website": "https://grandcinemas.jp/",
+    "sourcePage": "長野市"
+  },
+  {
+    "name": "飯田センゲキシネマズ シネマアウル・飯田センゲキシネマズ",
+    "address": "長野県飯田市中央通1-5",
+    "lat": 35.5123575,
+    "lon": 137.8345813,
+    "precision": "neighbourhood",
+    "website": "http://www.sengeki.co.jp/",
+    "sourcePage": "飯田市"
+  },
+  {
+    "name": "飯田トキワ劇場",
+    "address": "長野県飯田市銀座5-2",
+    "lat": 35.5136835,
+    "lon": 137.8254504,
+    "precision": "poi",
+    "website": "https://tokiwa-movie.com/",
+    "sourcePage": "飯田市"
+  }
+]

@@ -86,11 +86,13 @@ async function main() {
   const od = await fetchOverpass(areaFilter);
 
   const closedCandidates = [];
+  const websiteOverrides = [];
   for (const e of od.elements || []) {
     const lat = e.lat ?? (e.center && e.center.lat);
     const lon = e.lon ?? (e.center && e.center.lon);
     if (lat == null || lon == null) continue;
     const osmName = (e.tags && (e.tags.name || e.tags["name:ja"] || e.tags.brand)) || "（名称なし）";
+    const osmWebsite = (e.tags && (e.tags.website || e.tags["contact:website"])) || null;
 
     // 名前一致（営業中）・名前一致（閉館）・近接（営業中）をそれぞれ判定し、組み合わせで分類する。
     // 近接判定はAPIの重複判定と同じ基準（neighbourhood精度は300m、それ以外は100m）。
@@ -99,6 +101,13 @@ async function main() {
     const opByDist = geocoded.find(
       (c) => c.lat != null && haversine(lat, lon, c.lat, c.lon) < (c.precision === "neighbourhood" ? 300 : 100)
     );
+
+    // OSMのwebsiteタグは実際の建物・座標に紐づいているため、Wikipedia infoboxの外部リンクが
+    // 入居施設（モール等）を指してしまうケースより信頼できる。名前一致した営業中の館については、
+    // OSM側にwebsiteタグがあれば優先候補として記録する（機械的に上書きはせず、目視確認のうえ適用する）。
+    if (opByName && osmWebsite && osmWebsite !== opByName.website) {
+      websiteOverrides.push({ name: opByName.name, current: opByName.website || null, osm: osmWebsite });
+    }
 
     if (clByName && (opByName || opByDist)) {
       // 例: OSMの「東宝シネマ」はTOHOシネマズ渋谷と同一座標だが、同じ跡地の前身館
@@ -128,6 +137,11 @@ async function main() {
   if (closedCandidates.length > 0) {
     console.log(`\n--- closed-cinemas.json への追記候補（目視確認のうえ貼り付け） ---`);
     console.log(JSON.stringify(closedCandidates, null, 2));
+  }
+
+  if (websiteOverrides.length > 0) {
+    console.log(`\n--- websiteをOSM側の値に差し替える候補（目視確認のうえ適用） ---`);
+    console.log(JSON.stringify(websiteOverrides, null, 2));
   }
 }
 

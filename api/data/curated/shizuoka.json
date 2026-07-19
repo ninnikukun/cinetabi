@@ -1,0 +1,137 @@
+[
+  {
+    "name": "ジョイランドみしまシネマ",
+    "address": "静岡県三島市梅名308-6",
+    "lat": 35.093838,
+    "lon": 138.925637,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "三島市"
+  },
+  {
+    "name": "金星シネマ",
+    "address": "静岡県伊東市吉田573-1",
+    "lat": 34.933597,
+    "lon": 139.124477,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "伊東市"
+  },
+  {
+    "name": "イオンシネマ富士宮",
+    "address": "静岡県富士宮市浅間町1-8 イオンモール富士宮3階",
+    "lat": 35.2212831,
+    "lon": 138.6118734,
+    "precision": "poi",
+    "website": "https://www.aeon.jp/sc/fujinomiya/",
+    "sourcePage": "富士宮市"
+  },
+  {
+    "name": "シネマサンシャインららぽーと沼津",
+    "address": "静岡県沼津市東椎路字東荒301番地3他 ららぽーと沼津3階",
+    "lat": 35.1185443,
+    "lon": 138.8399876,
+    "precision": "neighbourhood",
+    "website": "https://mitsui-shopping-park.com/lalaport/numazu/",
+    "sourcePage": "沼津市"
+  },
+  {
+    "name": "シネマハウス新映",
+    "address": "静岡県浜松市中区板屋町100-5",
+    "lat": 34.706654,
+    "lon": 137.735126,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "浜松市"
+  },
+  {
+    "name": "TOHOシネマズ浜松",
+    "address": "静岡県浜松市中区鍛冶町15 ザザシティ浜松西館3階",
+    "lat": 34.7048452,
+    "lon": 137.7288968,
+    "precision": "poi",
+    "website": "http://www.zazacity.jp",
+    "sourcePage": "浜松市"
+  },
+  {
+    "name": "シネマイーラ",
+    "address": "静岡県浜松市中区田町315-34 笠井屋ビル3階",
+    "lat": 34.708362,
+    "lon": 137.730977,
+    "precision": "neighbourhood",
+    "website": "http://cinemae-ra.jp/",
+    "sourcePage": "浜松市"
+  },
+  {
+    "name": "TOHOシネマズサンストリート浜北",
+    "address": "静岡県浜松市浜北区平口2861 サンストリート浜北3階",
+    "lat": 34.8022912,
+    "lon": 137.751881,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "浜松市"
+  },
+  {
+    "name": "TOHOシネマズららぽーと磐田",
+    "address": "静岡県磐田市高見丘1200番地 ららぽーと磐田3階",
+    "lat": 34.7499394,
+    "lon": 137.8417353,
+    "precision": "neighbourhood",
+    "website": "https://hlo.tohotheater.jp/net/schedule/065/TNPI2000J01.do",
+    "sourcePage": "磐田市"
+  },
+  {
+    "name": "藤枝シネ・プレーゴ",
+    "address": "静岡県藤枝市前島1-7-10 BiVi藤枝4階",
+    "lat": 34.847726,
+    "lon": 138.250454,
+    "precision": "neighbourhood",
+    "website": "http://www.e-bivi.com/fujieda/",
+    "sourcePage": "藤枝市"
+  },
+  {
+    "name": "静岡東宝会館",
+    "address": "静岡県静岡市葵区七間町12",
+    "lat": 34.9728755,
+    "lon": 138.3803161,
+    "precision": "poi",
+    "website": "https://www.cine-7.com/",
+    "sourcePage": "静岡市"
+  },
+  {
+    "name": "静岡シネギャラリー",
+    "address": "静岡県静岡市葵区御幸町11-14 サールナートホール3階",
+    "lat": 34.9755197,
+    "lon": 138.3839988,
+    "precision": "neighbourhood",
+    "website": "http://www.cine-gallery.jp/",
+    "sourcePage": "静岡市"
+  },
+  {
+    "name": "シネシティザート",
+    "address": "静岡県静岡市葵区鷹匠1-1-1 新静岡セノバ9階",
+    "lat": 34.9808051,
+    "lon": 138.3905232,
+    "precision": "neighbourhood",
+    "website": "http://www.zart.jp/",
+    "sourcePage": "静岡市"
+  },
+  {
+    "name": "MOVIX清水",
+    "address": "静岡県静岡市清水区入船町13-15 エスパルスドリームプラザ4階",
+    "lat": 35.0106333,
+    "lon": 138.4927128,
+    "precision": "poi",
+    "website": "http://www.dream-plaza.co.jp/",
+    "sourcePage": "静岡市"
+  },
+  {
+    "name": "夢町座",
+    "address": "静岡市清水区真砂町2-31",
+    "lat": 35.021458,
+    "lon": 138.48801,
+    "precision": "neighbourhood",
+    "website": "https://www.facebook.com/%E5%A4%A2%E7%94%BA%E5%BA%A7%E3%83%9F%E3%83%8B%E3%82%B7%E3%82%A2%E3%82%BF%E3%83%BC-1713539335580274/",
+    "sourcePage": "静岡市"
+  }
+]

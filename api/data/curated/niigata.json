@@ -1,0 +1,74 @@
+[
+  {
+    "name": "高田世界館",
+    "address": "新潟県上越市本町6-4-21",
+    "lat": 37.1174816,
+    "lon": 138.2448935,
+    "precision": "poi",
+    "website": "http://takadasekaikan.com/",
+    "sourcePage": "上越市"
+  },
+  {
+    "name": "J-MAXシアター上越",
+    "address": "新潟県上越市富岡3524",
+    "lat": 37.151652,
+    "lon": 138.258138,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "上越市"
+  },
+  {
+    "name": "新潟・市民映画館シネ・ウインド",
+    "address": "新潟県新潟市中央区八千代2-1-1 万代シティ第2駐車場ビル1階",
+    "lat": 37.9155187,
+    "lon": 139.0540453,
+    "precision": "poi",
+    "website": "https://www.cinewind.com/",
+    "sourcePage": "新潟市"
+  },
+  {
+    "name": "ユナイテッド・シネマ新潟",
+    "address": "新潟県新潟市中央区上近江4-12-20 DEKKY401内",
+    "lat": 37.8982372,
+    "lon": 139.0290606,
+    "precision": "poi",
+    "website": "https://www.dekky401.com/",
+    "sourcePage": "新潟市"
+  },
+  {
+    "name": "T・ジョイ新潟万代",
+    "address": "新潟県新潟市中央区八千代2-5-7 BP2 3階",
+    "lat": 37.9163144,
+    "lon": 139.0530207,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "新潟市"
+  },
+  {
+    "name": "イオンシネマ新潟西",
+    "address": "新潟県新潟市西区小新南2-1-10 イオン新潟西店3階",
+    "lat": 37.8686853,
+    "lon": 138.9945137,
+    "precision": "poi",
+    "website": "https://www.aeoncinema.com/",
+    "sourcePage": "新潟市"
+  },
+  {
+    "name": "イオンシネマ新潟亀田インター",
+    "address": "新潟県新潟市江南区下早通柳田1-1-1 イオンモール新潟亀田インター",
+    "lat": 37.8783198,
+    "lon": 139.0787663,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "新潟市"
+  },
+  {
+    "name": "T・ジョイ長岡",
+    "address": "新潟県長岡市千秋2-1087-1 千秋通り2・3階",
+    "lat": 37.4590596,
+    "lon": 138.8260524,
+    "precision": "poi",
+    "website": "https://walk-uny.com/riverside-senshu/",
+    "sourcePage": "長岡市"
+  }
+]

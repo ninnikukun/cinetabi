@@ -3,11 +3,29 @@
 「消えた映画館の記憶」(https://hekikaicinema.memo.wiki/, CCライセンス・サイト名表示条件) から
 営業中の映画館を抽出し、`api/data/curated/` に都道府県（東京は区）単位のファイルとして追加する手順。
 
-進行順（決定済み）: 東京23区の残り → 神奈川・埼玉・千葉 → 政令指定都市のある府県 → その他
+進行順（決定済み）: 関東（完了）→ 中部 → 関西 → その他の地方ブロック
+
+## 運用上の注意（ハマりどころ）
+
+- **devサーバーの再起動が必要**: `api/cinemas.js` は `api/data/curated/` の全JSONをサーバー起動時に
+  一度だけ読み込む。ファイル追加後にローカル確認する場合は、devサーバーを再起動しないと反映されない。
+- **closed-cinemas.jsonへの追加は必ず目視確認**: `check-osm-closed.js` の`[closed]`候補はnameMatch()の
+  部分一致による誤検出があり得る（例: 「イオンシネマ座間」が閉館館「米ケ浜シネマ座」の一部「シネマ座」に
+  誤って一致）。機械的に採用せず、営業中リストとの重複がないか毎回確認する。
 
 ## 手順
 
 作業ファイルは一時ディレクトリ（`$SCRATCH` など）に置き、リポジトリには最終JSONだけを入れる。
+
+### 0. 対象ページの洗い出し
+
+`scripts/wiki-page-list.txt` に、wikiの全ページ一覧（`https://hekikaicinema.memo.wiki/l/`）から
+抽出した「〜の映画館」ページ323件のマスターリストがある。対象都道府県の市区町村名でgrepして
+対象ページを確定させる（トップページ・ランディングページを都度たどるより確実）。
+
+```
+grep -E "新潟市|長岡市|..." scripts/wiki-page-list.txt
+```
 
 ### 1. wikiから抽出
 
@@ -49,8 +67,11 @@ node scripts/add-website-links.js $SCRATCH/geocoded.json $SCRATCH/with-website.j
 
 - wikiに公式サイトがあった館（`website` が既にある）はそのまま
 - Wikipedia infoboxから取れなかった館は WebSearch で補完し手動で追記
+- Wikipedia infoboxの外部リンクが入居施設（モール等）を指していることがある（例:
+  ヒューマントラストシネマ有楽町でitocia.jp＝モールのサイトが誤って入った事例）。
+  次のOSM突合ステップでOSM側のwebsiteタグがあれば優先して差し替える。
 
-### 5. OSM閉館突合
+### 5. OSM閉館突合・website優先順位の適用
 
 ```
 node scripts/check-osm-closed.js --region 東京都新宿区 $SCRATCH/scraped.json $SCRATCH/geocoded.json
@@ -65,6 +86,12 @@ node scripts/check-osm-closed.js --region 東京都新宿区 $SCRATCH/scraped.js
 | `[要確認]` | 閉館・営業中の両方に一致（旧名タグの現役館 or 同名の別館） | 座標・閉館日で判断 |
 | `[ok?]` | 近接のみ一致（名前不一致） | 英字表記の同一館か、近くの別の閉館館かを確認 |
 | `[unknown]` | どれとも一致しない | WebSearchで実在確認。確認できなければ closed-cinemas.json で除外 |
+
+**website優先順位**: OSMのwebsiteタグ（実座標に紐づく） > wiki本文/Wikipedia infoboxの公式サイト
+（モール等の誤リンクの可能性あり） > null。`[ok]`（名前一致）した館でOSM側にwebsiteタグがあれば
+末尾に「websiteをOSM側の値に差し替える候補」として出力されるので、目視確認のうえ適用する。
+モールドメインらしきURLしか無くOSMにもタグが無い場合は、無理に埋めずnullのままにする
+（誤ったリンクを出すより「無し」の方が安全）。
 
 ### 6. 保存と動作確認
 

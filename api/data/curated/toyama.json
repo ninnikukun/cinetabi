@@ -1,0 +1,47 @@
+[
+  {
+    "name": "TOHOシネマズファボーレ富山",
+    "address": "富山県富山市婦中町下轡田165-1 フューチャーシティFavore内",
+    "lat": 36.6650175,
+    "lon": 137.1749519,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "富山市"
+  },
+  {
+    "name": "J MAX THEATER とやま",
+    "address": "富山県富山市総曲輪3-9-1 ユウタウン総曲輪内2階",
+    "lat": 36.6897322,
+    "lon": 137.213547,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "富山市"
+  },
+  {
+    "name": "ほとり座",
+    "address": "富山県富山市総曲輪3-3-16 総曲輪ファッションビル4階",
+    "lat": 36.6897322,
+    "lon": 137.213547,
+    "precision": "neighbourhood",
+    "website": "https://twitter.com/forzasogawa",
+    "sourcePage": "富山市"
+  },
+  {
+    "name": "TOHOシネマズ高岡",
+    "address": "富山県高岡市下伏間江383 イオンモール高岡2階",
+    "lat": 36.722867,
+    "lon": 137.023906,
+    "precision": "neighbourhood",
+    "website": "https://takaoka-aeonmall.com/",
+    "sourcePage": "高岡市"
+  },
+  {
+    "name": "御旅屋座",
+    "address": "富山県高岡市御旅屋町89 二口ビル1階",
+    "lat": 36.7447669,
+    "lon": 137.0155942,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "高岡市"
+  }
+]

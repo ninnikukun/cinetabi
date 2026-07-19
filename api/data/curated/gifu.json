@@ -1,0 +1,56 @@
+[
+  {
+    "name": "大垣コロナシネマワールド",
+    "address": "岐阜県大垣市三塚町字西沼523-1",
+    "lat": 35.3667286,
+    "lon": 136.6290873,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "大垣市"
+  },
+  {
+    "name": "岐阜朝日劇場",
+    "address": "岐阜県岐阜市柳ケ瀬通7-7",
+    "lat": 35.419693,
+    "lon": 136.753232,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "岐阜市"
+  },
+  {
+    "name": "ロイヤル劇場",
+    "address": "岐阜県岐阜市日の出町1-20",
+    "lat": 35.4185074,
+    "lon": 136.7593561,
+    "precision": "poi",
+    "website": "http://www.tochiko.co.jp/royal.html",
+    "sourcePage": "岐阜市"
+  },
+  {
+    "name": "CINEX",
+    "address": "岐阜県岐阜市日の出町2-20 シネックス",
+    "lat": 35.4184571,
+    "lon": 136.7583892,
+    "precision": "poi",
+    "website": "http://www.tochiko.co.jp/",
+    "sourcePage": "岐阜市"
+  },
+  {
+    "name": "TOHOシネマズ岐阜",
+    "address": "岐阜県岐阜市柳津町丸野3-3-6 カラフルタウン岐阜2階",
+    "lat": 35.3622882,
+    "lon": 136.7296307,
+    "precision": "poi",
+    "website": "http://www.colorfultown.jp/",
+    "sourcePage": "岐阜市"
+  },
+  {
+    "name": "関シネックスマーゴ",
+    "address": "岐阜県関市倉知516 サンサンシティマーゴシネマ館",
+    "lat": 35.463462,
+    "lon": 136.898404,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "関市"
+  }
+]

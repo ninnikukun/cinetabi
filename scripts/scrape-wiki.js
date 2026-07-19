@@ -162,6 +162,14 @@ async function main() {
   for (const c of result.operating) {
     if (!c.address) console.warn(`  [要確認] ${c.name}: 所在地が取れていません`);
   }
+
+  // 「開館前」はwiki編集時点で未開館だっただけで、その後開館している可能性がある
+  // （例: TOHOシネマズ名古屋栄は「開館前」表記のままだったが2026年6月に開館済みだった）。
+  const preOpening = result.closed.filter((c) => c.closed === "開館前");
+  if (preOpening.length > 0) {
+    console.log("\n[要確認] 「開館前」表記の館（wiki編集後に開館している可能性、個別に開館状況を確認）:");
+    preOpening.forEach((c) => console.log(`  - ${c.name} (${c.sourcePage})`));
+  }
 }
 
 main();

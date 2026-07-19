@@ -1,0 +1,29 @@
+[
+  {
+    "name": "福井メトロ劇場",
+    "address": "福井県福井市順化1-2-14 メトロ会館4階",
+    "lat": 36.0648566,
+    "lon": 136.216296,
+    "precision": "neighbourhood",
+    "website": "https://fukuimetro.jp/",
+    "sourcePage": "福井市"
+  },
+  {
+    "name": "テアトルサンク",
+    "address": "福井県福井市中央1-8-17",
+    "lat": 36.06138,
+    "lon": 136.219184,
+    "precision": "poi",
+    "website": "http://www.theatrecinq.jp/",
+    "sourcePage": "福井市"
+  },
+  {
+    "name": "福井コロナシネマワールド",
+    "address": "福井県福井市大和田2丁目1201 フェアモール福井",
+    "lat": 36.097147,
+    "lon": 136.2509139,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "福井市"
+  }
+]
