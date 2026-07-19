@@ -1037,12 +1037,29 @@ function LogView({ movies, user, onAdd, onDelete, onShare, onUpdate }) {
 }
 
 /* ─────────── でかける（近くの映画館） ─────────── */
+// 公式サイトなど外部リンクから戻った際、モバイルブラウザ（特にホーム画面追加のPWA）が
+// タブを裏で再読み込みしてReactの状態が消えることがあるため、検索結果をsessionStorageに
+// 保存しておき、戻ってきたときに検索前の画面ではなく検索結果へ復元する。
+const FIND_STATE_KEY = "cinetabi_find_state_v1";
+function loadSavedFindState() {
+  try {
+    const raw = sessionStorage.getItem(FIND_STATE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
 function FindView() {
-  const [query, setQuery] = useState("");
-  const [limit, setLimit] = useState(10);
+  const saved = loadSavedFindState();
+  const [query, setQuery] = useState(saved?.query || "");
+  const [limit, setLimit] = useState(saved?.limit || 10);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(null); // { label, cinemas } | { error } | null
+  const [data, setData] = useState(saved?.data || null); // { label, cinemas } | { error } | null
   const walkOptions = [5, 10, 15];
+
+  useEffect(() => {
+    if (!data) return;
+    try { sessionStorage.setItem(FIND_STATE_KEY, JSON.stringify({ query, limit, data })); } catch {}
+  }, [query, limit, data]);
 
   const run = async (params) => {
     setLoading(true); setData(null);
