@@ -32,7 +32,7 @@
     "lat": 36.5795225,
     "lon": 136.6497181,
     "precision": "poi",
-    "website": null,
+    "website": "https://www.aeoncinema.com/cinema/kanazawa/",
     "sourcePage": "金沢市"
   },
   {
@@ -41,7 +41,7 @@
     "lat": 36.579356,
     "lon": 136.64977,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://www.aeoncinema.com/cinema/kanazawaforus/",
     "sourcePage": "金沢市"
   },
   {
@@ -50,7 +50,7 @@
     "lat": 36.6081291,
     "lon": 136.6077088,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://cinema.korona.co.jp/theaters/knz/",
     "sourcePage": "金沢市"
   }
 ]

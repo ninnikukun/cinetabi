@@ -14,7 +14,7 @@
     "lat": 34.5068351,
     "lon": 135.7636071,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://hlo.tohotheater.jp/net/schedule/013/TNPI2000J01.do",
     "sourcePage": "奈良県の映画館"
   },
   {
@@ -23,7 +23,7 @@
     "lat": 34.5325016,
     "lon": 135.8037937,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://www.unitedcinemas.jp/kashihara/index.html",
     "sourcePage": "奈良県の映画館"
   }
 ]

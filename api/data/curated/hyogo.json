@@ -41,7 +41,7 @@
     "lat": 34.692116,
     "lon": 135.1957086,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://kinocinema.jp/kobekokusai/",
     "sourcePage": "神戸市の映画館"
   },
   {
@@ -86,7 +86,7 @@
     "lat": 34.6790797,
     "lon": 135.182358,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://www.oscinemas.net/cgi-bin/pc/site/det.cgi?tsc=21120",
     "sourcePage": "神戸市の映画館"
   },
   {
@@ -176,7 +176,7 @@
     "lat": 34.7438563,
     "lon": 135.3609149,
     "precision": "poi",
-    "website": null,
+    "website": "https://hlo.tohotheater.jp/net/schedule/064/TNPI2000J01.do",
     "sourcePage": "西宮市の映画館"
   },
   {
@@ -212,7 +212,7 @@
     "lat": 34.7484735,
     "lon": 134.8612133,
     "precision": "poi",
-    "website": null,
+    "website": "https://www.aeoncinema.com/cinema/kakogawa/",
     "sourcePage": "加古川市の映画館"
   },
   {

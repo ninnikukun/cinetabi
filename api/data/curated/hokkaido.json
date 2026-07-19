@@ -32,7 +32,7 @@
     "lat": 43.05533,
     "lon": 141.35259,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://hlo.tohotheater.jp/net/schedule/089/TNPI2000J01.do",
     "sourcePage": "札幌市の映画館"
   },
   {
@@ -68,7 +68,7 @@
     "lat": 43.763683,
     "lon": 142.35676,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://www.aeoncinema.com/cinema/asahikawa/",
     "sourcePage": "旭川市の映画館"
   },
   {
@@ -104,7 +104,7 @@
     "lat": 43.1825917,
     "lon": 141.0251081,
     "precision": "poi",
-    "website": null,
+    "website": "https://www.aeoncinema.com/cinema/otaru/",
     "sourcePage": "小樽市の映画館"
   },
   {
@@ -113,7 +113,7 @@
     "lat": 43.8086875,
     "lon": 143.8754763,
     "precision": "poi",
-    "website": null,
+    "website": "https://www.aeoncinema.com/cinema/kitami/",
     "sourcePage": "北見市の映画館"
   },
   {

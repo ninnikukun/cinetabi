@@ -41,7 +41,7 @@
     "lat": 37.9163144,
     "lon": 139.0530207,
     "precision": "poi",
-    "website": null,
+    "website": "https://tjoy.jp/t-joy_niigatabandai",
     "sourcePage": "新潟市"
   },
   {
@@ -59,7 +59,7 @@
     "lat": 37.8783198,
     "lon": 139.0787663,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://www.aeoncinema.com/cinema/niigatakameda/",
     "sourcePage": "新潟市"
   },
   {
@@ -68,7 +68,7 @@
     "lat": 37.4590596,
     "lon": 138.8260524,
     "precision": "poi",
-    "website": null,
+    "website": "https://tjoy.jp/t-joy_nagaoka",
     "sourcePage": "長岡市"
   }
 ]

@@ -32,7 +32,7 @@
     "lat": 35.5935745,
     "lon": 140.1175388,
     "precision": "poi",
-    "website": null,
+    "website": "https://tjoy.jp/t-joy_soga",
     "sourcePage": "千葉市"
   },
   {
@@ -50,7 +50,7 @@
     "lat": 35.6499904,
     "lon": 140.0247357,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://www.aeoncinema.com/cinema/makuhari/",
     "sourcePage": "千葉市"
   },
   {
@@ -59,7 +59,7 @@
     "lat": 35.816225,
     "lon": 139.933352,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://www.unitedcinemas.jp/matsudo/index.html",
     "sourcePage": "松戸市"
   },
   {
@@ -68,7 +68,7 @@
     "lat": 35.8944122,
     "lon": 139.9539785,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://www.smt-cinema.com/site/kashiwanoha/index.html",
     "sourcePage": "柏市"
   },
   {
@@ -86,7 +86,7 @@
     "lat": 35.8321498,
     "lon": 140.0134737,
     "precision": "poi",
-    "website": null,
+    "website": "https://hlo.tohotheater.jp/net/schedule/077/TNPI2000J01.do",
     "sourcePage": "柏市"
   },
   {
@@ -104,7 +104,7 @@
     "lat": 35.7099221,
     "lon": 140.7875104,
     "precision": "poi",
-    "website": null,
+    "website": "https://www.aeoncinema.com/cinema/choshi/",
     "sourcePage": "銚子市"
   }
 ]

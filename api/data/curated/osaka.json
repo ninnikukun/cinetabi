@@ -5,7 +5,7 @@
     "lat": 34.8323161,
     "lon": 135.4881071,
     "precision": "poi",
-    "website": null,
+    "website": "https://109cinemas.net/minoh/",
     "sourcePage": "大阪府の映画館"
   },
   {
@@ -14,7 +14,7 @@
     "lat": 34.8522027,
     "lon": 135.6164467,
     "precision": "poi",
-    "website": null,
+    "website": "https://alex-cinemas.com/takatsuki/",
     "sourcePage": "大阪府の映画館"
   },
   {
@@ -23,7 +23,7 @@
     "lat": 34.8117571,
     "lon": 135.5586932,
     "precision": "poi",
-    "website": null,
+    "website": "https://www.aeoncinema.com/cinema/ibaraki/",
     "sourcePage": "大阪府の映画館"
   },
   {
@@ -32,7 +32,7 @@
     "lat": 34.860151,
     "lon": 135.676001,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://hlo.tohotheater.jp/net/schedule/072/TNPI2000J01.do",
     "sourcePage": "大阪府の映画館"
   },
   {
@@ -50,7 +50,7 @@
     "lat": 34.730413,
     "lon": 135.584116,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://hlo.tohotheater.jp/net/schedule/088/TNPI2000J01.do",
     "sourcePage": "大阪府の映画館"
   },
   {
@@ -59,7 +59,7 @@
     "lat": 34.7463766,
     "lon": 135.6298505,
     "precision": "poi",
-    "website": null,
+    "website": "https://www.aeoncinema.com/cinema/shijonawate/",
     "sourcePage": "大阪府の映画館"
   },
   {
@@ -68,7 +68,7 @@
     "lat": 34.6331245,
     "lon": 135.6057265,
     "precision": "poi",
-    "website": null,
+    "website": "https://www.smt-cinema.com/site/yao/index.html",
     "sourcePage": "大阪府の映画館"
   },
   {
@@ -77,7 +77,7 @@
     "lat": 34.5913326,
     "lon": 135.5424413,
     "precision": "poi",
-    "website": null,
+    "website": "https://hlo.tohotheater.jp/net/schedule/086/TNPI2000J01.do",
     "sourcePage": "大阪府の映画館"
   },
   {
@@ -86,7 +86,7 @@
     "lat": 34.3825242,
     "lon": 135.2682607,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://www.aeoncinema.com/cinema/sennan/",
     "sourcePage": "大阪府の映画館"
   },
   {
@@ -95,7 +95,7 @@
     "lat": 34.6725549,
     "lon": 135.4988027,
     "precision": "poi",
-    "website": null,
+    "website": "https://kinocinema.jp/shinsaibashi/",
     "sourcePage": "大阪市中央区の映画館"
   },
   {
@@ -293,7 +293,7 @@
     "lat": 34.4794291,
     "lon": 135.4999855,
     "precision": "poi",
-    "website": null,
+    "website": "https://hlo.tohotheater.jp/net/schedule/005/TNPI2000J01.do",
     "sourcePage": "堺市の映画館"
   },
   {
@@ -302,7 +302,7 @@
     "lat": 34.805168,
     "lon": 135.535483,
     "precision": "poi",
-    "website": null,
+    "website": "https://109cinemas.net/osaka-expocity/",
     "sourcePage": "吹田市の映画館"
   },
   {

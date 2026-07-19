@@ -5,7 +5,7 @@
     "lat": 34.9973659,
     "lon": 135.914528,
     "precision": "poi",
-    "website": null,
+    "website": "https://www.aeoncinema.com/cinema/kusatsu/",
     "sourcePage": "滋賀県の映画館"
   },
   {
@@ -14,7 +14,7 @@
     "lat": 34.976029,
     "lon": 136.1724269,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://alex-cinemas.com/minakuti/",
     "sourcePage": "滋賀県の映画館"
   },
   {
@@ -23,7 +23,7 @@
     "lat": 35.1207224,
     "lon": 136.1036921,
     "precision": "poi",
-    "website": null,
+    "website": "https://www.aeoncinema.com/cinema/oumihachiman/",
     "sourcePage": "滋賀県の映画館"
   },
   {
@@ -32,7 +32,7 @@
     "lat": 35.004513,
     "lon": 135.8791935,
     "precision": "poi",
-    "website": null,
+    "website": "https://www.unitedcinemas.jp/otsu/index.html",
     "sourcePage": "大津市の映画館"
   },
   {

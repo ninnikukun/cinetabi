@@ -14,7 +14,7 @@
     "lat": 36.3797563,
     "lon": 139.0771351,
     "precision": "poi",
-    "website": null,
+    "website": "https://www.unitedcinemas.jp/maebashi/index.html",
     "sourcePage": "前橋市"
   },
   {
@@ -32,7 +32,7 @@
     "lat": 36.3916388,
     "lon": 139.0061214,
     "precision": "poi",
-    "website": null,
+    "website": "https://www.aeoncinema.com/cinema/takasaki/",
     "sourcePage": "高崎市"
   },
   {
@@ -41,7 +41,7 @@
     "lat": 36.2926677,
     "lon": 139.3997446,
     "precision": "poi",
-    "website": null,
+    "website": "https://www.aeoncinema.com/cinema/oota/",
     "sourcePage": "太田市"
   }
 ]

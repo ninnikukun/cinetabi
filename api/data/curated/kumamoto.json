@@ -5,7 +5,7 @@
     "lat": 32.8601498,
     "lon": 130.785914,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://hlo.tohotheater.jp/net/schedule/014/TNPI2000J01.do",
     "sourcePage": "熊本県の映画館"
   },
   {
@@ -14,7 +14,7 @@
     "lat": 32.605404,
     "lon": 130.708589,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://hlo.tohotheater.jp/net/schedule/057/TNPI2000J01.do",
     "sourcePage": "熊本県の映画館"
   },
   {
@@ -59,7 +59,7 @@
     "lat": 32.7705501,
     "lon": 130.7258977,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://hlo.tohotheater.jp/net/schedule/027/TNPI2000J01.do",
     "sourcePage": "熊本市の映画館"
   },
   {

@@ -23,7 +23,7 @@
     "lat": 35.0607787,
     "lon": 136.5806499,
     "precision": "poi",
-    "website": null,
+    "website": "https://www.aeoncinema.com/cinema/toin/",
     "sourcePage": "三重県の映画館"
   },
   {
@@ -59,7 +59,7 @@
     "lat": 34.9676319,
     "lon": 136.6167283,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://109cinemas.net/yokkaichi/",
     "sourcePage": "四日市市の映画館"
   },
   {
@@ -68,7 +68,7 @@
     "lat": 34.6710904,
     "lon": 136.5176558,
     "precision": "poi",
-    "website": null,
+    "website": "https://www.aeoncinema.com/cinema/tsuminami/",
     "sourcePage": "津市の映画館"
   }
 ]

@@ -32,7 +32,7 @@
     "lat": 34.6047508,
     "lon": 133.939852,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://hlo.tohotheater.jp/net/schedule/031/TNPI2000J01.do",
     "sourcePage": "岡山市の映画館"
   },
   {
@@ -41,7 +41,7 @@
     "lat": 34.6050075,
     "lon": 133.7452931,
     "precision": "poi",
-    "website": null,
+    "website": "https://www.smt-cinema.com/site/kurashiki/index.html",
     "sourcePage": "倉敷市の映画館"
   }
 ]
