@@ -1,0 +1,110 @@
+[
+  {
+    "name": "ユナイテッド・シネマ浦和",
+    "address": "埼玉県さいたま市浦和区東高砂町11-1 浦和パルコ6階",
+    "lat": 35.8583645,
+    "lon": 139.6595312,
+    "precision": "poi",
+    "website": "https://urawa.parco.jp",
+    "sourcePage": "さいたま市"
+  },
+  {
+    "name": "イオンシネマ浦和美園",
+    "address": "埼玉県さいたま市緑区美園5-50-1 イオンモール浦和美園3階",
+    "lat": 35.8926572,
+    "lon": 139.7336268,
+    "precision": "neighbourhood",
+    "website": "https://www.aeon.jp/sc/urawamisono/",
+    "sourcePage": "さいたま市"
+  },
+  {
+    "name": "MOVIXさいたま",
+    "address": "埼玉県さいたま市吉敷町4-267-2 コクーンシティ コクーン1 2階",
+    "lat": 35.8947047,
+    "lon": 139.6361166,
+    "precision": "poi",
+    "website": "https://www.cocooncity.jp/",
+    "sourcePage": "さいたま市"
+  },
+  {
+    "name": "OttO",
+    "address": "埼玉県さいたま市大宮区桜木町1-345",
+    "lat": 35.9085757,
+    "lon": 139.6312926,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "さいたま市"
+  },
+  {
+    "name": "イオンシネマ大宮",
+    "address": "埼玉県さいたま市北区櫛引町2-574-1 イオン大宮店4階",
+    "lat": 35.9200196,
+    "lon": 139.6084315,
+    "precision": "neighbourhood",
+    "website": "https://www.aeon.com/store/%E3%82%A4%E3%82%AA%E3%83%B3/%E3%82%A4%E3%82%AA%E3%83%B3%E5%A4%A7%E5%AE%AE%E5%BA%97/",
+    "sourcePage": "さいたま市"
+  },
+  {
+    "name": "MOVIX川口",
+    "address": "埼玉県川口市並木元町1-17 アリオ川口3階",
+    "lat": 35.8066313,
+    "lon": 139.7143636,
+    "precision": "poi",
+    "website": "https://kawaguchi.ario.jp/",
+    "sourcePage": "川口市"
+  },
+  {
+    "name": "イオンシネマ川口",
+    "address": "埼玉県川口市安行領根岸3180 イオンモール川口4階",
+    "lat": 35.8437257,
+    "lon": 139.7180941,
+    "precision": "neighbourhood",
+    "website": "https://kawaguchi-aeonmall.com/",
+    "sourcePage": "川口市"
+  },
+  {
+    "name": "川越スカラ座",
+    "address": "埼玉県川越市元町1丁目1-1",
+    "lat": 35.9250199,
+    "lon": 139.4845653,
+    "precision": "neighbourhood",
+    "website": "http://k-scalaza.com/",
+    "sourcePage": "川越市"
+  },
+  {
+    "name": "ユナイテッド・シネマウニクス南古谷",
+    "address": "埼玉県川越市泉町1 ウニクス南古谷シネマアミューズメント棟2階",
+    "lat": 35.8016554,
+    "lon": 139.4610795,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "川越市"
+  },
+  {
+    "name": "イオンシネマ熊谷",
+    "address": "埼玉県熊谷市本石2-135 イオン熊谷店4階",
+    "lat": 36.1458326,
+    "lon": 139.3787732,
+    "precision": "poi",
+    "website": "https://www.aeoncinema.com/",
+    "sourcePage": "熊谷市"
+  },
+  {
+    "name": "シネティアラ21",
+    "address": "埼玉県熊谷市筑波3-202 ティアラビル8階",
+    "lat": 36.1413458,
+    "lon": 139.391547,
+    "precision": "neighbourhood",
+    "website": "https://www.ct-21.jp",
+    "sourcePage": "熊谷市"
+  },
+  {
+    "name": "ユナイテッド・シネマウニクス秩父",
+    "address": "埼玉県秩父市上野町805-14 ウニクス秩父内",
+    "lat": 35.995089,
+    "lon": 139.08658,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "秩父市"
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "name": "前橋シネマハウス",
+    "address": "群馬県前橋市千代田町5-1-16 アーツ前橋3階",
+    "lat": 36.3905905,
+    "lon": 139.0714032,
+    "precision": "poi",
+    "website": "https://maecine.com/",
+    "sourcePage": "前橋市"
+  },
+  {
+    "name": "ユナイテッド・シネマ前橋",
+    "address": "群馬県前橋市文京町2-1-1 けやきウォーク前橋2階",
+    "lat": 36.3797563,
+    "lon": 139.0771351,
+    "precision": "poi",
+    "website": "https://walk-uny.com/keyaki-walk/",
+    "sourcePage": "前橋市"
+  },
+  {
+    "name": "シネマテークたかさき",
+    "address": "群馬県高崎市あら町202番地",
+    "lat": 36.3238122,
+    "lon": 139.0070357,
+    "precision": "poi",
+    "website": "http://takasaki-cc.jp/",
+    "sourcePage": "高崎市"
+  },
+  {
+    "name": "イオンシネマ高崎",
+    "address": "群馬県高崎市棟高町1400 イオンモール高崎3階",
+    "lat": 36.3916388,
+    "lon": 139.0061214,
+    "precision": "poi",
+    "website": "https://takasaki-aeonmall.com/",
+    "sourcePage": "高崎市"
+  },
+  {
+    "name": "イオンシネマ太田",
+    "address": "群馬県太田市石原町81 イオンモール太田2階",
+    "lat": 36.2926677,
+    "lon": 139.3997446,
+    "precision": "poi",
+    "website": "https://ota-aeonmall.com/",
+    "sourcePage": "太田市"
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "name": "宇都宮ヒカリ座",
+    "address": "栃木県宇都宮市江野町7-13 プラザヒカリ内",
+    "lat": 36.5602065,
+    "lon": 139.8824975,
+    "precision": "neighbourhood",
+    "website": "https://www.ginsee.jp/hikariza/",
+    "sourcePage": "宇都宮市"
+  },
+  {
+    "name": "MOVIX宇都宮",
+    "address": "栃木県宇都宮市インターパーク6-1-1 FKDショッピングモール宇都宮インターパーク店",
+    "lat": 36.4977765,
+    "lon": 139.90668,
+    "precision": "neighbourhood",
+    "website": "https://www.fukudaya.net/shop/interpark/",
+    "sourcePage": "宇都宮市"
+  },
+  {
+    "name": "TOHOシネマズ宇都宮",
+    "address": "栃木県宇都宮市陽東6-5-1 ベルモール内",
+    "lat": 36.5558405,
+    "lon": 139.9304501,
+    "precision": "poi",
+    "website": "https://www.bellmall.co.jp/",
+    "sourcePage": "宇都宮市"
+  },
+  {
+    "name": "ユナイテッド・シネマアシコタウンあしかが",
+    "address": "栃木県足利市大月町3-2 アシコタウンあしかが内",
+    "lat": 36.3344203,
+    "lon": 139.4766402,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "足利市"
+  }
+]

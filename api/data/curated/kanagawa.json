@@ -1,0 +1,245 @@
+[
+  {
+    "name": "シネマノヴェチェント",
+    "address": "神奈川県横浜市西区中央2-1-8 岩崎ビル2階",
+    "lat": 35.4491399,
+    "lon": 139.6139447,
+    "precision": "neighbourhood",
+    "website": "https://cinema1900.wixsite.com/home",
+    "sourcePage": "横浜市"
+  },
+  {
+    "name": "kino cinema 横浜みなとみらい",
+    "address": "神奈川県横浜市西区みなとみらい4-7-1 みなとみらいミッドスクエア2階",
+    "lat": 35.458703,
+    "lon": 139.630537,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "横浜市"
+  },
+  {
+    "name": "ローソン・ユナイテッドシネマ STYLE-S みなとみらい",
+    "address": "神奈川県横浜市西区みなとみらい3-5-1 MARK IS みなとみらい内",
+    "lat": 35.4577528,
+    "lon": 139.6317092,
+    "precision": "poi",
+    "website": "https://www.mec-markis.jp/mm/",
+    "sourcePage": "横浜市"
+  },
+  {
+    "name": "109シネマズゆめが丘",
+    "address": "神奈川県横浜市泉区ゆめが丘31 ゆめが丘ソラトス1 3階",
+    "lat": 35.4036768,
+    "lon": 139.4831605,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "横浜市"
+  },
+  {
+    "name": "港南台シネサロン",
+    "address": "神奈川県横浜市港南区港南台3-3-1 港南台214ビル3階",
+    "lat": 35.3752181,
+    "lon": 139.5782827,
+    "precision": "poi",
+    "website": "https://www.konandai-birds.com/cinema/",
+    "sourcePage": "横浜市"
+  },
+  {
+    "name": "TOHOシネマズ上大岡",
+    "address": "神奈川県横浜市港南区上大岡西1-18-5 mioka3階",
+    "lat": 35.4073129,
+    "lon": 139.5948843,
+    "precision": "poi",
+    "website": "http://www.mioka.jp/",
+    "sourcePage": "横浜市"
+  },
+  {
+    "name": "109シネマズ港北",
+    "address": "神奈川県横浜市都筑区茅ヶ崎中央5-1 港北TOKYUS.C.6階",
+    "lat": 35.5413867,
+    "lon": 139.5741863,
+    "precision": "neighbourhood",
+    "website": "http://www.kohokutokyu-sc.com/",
+    "sourcePage": "横浜市"
+  },
+  {
+    "name": "TOHOシネマズららぽーと横浜",
+    "address": "神奈川県横浜市都筑区池辺町4035-1 ららぽーと横浜3階",
+    "lat": 35.5194646,
+    "lon": 139.5741302,
+    "precision": "neighbourhood",
+    "website": "https://mitsui-shopping-park.com/lalaport/yokohama/",
+    "sourcePage": "横浜市"
+  },
+  {
+    "name": "イオンシネマ港北ニュータウン",
+    "address": "神奈川県横浜市都筑区中川中央1-25-1 ノースポート･モール内",
+    "lat": 35.5532544,
+    "lon": 139.5786318,
+    "precision": "neighbourhood",
+    "website": "http://northport.jp/",
+    "sourcePage": "横浜市"
+  },
+  {
+    "name": "横浜光音座",
+    "address": "神奈川県横浜市中区宮川町2-59",
+    "lat": 35.446288,
+    "lon": 139.6280199,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "横浜市中区"
+  },
+  {
+    "name": "横浜シネマリン",
+    "address": "神奈川県横浜市中区長者町6-95 エスプラスビル2階",
+    "lat": 35.4427051,
+    "lon": 139.6312028,
+    "precision": "poi",
+    "website": "http://cinemarine.co.jp/",
+    "sourcePage": "横浜市中区"
+  },
+  {
+    "name": "シネマジャック・シネマベティ",
+    "address": "神奈川県横浜市中区若葉町3-51",
+    "lat": 35.440695,
+    "lon": 139.6270426,
+    "precision": "neighbourhood",
+    "website": "http://www.jackandbetty.net/",
+    "sourcePage": "横浜市中区"
+  },
+  {
+    "name": "県民共済シネマホール",
+    "address": "神奈川県横浜市中区元浜町4-32",
+    "lat": 35.4500636,
+    "lon": 139.6388523,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "横浜市中区"
+  },
+  {
+    "name": "イオンシネマみなとみらい",
+    "address": "神奈川県横浜市中区新港2-2-1 横浜ワールドポーターズ5階",
+    "lat": 35.4539956,
+    "lon": 139.6387759,
+    "precision": "poi",
+    "website": "https://www.yim.co.jp/",
+    "sourcePage": "横浜市中区"
+  },
+  {
+    "name": "横浜ブルク13",
+    "address": "神奈川県横浜市中区桜木町1-1-7 コレットマーレ6階",
+    "lat": 35.4520463,
+    "lon": 139.630713,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "横浜市中区"
+  },
+  {
+    "name": "川崎チネチッタ",
+    "address": "神奈川県川崎市川崎区小川町4-1",
+    "lat": 35.5747776,
+    "lon": 139.657177,
+    "precision": "neighbourhood",
+    "website": "https://cinecitta.co.jp/",
+    "sourcePage": "川崎市"
+  },
+  {
+    "name": "TOHOシネマズ川崎",
+    "address": "神奈川県川崎市川崎区駅前本町8 DICE 7階",
+    "lat": 35.531645,
+    "lon": 139.7002564,
+    "precision": "poi",
+    "website": "https://www.kawasaki-dice.jp/",
+    "sourcePage": "川崎市"
+  },
+  {
+    "name": "109シネマズ川崎",
+    "address": "神奈川県川崎市幸区堀川町72-1 ラゾーナ川崎プラザ5階",
+    "lat": 35.5437285,
+    "lon": 139.5727426,
+    "precision": "poi",
+    "website": "https://mitsui-shopping-park.com/lazona-kawasaki/",
+    "sourcePage": "川崎市"
+  },
+  {
+    "name": "イオンシネマ新百合ヶ丘",
+    "address": "神奈川県川崎市麻生区上麻生1-19-1 イオンスタイル新百合ケ丘6階",
+    "lat": 35.6022953,
+    "lon": 139.507926,
+    "precision": "neighbourhood",
+    "website": "https://www.aeon.com/store/イオン/イオンスタイル新百合ヶ丘/",
+    "sourcePage": "川崎市"
+  },
+  {
+    "name": "川崎市アートセンターアルテリオ映像館",
+    "address": "神奈川県川崎市麻生区万福寺6-7-1",
+    "lat": 35.6061167,
+    "lon": 139.5055895,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "川崎市"
+  },
+  {
+    "name": "MOVIX橋本",
+    "address": "神奈川県相模原市緑区橋本3-3-1 SING橋本2階",
+    "lat": 35.5944547,
+    "lon": 139.3489059,
+    "precision": "poi",
+    "website": "https://www.smt-cinema.com/site/hashimoto/index.html",
+    "sourcePage": "相模原市"
+  },
+  {
+    "name": "横須賀HUMAXシネマズ",
+    "address": "神奈川県横須賀市本町2-1-12 Coaska Bayside Stores4階",
+    "lat": 35.2826489,
+    "lon": 139.664564,
+    "precision": "neighbourhood",
+    "website": "https://coaska.jp/",
+    "sourcePage": "横須賀市"
+  },
+  {
+    "name": "シネコヤ",
+    "address": "神奈川県藤沢市鵠沼海岸3-4-6",
+    "lat": 35.32047,
+    "lon": 139.467985,
+    "precision": "neighbourhood",
+    "website": "https://cinekoya.com/",
+    "sourcePage": "藤沢市"
+  },
+  {
+    "name": "TOHOシネマズ小田原",
+    "address": "神奈川県小田原市中里313-12 ダイナシティウォーク内",
+    "lat": 35.2837101,
+    "lon": 139.1875797,
+    "precision": "poi",
+    "website": "https://dynacity.jp/",
+    "sourcePage": "小田原市"
+  },
+  {
+    "name": "小田原コロナシネマワールド",
+    "address": "神奈川県小田原市前川219-4",
+    "lat": 35.285813,
+    "lon": 139.224228,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "小田原市"
+  },
+  {
+    "name": "小田原シネマ館",
+    "address": "神奈川県小田原市栄町2-7-30 みのさん第一ビル1階",
+    "lat": 35.2558854,
+    "lon": 139.1584874,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "小田原市"
+  },
+  {
+    "name": "あつぎのえいがかんkiki",
+    "address": "神奈川県厚木市中町2-12-15 アミューあつぎ9階",
+    "lat": 35.4425102,
+    "lon": 139.3656878,
+    "precision": "poi",
+    "website": "http://www.amyu-atsugi.jp/index.html",
+    "sourcePage": "厚木市"
+  }
+]

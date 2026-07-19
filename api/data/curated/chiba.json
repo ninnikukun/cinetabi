@@ -1,0 +1,110 @@
+[
+  {
+    "name": "千葉劇場",
+    "address": "千葉県千葉市中央区中央3-8-8",
+    "lat": 35.6086687,
+    "lon": 140.1236035,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "千葉市"
+  },
+  {
+    "name": "京成ローザ10ウエスト",
+    "address": "千葉県千葉市中央区本千葉町15-1 京成ミラマーレ別館",
+    "lat": 35.6044436,
+    "lon": 140.115941,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "千葉市"
+  },
+  {
+    "name": "京成ローザ10イースト",
+    "address": "千葉県千葉市中央区本千葉町15-1 京成ホテル ミラマーレ4階",
+    "lat": 35.6044436,
+    "lon": 140.115941,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "千葉市"
+  },
+  {
+    "name": "T・ジョイ蘇我",
+    "address": "千葉県千葉市中央区川崎町51-1 フェスティバルウォーク蘇我",
+    "lat": 35.5935745,
+    "lon": 140.1175388,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "千葉市"
+  },
+  {
+    "name": "ユナイテッド・シネマ幕張",
+    "address": "千葉県千葉市美浜区ひび野1-8 メッセ・アミューズ・モール内",
+    "lat": 35.6486659,
+    "lon": 140.0415475,
+    "precision": "neighbourhood",
+    "website": "https://www.unitedcinemas.jp/makuhari/index.html",
+    "sourcePage": "千葉市"
+  },
+  {
+    "name": "イオンシネマ幕張新都心",
+    "address": "千葉県千葉市美浜区豊砂1-1 イオンモール幕張新都心 グランドモール3階",
+    "lat": 35.6499904,
+    "lon": 140.0247357,
+    "precision": "neighbourhood",
+    "website": "https://makuharishintoshin-aeonmall.com/",
+    "sourcePage": "千葉市"
+  },
+  {
+    "name": "ユナイテッド・シネマ テラスモール松戸",
+    "address": "千葉県松戸市八ヶ崎2-8-1 テラスモール松戸内",
+    "lat": 35.816225,
+    "lon": 139.933352,
+    "precision": "neighbourhood",
+    "website": "https://terracemall.com/matsudo/",
+    "sourcePage": "松戸市"
+  },
+  {
+    "name": "MOVIX柏の葉",
+    "address": "千葉県柏市若柴175 ららぽーと柏の葉内",
+    "lat": 35.8944122,
+    "lon": 139.9539785,
+    "precision": "neighbourhood",
+    "website": "https://mitsui-shopping-park.com/lalaport/kashiwa/",
+    "sourcePage": "柏市"
+  },
+  {
+    "name": "キネマ旬報シアター",
+    "address": "千葉県柏市末広町1-1 柏高島屋ステーションモールS館隣",
+    "lat": 35.8628172,
+    "lon": 139.9709725,
+    "precision": "poi",
+    "website": "http://www.stemo.jp/",
+    "sourcePage": "柏市"
+  },
+  {
+    "name": "TOHOシネマズ柏",
+    "address": "千葉県柏市大島田1丁目6-1 セブンパークアリオ柏内3階",
+    "lat": 35.8321498,
+    "lon": 140.0134737,
+    "precision": "poi",
+    "website": "https://sevenpark-kashiwa.ario.jp",
+    "sourcePage": "柏市"
+  },
+  {
+    "name": "TOHOシネマズららぽーと船橋",
+    "address": "千葉県船橋市浜町2-1-1 ららぽーとTOKYO-BAY西館3階",
+    "lat": 35.6871596,
+    "lon": 139.9884316,
+    "precision": "poi",
+    "website": "https://hlo.tohotheater.jp/net/schedule/018/TNPI2000J01.do",
+    "sourcePage": "船橋市"
+  },
+  {
+    "name": "イオンシネマ銚子",
+    "address": "千葉県銚子市三崎町2-2660-1 イオンモール銚子2階",
+    "lat": 35.7099221,
+    "lon": 140.7875104,
+    "precision": "poi",
+    "website": "https://www.aeon.jp/sc/choshi/",
+    "sourcePage": "銚子市"
+  }
+]

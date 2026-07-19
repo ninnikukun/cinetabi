@@ -1,0 +1,497 @@
+[
+  {
+    "name": "丸の内ピカデリー",
+    "address": "東京都千代田区有楽町2-5-1 有楽町マリオン9階",
+    "lat": 35.673888,
+    "lon": 139.76281,
+    "precision": "neighbourhood",
+    "website": "https://www.smt-cinema.com/site/marunouchi/",
+    "sourcePage": "千代田区"
+  },
+  {
+    "name": "丸の内ピカデリーDOLBY CINEMA",
+    "address": "東京都千代田区有楽町2-5-1 有楽町マリオン別館5階",
+    "lat": 35.673888,
+    "lon": 139.76281,
+    "precision": "neighbourhood",
+    "website": "https://www.smt-cinema.com/site/marunouchi/",
+    "sourcePage": "千代田区"
+  },
+  {
+    "name": "TOHOシネマズシャンテ",
+    "address": "東京都千代田区有楽町1-2-2",
+    "lat": 35.6734305,
+    "lon": 139.7604959,
+    "precision": "poi",
+    "website": "http://hlo.tohotheater.jp/net/schedule/034/TNPI2000J01.do",
+    "sourcePage": "千代田区"
+  },
+  {
+    "name": "TOHOシネマズ日比谷",
+    "address": "東京都千代田区有楽町1-1-3 東京宝塚ビル地下",
+    "lat": 35.6733194,
+    "lon": 139.7594538,
+    "precision": "poi",
+    "website": "https://hlo.tohotheater.jp/net/schedule/034/TNPI2000J01.do",
+    "sourcePage": "千代田区"
+  },
+  {
+    "name": "角川シネマ有楽町",
+    "address": "東京都千代田区有楽町1-11-1 読売会館8階",
+    "lat": 35.6751064,
+    "lon": 139.7626825,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "千代田区"
+  },
+  {
+    "name": "UDXシアター",
+    "address": "東京都千代田区外神田4-14-1 秋葉原UDX 4階",
+    "lat": 35.70143,
+    "lon": 139.77237,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "千代田区"
+  },
+  {
+    "name": "ヒューマントラストシネマ有楽町",
+    "address": "東京都千代田区有楽町2-7-1 有楽町イトシア4階",
+    "lat": 35.6741239,
+    "lon": 139.763187,
+    "precision": "poi",
+    "website": "https://www.ttcg.jp/human_yurakucho/",
+    "sourcePage": "千代田区"
+  },
+  {
+    "name": "神保町シアター",
+    "address": "東京都千代田区田神保町1-23 神保町シアタービル地下1階",
+    "lat": 35.696491,
+    "lon": 139.759073,
+    "precision": "neighbourhood",
+    "website": "https://www.shogakukan.co.jp/jinbocho-theater/",
+    "sourcePage": "千代田区"
+  },
+  {
+    "name": "シネマリス",
+    "address": "東京都千代田区神田小川町3-14-3 ilusa地下1階",
+    "lat": 35.6967064,
+    "lon": 139.7607434,
+    "precision": "poi",
+    "website": "https://cinemalice.theater/",
+    "sourcePage": "千代田区"
+  },
+  {
+    "name": "東劇",
+    "address": "東京都中央区築地4-1-1 東劇ビル3階",
+    "lat": 35.7055706,
+    "lon": 139.7519705,
+    "precision": "poi",
+    "website": "https://www.smt-cinema.com/site/togeki/index.html",
+    "sourcePage": "中央区"
+  },
+  {
+    "name": "シネスイッチ銀座",
+    "address": "東京都中央区銀座4-4-5",
+    "lat": 35.6720964,
+    "lon": 139.7650232,
+    "precision": "poi",
+    "website": "https://cineswitch.com/",
+    "sourcePage": "中央区"
+  },
+  {
+    "name": "TOHOシネマズ日本橋",
+    "address": "東京都中央区日本橋室町2-3-1 コレド室町2-3階",
+    "lat": 35.6869786,
+    "lon": 139.7748976,
+    "precision": "poi",
+    "website": "http://hlo.tohotheater.jp/net/schedule/073/TNPI2000J01.do",
+    "sourcePage": "中央区"
+  },
+  {
+    "name": "ユナイテッド・シネマ アクアシティお台場",
+    "address": "東京都港区台場1-7-1 アクアシティお台場内",
+    "lat": 35.6308488,
+    "lon": 139.7783151,
+    "precision": "neighbourhood",
+    "website": "https://www.aquacity.jp/",
+    "sourcePage": "港区"
+  },
+  {
+    "name": "T・ジョイPRINCE品川",
+    "address": "東京都港区高輪4-10-30 アネックスタワー3階",
+    "lat": 35.6283914,
+    "lon": 139.7359119,
+    "precision": "poi",
+    "website": "https://www.princehotels.co.jp/shinagawa/",
+    "sourcePage": "港区"
+  },
+  {
+    "name": "TOHOシネマズ六本木ヒルズ",
+    "address": "東京都港区六本木6-10-2 六本木ヒルズけやき坂コンプレックス内",
+    "lat": 35.6603048,
+    "lon": 139.7308226,
+    "precision": "neighbourhood",
+    "website": "http://hlo.tohotheater.jp/net/schedule/009/TNPI2000J01.do",
+    "sourcePage": "港区"
+  },
+  {
+    "name": "上野オークラ劇場1・2・上野特選劇場",
+    "address": "東京都台東区上野2-13-6",
+    "lat": 35.7090563,
+    "lon": 139.7723553,
+    "precision": "neighbourhood",
+    "website": "http://www.okura-movie.co.jp/uenookura/",
+    "sourcePage": "台東区"
+  },
+  {
+    "name": "TOHOシネマズ上野",
+    "address": "東京都台東区上野3-24-6 上野フロンティアタワー7階",
+    "lat": 35.7068718,
+    "lon": 139.7731586,
+    "precision": "poi",
+    "website": "https://parcoya-ueno.parco.jp/",
+    "sourcePage": "台東区"
+  },
+  {
+    "name": "TOHOシネマズ錦糸町楽天地",
+    "address": "東京都墨田区江東橋4-27-14",
+    "lat": 35.695011,
+    "lon": 139.817372,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "墨田区"
+  },
+  {
+    "name": "TOHOシネマズ錦糸町オリナス",
+    "address": "東京都墨田区太平4-1-2 olinasモール4階",
+    "lat": 35.701441,
+    "lon": 139.816912,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "墨田区"
+  },
+  {
+    "name": "ストレンジャー",
+    "address": "東京都墨田区菊川3-7-1 菊川会館ビル1階",
+    "lat": 35.688537,
+    "lon": 139.80776,
+    "precision": "neighbourhood",
+    "website": "https://stranger.jp",
+    "sourcePage": "墨田区"
+  },
+  {
+    "name": "109シネマズ木場",
+    "address": "東京都江東区木場1-5-30 イトーヨーカドー木場店3階",
+    "lat": 35.6666072,
+    "lon": 139.8041174,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "江東区"
+  },
+  {
+    "name": "ユナイテッド・シネマ豊洲",
+    "address": "東京都江東区豊洲2-4-9 アーバンドックららぽーと豊洲3階",
+    "lat": 35.654557,
+    "lon": 139.7924434,
+    "precision": "poi",
+    "website": "https://mitsui-shopping-park.com/lalaport/toyosu/",
+    "sourcePage": "江東区"
+  },
+  {
+    "name": "MOVIX亀有",
+    "address": "東京都葛飾区亀有3-49-3 アリオ亀有アリオモール3階",
+    "lat": 35.7638517,
+    "lon": 139.8485978,
+    "precision": "neighbourhood",
+    "website": "http://www.ario-kameari.jp/",
+    "sourcePage": "葛飾区"
+  },
+  {
+    "name": "船堀シネパル",
+    "address": "東京都江戸川区船堀4-1-1 江戸川区総合区民ホール地下1階",
+    "lat": 35.6845853,
+    "lon": 139.8644775,
+    "precision": "poi",
+    "website": "https://www.towerhall.jp/movie/",
+    "sourcePage": "江戸川区"
+  },
+  {
+    "name": "シネマロサ",
+    "address": "東京都豊島区西池袋1-37-12",
+    "lat": 35.7324812,
+    "lon": 139.7091711,
+    "precision": "poi",
+    "website": "https://www.cinemarosa.net/",
+    "sourcePage": "豊島区"
+  },
+  {
+    "name": "シネロマン池袋",
+    "address": "東京都豊島区西池袋1-29-2 地得ビル地下1階",
+    "lat": 35.7301653,
+    "lon": 139.709385,
+    "precision": "neighbourhood",
+    "website": "http://cineroman.blog.2nt.com/",
+    "sourcePage": "豊島区"
+  },
+  {
+    "name": "池袋HUMAXシネマズ",
+    "address": "東京都豊島区東池袋1-22-10 ヒューマックスパビリオン池袋サンシャイン60通り",
+    "lat": 35.7298985,
+    "lon": 139.7158893,
+    "precision": "poi",
+    "website": "https://humax-ent.co.jp/",
+    "sourcePage": "豊島区"
+  },
+  {
+    "name": "新文芸坐",
+    "address": "東京都豊島区東池袋1-43-5 マルハン池袋ビル3階",
+    "lat": 35.7325827,
+    "lon": 139.7137059,
+    "precision": "poi",
+    "website": "https://www.shin-bungeiza.com/",
+    "sourcePage": "豊島区"
+  },
+  {
+    "name": "グランドシネマサンシャイン",
+    "address": "東京都豊島区東池袋1-30-3 グランドスケープ池袋4階",
+    "lat": 35.7308841,
+    "lon": 139.7163986,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "豊島区"
+  },
+  {
+    "name": "CINEMA Chupki TABATA",
+    "address": "東京都北区東田端2-8-4 マウントサイドTABATA",
+    "lat": 35.7411502,
+    "lon": 139.7617539,
+    "precision": "poi",
+    "website": "http://chupki.jpn.org/",
+    "sourcePage": "北区"
+  },
+  {
+    "name": "TOHOシネマズ西新井",
+    "address": "東京都足立区西新井栄町1-20-1 アリオ西新井4階",
+    "lat": 35.7740149,
+    "lon": 139.7894061,
+    "precision": "neighbourhood",
+    "website": "https://nishiarai.ario.jp/",
+    "sourcePage": "足立区"
+  },
+  {
+    "name": "ポレポレ東中野",
+    "address": "東京都中野区東中野4-4-1 ポレポレ坐ビル地下",
+    "lat": 35.7065193,
+    "lon": 139.6845665,
+    "precision": "poi",
+    "website": "https://pole2.co.jp",
+    "sourcePage": "中野区"
+  },
+  {
+    "name": "ラピュタ阿佐ケ谷",
+    "address": "東京都杉並区阿佐谷北2-12-21",
+    "lat": 35.706458,
+    "lon": 139.6336032,
+    "precision": "neighbourhood",
+    "website": "https://www.laputa-jp.com/",
+    "sourcePage": "杉並区"
+  },
+  {
+    "name": "Morc阿佐ケ谷",
+    "address": "東京都杉並区阿佐谷北2-12-19 地下1階",
+    "lat": 35.706458,
+    "lon": 139.6336032,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "杉並区"
+  },
+  {
+    "name": "イオンシネマ板橋",
+    "address": "東京都板橋区徳丸2-6-1 イオン板橋S.C 5階",
+    "lat": 35.7703312,
+    "lon": 139.6606394,
+    "precision": "poi",
+    "website": "https://www.aeon.jp/sc/itabashi/",
+    "sourcePage": "板橋区"
+  },
+  {
+    "name": "T・ジョイSEIBU大泉",
+    "address": "東京都練馬区大泉2-34-1 OZスタジオシティ4階",
+    "lat": 35.7530358,
+    "lon": 139.5948388,
+    "precision": "poi",
+    "website": "https://www.toei.co.jp/studio/tokyo/",
+    "sourcePage": "練馬区"
+  },
+  {
+    "name": "ユナイテッド・シネマとしまえん",
+    "address": "東京都練馬区練馬4-15-20",
+    "lat": 35.742586,
+    "lon": 139.649367,
+    "precision": "neighbourhood",
+    "website": "https://www.unitedcinemas.jp/index.html",
+    "sourcePage": "練馬区"
+  },
+  {
+    "name": "東京都写真美術館ホール",
+    "address": "東京都目黒区三田1-13-3 恵比寿ガーデンプレイス内",
+    "lat": 35.6405615,
+    "lon": 139.7145804,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "目黒区"
+  },
+  {
+    "name": "目黒シネマ",
+    "address": "東京都品川区上大崎2-24-15",
+    "lat": 35.634981,
+    "lon": 139.7148239,
+    "precision": "poi",
+    "website": "http://www.okura-movie.co.jp/meguro_cinema/now_showing.html",
+    "sourcePage": "品川区"
+  },
+  {
+    "name": "キネカ大森",
+    "address": "東京都品川区南大井6-27-25 西友大森店5階",
+    "lat": 35.5879889,
+    "lon": 139.7300486,
+    "precision": "poi",
+    "website": "https://ttcg.jp/cineka_omori/",
+    "sourcePage": "品川区"
+  },
+  {
+    "name": "TOHOシネマズ大井町",
+    "address": "東京都品川区広町二丁目1番21号 OIMACHI TRACKS BUSINESS TOWER 3階",
+    "lat": 35.6084367,
+    "lon": 139.7325967,
+    "precision": "poi",
+    "website": "https://www.oimachi-tracks.com/",
+    "sourcePage": "品川区"
+  },
+  {
+    "name": "下高井戸シネマ",
+    "address": "東京都世田谷区松原3-27-26",
+    "lat": 35.6659378,
+    "lon": 139.6427873,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "世田谷区"
+  },
+  {
+    "name": "下北沢トリウッド",
+    "address": "東京都世田谷区代沢5-32-5 2階",
+    "lat": 35.657172,
+    "lon": 139.6666279,
+    "precision": "neighbourhood",
+    "website": "https://tollywood.jp/",
+    "sourcePage": "世田谷区"
+  },
+  {
+    "name": "109シネマズ玉川",
+    "address": "東京都世田谷区玉川1-14-1 二子玉川ライズS.C.テラスマーケット内",
+    "lat": 35.6109703,
+    "lon": 139.6298945,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "世田谷区"
+  },
+  {
+    "name": "シモキタ-エキマエ-シネマ K2",
+    "address": "東京都世田谷区北沢2-21-22 tefu lounge 2階",
+    "lat": 35.6606552,
+    "lon": 139.666366,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "世田谷区"
+  },
+  {
+    "name": "シアターギルド下北沢",
+    "address": "東京都世田谷区代沢5-8-6",
+    "lat": 35.657172,
+    "lon": 139.6666279,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "世田谷区"
+  },
+  {
+    "name": "シネマサンシャイン平和島",
+    "address": "東京都大田区平和島1-1-1 ビッグファン平和島4階",
+    "lat": 35.5858778,
+    "lon": 139.7406596,
+    "precision": "neighbourhood",
+    "website": "https://www.big-fun.jp/",
+    "sourcePage": "大田区"
+  },
+  {
+    "name": "TOHOシネマズ南大沢",
+    "address": "東京都八王子市南大沢2-3 fab南大沢4階",
+    "lat": 35.61045,
+    "lon": 139.385206,
+    "precision": "neighbourhood",
+    "website": "https://www.tohocinemas.co.jp/",
+    "sourcePage": "八王子市"
+  },
+  {
+    "name": "立川シネマシティシネマワン",
+    "address": "東京都立川市曙町2-8-5",
+    "lat": 35.7005871,
+    "lon": 139.4138498,
+    "precision": "poi",
+    "website": "https://cinemacity.co.jp/",
+    "sourcePage": "立川市"
+  },
+  {
+    "name": "立川シネマシティシネマツー",
+    "address": "東京都立川市曙町2-42-26",
+    "lat": 35.7013804,
+    "lon": 139.4121414,
+    "precision": "poi",
+    "website": "https://cinemacity.co.jp/",
+    "sourcePage": "立川市"
+  },
+  {
+    "name": "kino cinema 立川高島屋S.C.館",
+    "address": "東京都立川市曙町2-39-3 立川髙島屋ショッピングセンター8階",
+    "lat": 35.7009894,
+    "lon": 139.4132389,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "立川市"
+  },
+  {
+    "name": "TOHOシネマズ立川立飛",
+    "address": "東京都立川市泉町935-1",
+    "lat": 35.7125451,
+    "lon": 139.4161569,
+    "precision": "poi",
+    "website": "https://www.tohocinemas.co.jp/",
+    "sourcePage": "立川市"
+  },
+  {
+    "name": "吉祥寺東亜会館",
+    "address": "東京都武蔵野市吉祥寺南町2-3-16",
+    "lat": 35.7111923,
+    "lon": 139.5652025,
+    "precision": "poi",
+    "website": "http://cinemaodeon.jp/",
+    "sourcePage": "武蔵野市"
+  },
+  {
+    "name": "アップリンク吉祥寺",
+    "address": "東京都武蔵野市吉祥寺本町1丁目5-1 吉祥寺パルコ地下2階",
+    "lat": 35.705245,
+    "lon": 139.5810051,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "武蔵野市"
+  },
+  {
+    "name": "109シネマズグランベリーパーク",
+    "address": "東京都町田市鶴間3-4-1 グランベリーパーク内",
+    "lat": 35.5095318,
+    "lon": 139.4703551,
+    "precision": "neighbourhood",
+    "website": "https://gbp.minamimachida-grandberrypark.com/",
+    "sourcePage": "町田市"
+  }
+]

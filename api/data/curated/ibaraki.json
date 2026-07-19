@@ -1,0 +1,56 @@
+[
+  {
+    "name": "水戸銀星映画劇場",
+    "address": "茨城県水戸市袴塚1-6-16",
+    "lat": 36.3946747,
+    "lon": 140.4491446,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "水戸市"
+  },
+  {
+    "name": "TOHOシネマズ水戸内原",
+    "address": "茨城県水戸市中原2丁目1 イオンモール水戸内原3階",
+    "lat": 36.3739128,
+    "lon": 140.361794,
+    "precision": "neighbourhood",
+    "website": "https://mitouchihara-aeonmall.com/",
+    "sourcePage": "水戸市"
+  },
+  {
+    "name": "ユナイテッド・シネマ水戸",
+    "address": "茨城県水戸市宮町1-7-44 COMBOX310内",
+    "lat": 36.3695414,
+    "lon": 140.4746916,
+    "precision": "poi",
+    "website": "http://www.combox310.com",
+    "sourcePage": "水戸市"
+  },
+  {
+    "name": "シネマサンライズ",
+    "address": "茨城県日立市東滑川町5-1-3 シーマークスクエア",
+    "lat": 36.6164424,
+    "lon": 140.6785377,
+    "precision": "poi",
+    "website": "https://www.sea-mark.jp/",
+    "sourcePage": "日立市"
+  },
+  {
+    "name": "土浦セントラルシネマズ",
+    "address": "茨城県土浦市川口1-11-5",
+    "lat": 36.081095,
+    "lon": 140.204379,
+    "precision": "neighbourhood",
+    "website": "https://tsuchiura-central.jp/",
+    "sourcePage": "土浦市"
+  },
+  {
+    "name": "シネマサンシャイン土浦",
+    "address": "茨城県土浦市上高津367 イオンモール土浦3階",
+    "lat": 36.076263,
+    "lon": 140.171451,
+    "precision": "neighbourhood",
+    "website": "https://www.aeon.jp/sc/tsuchiura/",
+    "sourcePage": "土浦市"
+  }
+]

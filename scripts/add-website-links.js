@@ -1,8 +1,10 @@
 /**
  * add-website-links.js
  *
- * 既存の映画館JSON（渋谷区データなど）に、Wikipediaのinfoboxから
- * 「公式サイト」のURLを抽出して website フィールドを追加するスクリプト。
+ * 既存の映画館JSON（geocode.js出力など）に、Wikipediaのinfoboxから
+ * 「公式サイト」のURLを抽出して website フィールドを補完するスクリプト。
+ * geocode.js が wiki本文の「公式サイト」行から既に website を埋めていることがあるため、
+ * 既に値がある（null/未設定でない）ものはWikipediaへ問い合わせずスキップする。
  *
  * 前提:
  * - 入力JSONは配列で、各要素に映画館名 (name) と、
@@ -93,7 +95,15 @@ async function main() {
   console.log(`${cinemas.length}件の映画館データを処理します...`);
 
   const enriched = [];
+  let skipped = 0;
   for (const cinema of cinemas) {
+    if (cinema.website) {
+      // wiki本文の「公式サイト」行等で既に取得済み
+      enriched.push(cinema);
+      skipped++;
+      continue;
+    }
+
     const pageTitle = cinema.wikipediaTitle || cinema.name;
     console.log(`- ${cinema.name} (${pageTitle}) を検索中...`);
 
@@ -109,6 +119,7 @@ async function main() {
 
     await sleep(REQUEST_DELAY_MS);
   }
+  if (skipped > 0) console.log(`(${skipped}件は既にwebsiteがあったためWikipediaへは問い合わせていません)`);
 
   writeFileSync(outputPath, JSON.stringify(enriched, null, 2), "utf-8");
 
