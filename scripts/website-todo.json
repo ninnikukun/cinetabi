@@ -7,13 +7,6 @@
     "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
   },
   {
-    "name": "中村映劇",
-    "address": "愛知県名古屋市中村区名楽町1-23",
-    "file": "aichi.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
     "name": "三越映画劇場",
     "address": "愛知県名古屋市千種区星が丘元町14-14 星ヶ丘三越9階",
     "file": "aichi.json",
@@ -38,20 +31,6 @@
     "name": "イオンファミリーシアター能代",
     "address": "秋田県能代市柳町11-1 イオン能代店3階",
     "file": "akita.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "シネマヴィレッジ8イオン柏",
-    "address": "青森県つがる市柏稲盛幾世41 イオンモールつがる柏内",
-    "file": "aomori.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "千葉劇場",
-    "address": "千葉県千葉市中央区中央3-8-8",
-    "file": "chiba.json",
     "previousWebsite": null,
     "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
   },
@@ -91,13 +70,6 @@
     "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
   },
   {
-    "name": "KBCシネマ",
-    "address": "福岡県福岡市中央区那の津1-3-21",
-    "file": "fukuoka.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
     "name": "駅前パレス・駅前ロマン",
     "address": "福岡県福岡市博多区博多駅前1-11-12",
     "file": "fukuoka.json",
@@ -126,13 +98,6 @@
     "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
   },
   {
-    "name": "ポレポレシネマズいわき小名浜",
-    "address": "福島県いわき市小名浜字辰巳町79番地 イオンモール小名浜4階",
-    "file": "fukushima.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
     "name": "岐阜朝日劇場",
     "address": "岐阜県岐阜市柳ケ瀬通7-7",
     "file": "gifu.json",
@@ -143,27 +108,6 @@
     "name": "関シネックスマーゴ",
     "address": "岐阜県関市倉知516 サンサンシティマーゴシネマ館",
     "file": "gifu.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "広島バルト11",
-    "address": "広島県安芸郡府中町大須2-1-1 イオンモール広島府中4階",
-    "file": "hiroshima.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "ディノスシネマズ苫小牧",
-    "address": "北海道苫小牧市柳町3-1-20 イオンモール苫小牧2階",
-    "file": "hokkaido.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "シネリーブル神戸",
-    "address": "兵庫県神戸市中央区浪花町59 神戸朝日ビルディング地下1階",
-    "file": "hyogo.json",
     "previousWebsite": null,
     "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
   },
@@ -224,13 +168,6 @@
     "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
   },
   {
-    "name": "横浜ブルク13",
-    "address": "神奈川県横浜市中区桜木町1-1-7 コレットマーレ6階",
-    "file": "kanagawa.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
     "name": "川崎市アートセンターアルテリオ映像館",
     "address": "神奈川県川崎市麻生区万福寺6-7-1",
     "file": "kanagawa.json",
@@ -266,27 +203,6 @@
     "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
   },
   {
-    "name": "キネマミュージアム",
-    "address": "高知県高知市帯屋町1-13-8",
-    "file": "kochi.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "熊本ピカデリー",
-    "address": "熊本県熊本市西区春日3-15-26 アミュプラザくまもと7階",
-    "file": "kumamoto.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "京都文化博物館フィルムシアター",
-    "address": "京都府京都市中京区東片町623ｰ1 京都文化博物館3階",
-    "file": "kyoto.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
     "name": "セイス-シネ・グルージャ",
     "address": "京都府舞鶴市字竹屋24-2【西舞鶴】",
     "file": "kyoto.json",
@@ -297,27 +213,6 @@
     "name": "ロッポニカ四日市",
     "address": "三重県四日市市諏訪栄町9-2",
     "file": "mie.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "シネポート",
-    "address": "宮崎県都城市中町17-9",
-    "file": "miyazaki.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "トラゥム・ライゼ",
-    "address": "長野県上田市中央1-6-13",
-    "file": "nagano.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "長崎セントラル劇場",
-    "address": "長崎県長崎市万屋町5-9",
-    "file": "nagasaki.json",
     "previousWebsite": null,
     "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
   },
