@@ -41,7 +41,7 @@
     "lat": 35.6751064,
     "lon": 139.7626825,
     "precision": "poi",
-    "website": null,
+    "website": "https://www.kadokawa-cinema.jp/yurakucho/",
     "sourcePage": "千代田区"
   },
   {
@@ -50,7 +50,7 @@
     "lat": 35.70143,
     "lon": 139.77237,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://udx-akibaspace.jp/theater/",
     "sourcePage": "千代田区"
   },
   {
@@ -158,7 +158,7 @@
     "lat": 35.695011,
     "lon": 139.817372,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://www.tohotheater.jp/theater/029/institution04.html",
     "sourcePage": "墨田区"
   },
   {
@@ -167,7 +167,7 @@
     "lat": 35.701441,
     "lon": 139.816912,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://www.tohotheater.jp/theater/029/institution05.html",
     "sourcePage": "墨田区"
   },
   {
@@ -302,7 +302,7 @@
     "lat": 35.706458,
     "lon": 139.6336032,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://www.morc-asagaya.com/",
     "sourcePage": "杉並区"
   },
   {
@@ -338,7 +338,7 @@
     "lat": 35.6405615,
     "lon": 139.7145804,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://topmuseum.jp/",
     "sourcePage": "目黒区"
   },
   {
@@ -374,7 +374,7 @@
     "lat": 35.6659378,
     "lon": 139.6427873,
     "precision": "poi",
-    "website": null,
+    "website": "https://www.shimotakaidocinema.com/",
     "sourcePage": "世田谷区"
   },
   {
@@ -401,7 +401,7 @@
     "lat": 35.6606552,
     "lon": 139.666366,
     "precision": "poi",
-    "website": null,
+    "website": "https://k2-cinema.com/",
     "sourcePage": "世田谷区"
   },
   {
@@ -410,7 +410,7 @@
     "lat": 35.657172,
     "lon": 139.6666279,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://theaterguild.co/movie/space/shimokitazawa/",
     "sourcePage": "世田谷区"
   },
   {
@@ -482,7 +482,7 @@
     "lat": 35.705245,
     "lon": 139.5810051,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://joji.uplink.co.jp/",
     "sourcePage": "武蔵野市"
   },
   {

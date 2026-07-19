@@ -5,7 +5,7 @@
     "lat": 35.093838,
     "lon": 138.925637,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://www.joyland.jp/contents/cinema/index.html",
     "sourcePage": "三島市"
   },
   {
@@ -14,7 +14,7 @@
     "lat": 34.933597,
     "lon": 139.124477,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://kinboshicinema.com/",
     "sourcePage": "伊東市"
   },
   {
@@ -86,7 +86,7 @@
     "lat": 34.847726,
     "lon": 138.250454,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://www.cineprego.jp/",
     "sourcePage": "藤枝市"
   },
   {

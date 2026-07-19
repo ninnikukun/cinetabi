@@ -140,7 +140,7 @@
     "lat": 34.7037444,
     "lon": 135.4993314,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://www.tohotheater.jp/theater/037/access.html",
     "sourcePage": "大阪市北区の映画館"
   },
   {
@@ -185,7 +185,7 @@
     "lat": 34.701294,
     "lon": 135.5085851,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://omcube.jp/kinema/",
     "sourcePage": "大阪市北区の映画館"
   },
   {
@@ -212,7 +212,7 @@
     "lat": 34.6468479,
     "lon": 135.5107357,
     "precision": "poi",
-    "website": null,
+    "website": "https://apollo-cinema8.lekumo.biz/",
     "sourcePage": "大阪市南部の映画館"
   },
   {
@@ -221,7 +221,7 @@
     "lat": 34.6468479,
     "lon": 135.5107357,
     "precision": "poi",
-    "website": null,
+    "website": "https://apollo-cinema8.lekumo.biz/",
     "sourcePage": "大阪市南部の映画館"
   },
   {
@@ -230,7 +230,7 @@
     "lat": 34.7014232,
     "lon": 135.5514904,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://www.domacinema.com/",
     "sourcePage": "大阪市東部の映画館"
   },
   {
@@ -248,7 +248,7 @@
     "lat": 34.652074,
     "lon": 135.5065687,
     "precision": "poi",
-    "website": null,
+    "website": "https://shinsekai-toei.com/",
     "sourcePage": "大阪市浪速区の映画館"
   },
   {

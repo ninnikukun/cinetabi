@@ -86,7 +86,7 @@
     "lat": 35.446288,
     "lon": 139.6280199,
     "precision": "poi",
-    "website": null,
+    "website": "http://www.okura-movie.co.jp/yokohama1.html",
     "sourcePage": "横浜市中区"
   },
   {
@@ -113,7 +113,7 @@
     "lat": 35.4500636,
     "lon": 139.6388523,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://www.kenminkyosai.or.jp/life/cinema/",
     "sourcePage": "横浜市中区"
   },
   {
@@ -176,7 +176,7 @@
     "lat": 35.6061167,
     "lon": 139.5055895,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://kawasaki-ac.jp/movie/theater/",
     "sourcePage": "川崎市"
   },
   {
@@ -194,7 +194,7 @@
     "lat": 35.2826489,
     "lon": 139.664564,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://humax-cinema.co.jp/yokosuka/",
     "sourcePage": "横須賀市"
   },
   {
@@ -230,7 +230,7 @@
     "lat": 35.2558854,
     "lon": 139.1584874,
     "precision": "poi",
-    "website": null,
+    "website": "https://odawara-cinema.jp/",
     "sourcePage": "小田原市"
   },
   {
@@ -239,7 +239,7 @@
     "lat": 35.4425102,
     "lon": 139.3656878,
     "precision": "poi",
-    "website": null,
+    "website": "https://atsuginoeigakan-kiki.com/",
     "sourcePage": "厚木市"
   }
 ]

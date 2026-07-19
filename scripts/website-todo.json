@@ -1,513 +1,149 @@
 [
   {
-    "name": "ミッドランドスクエアシネマ2",
-    "address": "愛知県名古屋市中村区名駅4-11-27 シンフォニー豊田ビル2階",
-    "file": "aichi.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "三越映画劇場",
-    "address": "愛知県名古屋市千種区星が丘元町14-14 星ヶ丘三越9階",
-    "file": "aichi.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
     "name": "春日井ユニオン劇場",
     "address": "愛知県春日井市八事町1-45",
     "file": "aichi.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+    "reason": "電話番号0568-81-3381は複数の地図・電話帳サイトで確認できたが、公式サイトは検索結果に一切現れず。個人経営の映画館とみられる。"
   },
   {
     "name": "鶴城映劇",
     "address": "愛知県西尾市菅原町60",
     "file": "aichi.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+    "reason": "三河地方唯一の成人映画館。電話番号0563-57-2084は判明したが、公式サイトは地図・電話帳サイトにも見当たらず。"
   },
   {
     "name": "イオンファミリーシアター能代",
     "address": "秋田県能代市柳町11-1 イオン能代店3階",
     "file": "akita.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "京成ローザ10ウエスト",
-    "address": "千葉県千葉市中央区本千葉町15-1 京成ミラマーレ別館",
-    "file": "chiba.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "京成ローザ10イースト",
-    "address": "千葉県千葉市中央区本千葉町15-1 京成ホテル ミラマーレ4階",
-    "file": "chiba.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+    "reason": "イオン能代店3F内の独立系ミニシアターとみられ、映画情報サイトのみヒット。イオンシネマ公式ドメインでの言及なし。館独自の公式サイトは確認できず。"
   },
   {
     "name": "湊町シネマローズ",
     "address": "愛媛県松山市湊町3-1-9 マツゲキビル4階",
     "file": "ehime.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+    "reason": "電話番号089-941-0234で再検索。同じマツゲキビル内の別テナント「シネマルナティック」（2階、別運営）がヒットしたが、シネマローズ（4階）とは別施設と判明し不採用。閉館報道も見当たらず、公式サイトなし。"
   },
   {
     "name": "見聞劇場",
     "address": "福岡県田川郡川崎町川崎509-1",
     "file": "fukuoka.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "TOHOシネマズ天神ソラリア館",
-    "address": "福岡県福岡市中央区天神2-2-43 ソラリアプラザ7階",
-    "file": "fukuoka.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+    "reason": "大衆演劇ポータルサイトに住所・電話（0947-73-2531）の掲載はあるが、館自体の公式サイトではないため不採用。"
   },
   {
     "name": "駅前パレス・駅前ロマン",
     "address": "福岡県福岡市博多区博多駅前1-11-12",
     "file": "fukuoka.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "小倉名画座",
-    "address": "福岡県北九州市小倉北区京町2-5-6",
-    "file": "fukuoka.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+    "reason": "成人映画館。住所「博多区博多駅前1-11-12」、電話092-451-7234は判明したが、公式サイトは地図・電話帳・掲示板サイトのみで見つからず。"
   },
   {
     "name": "郡山テアトル（本館）",
     "address": "福島県郡山市駅前2-9-7",
     "file": "fukushima.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+    "reason": "MOVIE WALKER PRESS/映画.com/クランクイン等の映画情報サイトのみヒット。独自の公式サイトは確認できず。営業継続中（再確認済み）。"
   },
   {
     "name": "郡山テアトル（別館）",
     "address": "福島県郡山市駅前2-379-1",
     "file": "fukushima.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+    "reason": "本館と同様、公式サイト不在。閉館情報もなく、現在も6・7・8スクリーンとして営業中と確認（スクリーン5のみ2011年閉鎖）。"
   },
   {
     "name": "岐阜朝日劇場",
     "address": "岐阜県岐阜市柳ケ瀬通7-7",
     "file": "gifu.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "関シネックスマーゴ",
-    "address": "岐阜県関市倉知516 サンサンシティマーゴシネマ館",
-    "file": "gifu.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+    "reason": "「朝日映画劇場」として柳ケ瀬通7丁目7、電話058-263-3321まで特定（住所完全一致）。iタウンページ/マピオン等の電話帳・地図サイトのみで公式サイトなし。閉館を示すニュース等も見つからず、営業状況は不明のまま。"
   },
   {
     "name": "福原国際東映",
     "address": "兵庫県神戸市兵庫区福原町15-3",
     "file": "hyogo.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "Cinema KOBE",
-    "address": "兵庫県神戸市兵庫区新開地6-2-20-101",
-    "file": "hyogo.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "カナートホール",
-    "address": "兵庫県神戸市西区竜が岡1-21-1 イズミヤ西神戸店2階",
-    "file": "hyogo.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+    "reason": "Yahoo!マップ/iタウンページ/MapFan/マピオン等の地図・電話帳サイトのみで、独自公式サイトは見つからず。成人映画館。"
   },
   {
     "name": "尼崎パレス",
     "address": "兵庫県尼崎市昭和南通4-52",
     "file": "hyogo.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+    "reason": "Yahoo!マップ/iタウンページ/NAVITIME等のみで独自公式サイトなし。成人映画館、営業中（アライビル4階）。"
   },
   {
     "name": "水戸銀星映画劇場",
     "address": "茨城県水戸市袴塚1-6-16",
     "file": "ibaraki.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+    "reason": "成人映画館。ブログ・訪問記事・地図サイトのみで公式サイトは見つからず。営業継続中との情報あり。"
   },
   {
     "name": "一関シネプラザ",
     "address": "岩手県一関市磐井町2-13",
     "file": "iwate.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "横浜光音座",
-    "address": "神奈川県横浜市中区宮川町2-59",
-    "file": "kanagawa.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "県民共済シネマホール",
-    "address": "神奈川県横浜市中区元浜町4-32",
-    "file": "kanagawa.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "川崎市アートセンターアルテリオ映像館",
-    "address": "神奈川県川崎市麻生区万福寺6-7-1",
-    "file": "kanagawa.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "横須賀HUMAXシネマズ",
-    "address": "神奈川県横須賀市本町2-1-12 Coaska Bayside Stores4階",
-    "file": "kanagawa.json",
-    "previousWebsite": "https://coaska.jp/",
-    "reason": "モール/施設全体のサイトのみで、映画館個別の上映スケジュールページが確認できずnullに変更"
-  },
-  {
-    "name": "小田原シネマ館",
-    "address": "神奈川県小田原市栄町2-7-30 みのさん第一ビル1階",
-    "file": "kanagawa.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "あつぎのえいがかんkiki",
-    "address": "神奈川県厚木市中町2-12-15 アミューあつぎ9階",
-    "file": "kanagawa.json",
-    "previousWebsite": "http://www.amyu-atsugi.jp/index.html",
-    "reason": "モール/施設全体のサイトのみで、映画館個別の上映スケジュールページが確認できずnullに変更"
+    "reason": "Wikipediaの外部リンクは公式X（Twitter）のみで、独立した公式ウェブサイトは確認できず。映画情報アグリゲーターサイトのみ多数ヒット。"
   },
   {
     "name": "大心劇場",
     "address": "高知県安芸郡安田町町内京坊992-1",
     "file": "kochi.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "セイス-シネ・グルージャ",
-    "address": "京都府舞鶴市字竹屋24-2【西舞鶴】",
-    "file": "kyoto.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+    "reason": "館主個人運営とみられる紹介サイト候補が見つかったがSSL非対応で接続できず住所照合不能。他は観光協会系ページのみで館自体の公式サイトとは言えない。"
   },
   {
     "name": "ロッポニカ四日市",
     "address": "三重県四日市市諏訪栄町9-2",
     "file": "mie.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "J-MAXシアター上越",
-    "address": "新潟県上越市富岡3524",
-    "file": "niigata.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+    "reason": "独立した公式ウェブサイトは見つからず。電話番号059-352-3870は電話帳・タウンガイドサイトに掲載されるのみ。成人映画館のため公式サイト非保有と再確認。"
   },
   {
     "name": "別府南映劇場",
     "address": "大分県別府市北浜1-3-27",
     "file": "oita.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "シネマライカム",
-    "address": "沖縄県中頭郡北中城村ライカム1番地 イオンモール沖縄ライカム4階",
-    "file": "okinawa.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "サザンプレックス",
-    "address": "沖縄県島尻郡南風原町宮城371-1",
-    "file": "okinawa.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+    "reason": "合資会社南映が経営する成人映画館で、独立した公式ウェブサイトは見つからなかった。住所・電話は電話帳・地図サイトでのみ確認。閉館情報はなく営業中とみられる。"
   },
   {
     "name": "南の島パニパニシネマ",
     "address": "沖縄県宮古島市平良字西里261-2",
     "file": "okinawa.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "シネマパレット",
-    "address": "沖縄県那覇市久茂地1-1-1 9階",
-    "file": "okinawa.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "シネマQ",
-    "address": "沖縄県那覇市おもろまち4-4-9",
-    "file": "okinawa.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "シアタードーナツ・オキナワ",
-    "address": "沖縄県沖縄市中央1-3-17",
-    "file": "okinawa.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "TOHOシネマズ梅田別館",
-    "address": "大阪府大阪市北区角田町5-1",
-    "file": "osaka.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "扇町キネマ",
-    "address": "大阪府大阪市北区南扇町6-26 扇町ミュージアムキューブM2階",
-    "file": "osaka.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "あべのアポロシネマ8",
-    "address": "大阪府大阪市阿倍野区阿倍野筋1-5-1 アポロビル4階",
-    "file": "osaka.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "あべのアポロシネマプラスワン",
-    "address": "大阪府大阪市阿倍野区阿倍野筋1-5-1",
-    "file": "osaka.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "Theater cafe 土間シネマ",
-    "address": "大阪府大阪市城東区今福西4丁目4-37",
-    "file": "osaka.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+    "reason": "2014年より吉本興業との提携で改称されたが、独立した公式ウェブサイトは見つからず。ぴあ・MOVIE WALKER等の外部サイトとSNSのみ確認。住所・電話は各サイトで一致するが専用公式サイトが存在しないため不採用。"
   },
   {
     "name": "日劇ローズ・日劇シネマ",
     "address": "大阪府大阪市浪速区恵美須東2-2-8",
     "file": "osaka.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "新世界東映",
-    "address": "大阪府大阪市浪速区恵美須東2-2-8",
-    "file": "osaka.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+    "reason": "住所・電話（06-6641-8568）は複数のポータル/紹介サイトで確認できたが、運営者自身の公式ウェブサイトは見つからず、SNSのみで情報発信。"
   },
   {
     "name": "上六シネマ",
     "address": "大阪府大阪市天王寺区上本町6-7-2",
     "file": "osaka.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "シアター シエマ",
-    "address": "佐賀県佐賀市松原2-14-16 セントラルプラザ3階",
-    "file": "saga.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "OttO",
-    "address": "埼玉県さいたま市大宮区桜木町1-345",
-    "file": "saitama.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "彦根ビバシティシネマ",
-    "address": "滋賀県彦根市竹ヶ鼻町43-1 ビバシティ彦根3階",
-    "file": "shiga.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "Shimane Cinema ONOZAWA",
-    "address": "島根県益田市あけぼの東町2-1 小野沢ビル3階",
-    "file": "shimane.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "ジョイランドみしまシネマ",
-    "address": "静岡県三島市梅名308-6",
-    "file": "shizuoka.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "金星シネマ",
-    "address": "静岡県伊東市吉田573-1",
-    "file": "shizuoka.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+    "reason": "住所（上本町6-7-2）・電話（06-6773-8380）は地図/電話帳サイトで確認できたが、運営者の公式ウェブサイトは発見できず。成人映画館。"
   },
   {
     "name": "シネマハウス新映",
     "address": "静岡県浜松市中区板屋町100-5",
     "file": "shizuoka.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "藤枝シネ・プレーゴ",
-    "address": "静岡県藤枝市前島1-7-10 BiVi藤枝4階",
-    "file": "shizuoka.json",
-    "previousWebsite": "http://www.e-bivi.com/fujieda/",
-    "reason": "モール/施設全体のサイトのみで、映画館個別の上映スケジュールページが確認できずnullに変更"
+    "reason": "成人映画館（ピンク映画館）。住所「浜松市中央区板屋町100-5」・電話053-454-9783は複数の第三者サイトで一致確認できたが、公式サイト自体は発見できず。"
   },
   {
     "name": "資料館「キネマ・ミュージアム」",
     "address": "徳島県鳴門市瀬戸町明神字上本城83-9",
     "file": "tokushima.json",
     "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "角川シネマ有楽町",
-    "address": "東京都千代田区有楽町1-11-1 読売会館8階",
-    "file": "tokyo-rest.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "UDXシアター",
-    "address": "東京都千代田区外神田4-14-1 秋葉原UDX 4階",
-    "file": "tokyo-rest.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "TOHOシネマズ錦糸町楽天地",
-    "address": "東京都墨田区江東橋4-27-14",
-    "file": "tokyo-rest.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "TOHOシネマズ錦糸町オリナス",
-    "address": "東京都墨田区太平4-1-2 olinasモール4階",
-    "file": "tokyo-rest.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "Morc阿佐ケ谷",
-    "address": "東京都杉並区阿佐谷北2-12-19 地下1階",
-    "file": "tokyo-rest.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "東京都写真美術館ホール",
-    "address": "東京都目黒区三田1-13-3 恵比寿ガーデンプレイス内",
-    "file": "tokyo-rest.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "下高井戸シネマ",
-    "address": "東京都世田谷区松原3-27-26",
-    "file": "tokyo-rest.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "シモキタ-エキマエ-シネマ K2",
-    "address": "東京都世田谷区北沢2-21-22 tefu lounge 2階",
-    "file": "tokyo-rest.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "シアターギルド下北沢",
-    "address": "東京都世田谷区代沢5-8-6",
-    "file": "tokyo-rest.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "アップリンク吉祥寺",
-    "address": "東京都武蔵野市吉祥寺本町1丁目5-1 吉祥寺パルコ地下2階",
-    "file": "tokyo-rest.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "シネマドア",
-    "address": "鳥取県鳥取市元町222",
-    "file": "tottori.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "J MAX THEATER とやま",
-    "address": "富山県富山市総曲輪3-9-1 ユウタウン総曲輪内2階",
-    "file": "toyama.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "御旅屋座",
-    "address": "富山県高岡市御旅屋町89 二口ビル1階",
-    "file": "toyama.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "シネマ203",
-    "address": "和歌山県和歌山市中ノ店北ノ丁22 北ぶらくり丁会館203号",
-    "file": "wakayama.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "ソラリス",
-    "address": "山形県山形市城南町1-1-1 霞城セントラル地下2階",
-    "file": "yamagata.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "山口情報芸術センター",
-    "address": "山口県山口市中園町7-7",
-    "file": "yamaguchi.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
-  },
-  {
-    "name": "シネマポスト",
-    "address": "山口県下関市大和町1丁目13-7 海町ビル 1階",
-    "file": "yamaguchi.json",
-    "previousWebsite": null,
-    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+    "reason": "地域情報サイト(naruto-mon.jp)等で住所「鳴門市瀬戸町明神字張45-1」または「字張29」の表記が見つかったが、指定住所「字上本城83-9」と一致しない。公式サイト自体も見つからず。"
   }
 ]

@@ -14,7 +14,7 @@
     "lat": 36.6897322,
     "lon": 137.213547,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://www.j-max.jp/toyama/",
     "sourcePage": "富山市"
   },
   {
@@ -41,7 +41,7 @@
     "lat": 36.7447669,
     "lon": 137.0155942,
     "precision": "neighbourhood",
-    "website": null,
+    "website": "https://otayatomos.jp/otayaza/",
     "sourcePage": "高岡市"
   }
 ]

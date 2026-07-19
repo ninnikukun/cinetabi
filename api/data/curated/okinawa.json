@@ -23,7 +23,7 @@
     "lat": 26.3139601,
     "lon": 127.7963307,
     "precision": "poi",
-    "website": null,
+    "website": "https://startheaters.jp/theaters/2/",
     "sourcePage": "沖縄県の映画館"
   },
   {
@@ -41,7 +41,7 @@
     "lat": 26.2036734,
     "lon": 127.7361162,
     "precision": "poi",
-    "website": null,
+    "website": "https://startheaters.jp/theaters/4/",
     "sourcePage": "沖縄県の映画館"
   },
   {
@@ -68,7 +68,7 @@
     "lat": 26.2138541,
     "lon": 127.6791384,
     "precision": "poi",
-    "website": null,
+    "website": "https://startheaters.jp/theaters/5/",
     "sourcePage": "那覇市の映画館"
   },
   {
@@ -77,7 +77,7 @@
     "lat": 26.2251624,
     "lon": 127.6946274,
     "precision": "poi",
-    "website": null,
+    "website": "https://startheaters.jp/theaters/1/",
     "sourcePage": "那覇市の映画館"
   },
   {
@@ -86,7 +86,7 @@
     "lat": 26.3362583,
     "lon": 127.8006588,
     "precision": "poi",
-    "website": null,
+    "website": "https://theater-donut.com/",
     "sourcePage": "OSM補完（wiki未掲載・WebSearchで実在確認）"
   }
 ]
