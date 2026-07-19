@@ -1050,6 +1050,7 @@ function loadSavedFindState() {
 
 function FindView() {
   const saved = loadSavedFindState();
+  const initialSavedRef = useRef(saved);
   const [query, setQuery] = useState(saved?.query || "");
   const [limit, setLimit] = useState(saved?.limit || 10);
   const [loading, setLoading] = useState(false);
@@ -1058,11 +1059,47 @@ function FindView() {
 
   useEffect(() => {
     if (!data) return;
-    try { sessionStorage.setItem(FIND_STATE_KEY, JSON.stringify({ query, limit, data })); } catch {}
+    try {
+      const raw = sessionStorage.getItem(FIND_STATE_KEY);
+      const prev = raw ? JSON.parse(raw) : {};
+      sessionStorage.setItem(FIND_STATE_KEY, JSON.stringify({ ...prev, query, limit, data }));
+    } catch {}
   }, [query, limit, data]);
+
+  // タブが隠れる（外部サイトへ遷移する等）直前のスクロール位置を保存しておき、
+  // 戻ってきて検索結果を復元するときに、見ていた位置までスクロールし直す。
+  useEffect(() => {
+    const saveScroll = () => {
+      try {
+        const raw = sessionStorage.getItem(FIND_STATE_KEY);
+        if (!raw) return;
+        const prev = JSON.parse(raw);
+        sessionStorage.setItem(FIND_STATE_KEY, JSON.stringify({ ...prev, scrollY: window.scrollY }));
+      } catch {}
+    };
+    const onVisibilityChange = () => { if (document.hidden) saveScroll(); };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    window.addEventListener("pagehide", saveScroll);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.removeEventListener("pagehide", saveScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    const scrollY = initialSavedRef.current?.scrollY;
+    if (typeof scrollY !== "number") return;
+    // PWAの再起動直後はフォント読み込み等でレイアウトが遅れて動くことがあるため、
+    // 複数タイミングでスクロールし直して確実に合わせる。
+    const apply = () => window.scrollTo(0, scrollY);
+    requestAnimationFrame(() => requestAnimationFrame(apply));
+    const timers = [150, 300, 600, 1000].map((ms) => setTimeout(apply, ms));
+    return () => timers.forEach(clearTimeout);
+  }, []);
 
   const run = async (params) => {
     setLoading(true); setData(null);
+    try { sessionStorage.removeItem(FIND_STATE_KEY); } catch {}
     try {
       const r = await fetch(`/api/cinemas?${params}`);
       setData(await r.json());
@@ -1142,9 +1179,16 @@ function FindView() {
   );
 }
 
+const ACTIVE_VIEW_KEY = "cinetabi_active_view";
+
 /* ─────────── メインの画面（記録/でかける）。データ源に依存しない共通シェル ─────────── */
 function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onUpdateMovie, onLogout, isAnonymous, followInfo, followLink, onFollowLinkDone }) {
-  const [view, setView] = useState("log");
+  const [view, setView] = useState(() => {
+    try { return sessionStorage.getItem(ACTIVE_VIEW_KEY) || "log"; } catch { return "log"; }
+  });
+  useEffect(() => {
+    try { sessionStorage.setItem(ACTIVE_VIEW_KEY, view); } catch {}
+  }, [view]);
   const [adding, setAdding] = useState(false);
   const [sharing, setSharing] = useState(null);
   const [connecting, setConnecting] = useState(false);
