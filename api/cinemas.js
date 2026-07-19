@@ -112,7 +112,8 @@ export default async function handler(req, res) {
         // 同一チェーンの別店舗（例：TOHOシネマズ）と紛らわしいので、支店名タグがあれば付け足す。
         const branch = e.tags && e.tags.branch;
         if (branch && !name.includes(branch)) name = `${name}（${branch}）`;
-        return { id: e.type + e.id, name, lat: elat, lon: elon, dist: haversine(lat, lon, elat, elon), precision: "poi" };
+        const website = (e.tags && (e.tags.website || e.tags["contact:website"])) || null;
+        return { id: e.type + e.id, name, lat: elat, lon: elon, dist: haversine(lat, lon, elat, elon), precision: "poi", website };
       })
       .filter(Boolean);
 
@@ -123,6 +124,7 @@ export default async function handler(req, res) {
       lon: c.lon,
       dist: c.dist,
       precision: c.precision,
+      website: c.website || null,
     }));
 
     const seen = new Set();
@@ -142,6 +144,7 @@ export default async function handler(req, res) {
         dist: Math.round(c.dist),
         walk,
         isApprox: c.precision === "neighbourhood",
+        website: c.website || null,
       };
     });
 

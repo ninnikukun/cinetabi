@@ -1109,6 +1109,11 @@ function FindView() {
                   約 徒歩{c.walk}分（約{c.dist >= 1000 ? (c.dist/1000).toFixed(1)+"km" : c.dist+"m"}）
                   {c.isApprox && <span style={{ marginLeft:6, fontSize:11, color:"var(--ink-dim)" }}>・おおよその位置</span>}
                 </div>
+                {c.website && (
+                  <a href={c.website} target="_blank" rel="noopener noreferrer" style={{ display:"inline-block", marginTop:6, fontSize:12.5, color:"var(--amber)" }}>
+                    公式サイト ↗
+                  </a>
+                )}
               </article>
             ))}
             </div>
