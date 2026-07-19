@@ -1,0 +1,86 @@
+[
+  {
+    "name": "TOHOシネマズ渋谷",
+    "address": "東京都渋谷区道玄坂2-6-17",
+    "lat": 35.6591861,
+    "lon": 139.6988833,
+    "precision": "poi"
+  },
+  {
+    "name": "シネクイント",
+    "address": "東京都渋谷区宇田川町20-11 渋谷三葉ビル7階",
+    "lat": 35.6608740,
+    "lon": 139.6998486,
+    "precision": "poi"
+  },
+  {
+    "name": "YEBISU GARDEN CINEMA",
+    "address": "東京都渋谷区恵比寿4-20-2 恵比寿ガーデンプレイス内",
+    "lat": 35.6449777,
+    "lon": 139.7139662,
+    "precision": "neighbourhood"
+  },
+  {
+    "name": "シアター・イメージフォーラム",
+    "address": "東京都渋谷区渋谷2-10-2 イメージフォーラムビル",
+    "lat": 35.6603034,
+    "lon": 139.7070219,
+    "precision": "poi"
+  },
+  {
+    "name": "ヒューマントラストシネマ渋谷",
+    "address": "東京都渋谷区渋谷1-23-16 ココチビル7階・8階",
+    "lat": 35.6619728,
+    "lon": 139.7027232,
+    "precision": "poi"
+  },
+  {
+    "name": "シネマヴェーラ渋谷",
+    "address": "東京都渋谷区円山町1-5 KINOHAUS 4階",
+    "lat": 35.6576798,
+    "lon": 139.6950285,
+    "precision": "neighbourhood"
+  },
+  {
+    "name": "ユーロスペース",
+    "address": "東京都渋谷区円山町1-5 KINOHAUS 3階",
+    "lat": 35.6576798,
+    "lon": 139.6950285,
+    "precision": "neighbourhood"
+  },
+  {
+    "name": "渋谷HUMAXシネマ",
+    "address": "東京都渋谷区宇田川町20-15 ヒューマックスパビリオン渋谷公園通り4階",
+    "lat": 35.6620752,
+    "lon": 139.6974957,
+    "precision": "neighbourhood"
+  },
+  {
+    "name": "ユーロライブ",
+    "address": "東京都渋谷区円山町1-5 KINOHAUS 2階",
+    "lat": 35.6576798,
+    "lon": 139.6950285,
+    "precision": "neighbourhood"
+  },
+  {
+    "name": "WHITE CINE QUINTO",
+    "address": "東京都渋谷区宇田川町15-1 渋谷PARCO 8階",
+    "lat": 35.6619815,
+    "lon": 139.6990987,
+    "precision": "poi"
+  },
+  {
+    "name": "Bunkamuraル・シネマ渋谷宮下",
+    "address": "東京都渋谷区渋谷1-24-12",
+    "lat": 35.6618126,
+    "lon": 139.7050733,
+    "precision": "neighbourhood"
+  },
+  {
+    "name": "シアターギルド代官山",
+    "address": "東京都渋谷区猿楽町11-6",
+    "lat": 35.6501019,
+    "lon": 139.7011319,
+    "precision": "neighbourhood"
+  }
+]

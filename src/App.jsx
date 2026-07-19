@@ -1105,11 +1105,14 @@ function FindView() {
             {show.map((c, i) => (
               <article key={c.id} className="fade-up" style={{ background:"var(--surface)", border:"1px solid var(--line)", borderRadius:14, padding:"14px 16px", animationDelay:`${Math.min(i*45,270)}ms` }}>
                 <h3 style={{ margin:0, fontSize:17, fontWeight:700, lineHeight:1.3 }}>{c.name}</h3>
-                <div style={{ margin:"5px 0 0", fontSize:13, color:"var(--amber-dim)" }}>約 徒歩{c.walk}分（約{c.dist >= 1000 ? (c.dist/1000).toFixed(1)+"km" : c.dist+"m"}）</div>
+                <div style={{ margin:"5px 0 0", fontSize:13, color:"var(--amber-dim)" }}>
+                  約 徒歩{c.walk}分（約{c.dist >= 1000 ? (c.dist/1000).toFixed(1)+"km" : c.dist+"m"}）
+                  {c.isApprox && <span style={{ marginLeft:6, fontSize:11, color:"var(--ink-dim)" }}>・おおよその位置</span>}
+                </div>
               </article>
             ))}
             </div>
-            <p style={{ textAlign:"center", color:"var(--line)", fontSize:11, marginTop:14, lineHeight:1.6 }}>映画館データ：OpenStreetMap ／ 徒歩分は直線距離からの概算です</p>
+            <p style={{ textAlign:"center", color:"var(--line)", fontSize:11, marginTop:14, lineHeight:1.6 }}>映画館データ：OpenStreetMap／「消えた映画館の記憶」(hekikaicinema.memo.wiki) ／ 徒歩分は道のりからの概算です</p>
           </>
         )
       )}
