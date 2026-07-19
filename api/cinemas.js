@@ -9,12 +9,18 @@
 //     ORS_API_KEY が未設定の場合は直線距離÷80分の概算にフォールバックする。
 // ※ これらは無料の共有インフラなので、個人利用の範囲で使うこと。
 
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const curatedCinemas = JSON.parse(readFileSync(path.join(__dirname, "data", "curated-cinemas.json"), "utf-8"));
+
+// キュレーションデータは都道府県（東京は区）単位のファイルに分割して data/curated/ に置く。
+// 起動時に全ファイルを読み込んで1つの配列に結合する（全国でも数百件規模なのでメモリ上で十分）。
+const curatedDir = path.join(__dirname, "data", "curated");
+const curatedCinemas = readdirSync(curatedDir)
+  .filter((f) => f.endsWith(".json"))
+  .flatMap((f) => JSON.parse(readFileSync(path.join(curatedDir, f), "utf-8")));
 const closedCinemas = JSON.parse(readFileSync(path.join(__dirname, "data", "closed-cinemas.json"), "utf-8"));
 
 function haversine(lat1, lon1, lat2, lon2) {
@@ -86,8 +92,10 @@ export default async function handler(req, res) {
         body: "data=" + encodeURIComponent(ql),
       });
       if (or.ok) od = await or.json();
-    } catch {
+      else console.error("[cinemas] overpass non-ok:", or.status);
+    } catch (err) {
       // Overpass失敗時はキュレーションデータのみで続行
+      console.error("[cinemas] overpass fetch failed:", err && err.message);
     }
 
     // キュレーション地点の近くにあるOverpass結果は同一の映画館とみなし、キュレーション側を採用する。

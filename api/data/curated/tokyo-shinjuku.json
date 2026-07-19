@@ -1,0 +1,93 @@
+[
+  {
+    "name": "kino cinema新宿",
+    "address": "東京都新宿区新宿3-13-3 新宿文化ビル内",
+    "lat": 35.6919345,
+    "lon": 139.7057605,
+    "precision": "poi",
+    "website": "https://kinocinema.jp/shinjuku/",
+    "sourcePage": "新宿区の映画館",
+    "note": "Nominatimは歌舞伎町側を誤って返したため、同居するシネマート新宿（新宿文化ビル）の座標を手動適用"
+  },
+  {
+    "name": "早稲田松竹",
+    "address": "東京都新宿区高田馬場1-5-16",
+    "lat": 35.7116186,
+    "lon": 139.7082263,
+    "precision": "poi",
+    "website": "https://wasedashochiku.co.jp/",
+    "sourcePage": "新宿区の映画館"
+  },
+  {
+    "name": "新宿武蔵野館",
+    "address": "東京都新宿区新宿3-27-10",
+    "lat": 35.6911989,
+    "lon": 139.701959,
+    "precision": "poi",
+    "website": "https://shinjuku.musashino-k.jp/",
+    "sourcePage": "新宿区の映画館"
+  },
+  {
+    "name": "テアトル新宿",
+    "address": "東京都新宿区新宿3-14-20",
+    "lat": 35.6923166,
+    "lon": 139.7051654,
+    "precision": "poi",
+    "website": "https://ttcg.jp/theatre_shinjuku/",
+    "sourcePage": "新宿区の映画館"
+  },
+  {
+    "name": "シネマート新宿",
+    "address": "東京都新宿区新宿3-13-3 新宿文化ビル内",
+    "lat": 35.6919345,
+    "lon": 139.7057605,
+    "precision": "poi",
+    "website": "https://www.cinemart.co.jp/theater/shinjuku/",
+    "sourcePage": "新宿区の映画館"
+  },
+  {
+    "name": "K's cinema",
+    "address": "東京都新宿区新宿3-35-13 SHOWAKAN-BLD 3階",
+    "lat": 35.6911965,
+    "lon": 139.7040936,
+    "precision": "neighbourhood",
+    "website": "https://www.ks-cinema.com/",
+    "sourcePage": "新宿区の映画館"
+  },
+  {
+    "name": "新宿バルト9",
+    "address": "東京都新宿区新宿3-1-26 新宿三丁目イーストビル9階",
+    "lat": 35.6901173,
+    "lon": 139.7059134,
+    "precision": "poi",
+    "website": "https://tjoy.jp/shinjuku_wald9",
+    "sourcePage": "新宿区の映画館"
+  },
+  {
+    "name": "新宿ピカデリー",
+    "address": "東京都新宿区新宿3-15-15",
+    "lat": 35.6926601,
+    "lon": 139.703658,
+    "precision": "poi",
+    "website": "https://www.smt-cinema.com/site/shinjuku/",
+    "sourcePage": "新宿区の映画館"
+  },
+  {
+    "name": "TOHOシネマズ新宿",
+    "address": "東京都新宿区歌舞伎町1-19-1 新宿東宝ビル3階",
+    "lat": 35.6951537,
+    "lon": 139.7019637,
+    "precision": "poi",
+    "website": "https://www.tohotheater.jp/theater/076/",
+    "sourcePage": "新宿区の映画館"
+  },
+  {
+    "name": "109シネマズプレミアム新宿",
+    "address": "東京都新宿区歌舞伎町1-29-1 東急歌舞伎町タワー9階・10階",
+    "lat": 35.6958504,
+    "lon": 139.7005579,
+    "precision": "poi",
+    "website": "https://109cinemas.net/premiumshinjuku/",
+    "sourcePage": "新宿区の映画館"
+  }
+]
