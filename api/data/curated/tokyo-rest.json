@@ -493,5 +493,14 @@
     "precision": "neighbourhood",
     "website": "https://gbp.minamimachida-grandberrypark.com/",
     "sourcePage": "町田市"
+  },
+  {
+    "name": "イオンシネマ八王子滝山",
+    "address": "東京都八王子市滝山町一丁目884 イオン八王子滝山 South A棟3階",
+    "lat": 35.6844049,
+    "lon": 139.3415418,
+    "precision": "poi",
+    "website": "https://www.aeoncinema.com/cinema/hachiojitakiyama/",
+    "sourcePage": "八王子市"
   }
 ]
