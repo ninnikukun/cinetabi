@@ -23,7 +23,7 @@
     "lat": 35.2212831,
     "lon": 138.6118734,
     "precision": "poi",
-    "website": "https://www.aeon.jp/sc/fujinomiya/",
+    "website": null,
     "sourcePage": "富士宮市"
   },
   {
@@ -32,7 +32,7 @@
     "lat": 35.1185443,
     "lon": 138.8399876,
     "precision": "neighbourhood",
-    "website": "https://mitsui-shopping-park.com/lalaport/numazu/",
+    "website": null,
     "sourcePage": "沼津市"
   },
   {
@@ -50,7 +50,7 @@
     "lat": 34.7048452,
     "lon": 137.7288968,
     "precision": "poi",
-    "website": "http://www.zazacity.jp",
+    "website": null,
     "sourcePage": "浜松市"
   },
   {
@@ -86,7 +86,7 @@
     "lat": 34.847726,
     "lon": 138.250454,
     "precision": "neighbourhood",
-    "website": "http://www.e-bivi.com/fujieda/",
+    "website": null,
     "sourcePage": "藤枝市"
   },
   {
@@ -122,7 +122,7 @@
     "lat": 35.0106333,
     "lon": 138.4927128,
     "precision": "poi",
-    "website": "http://www.dream-plaza.co.jp/",
+    "website": null,
     "sourcePage": "静岡市"
   },
   {

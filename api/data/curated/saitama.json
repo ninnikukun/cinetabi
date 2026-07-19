@@ -5,7 +5,7 @@
     "lat": 35.8583645,
     "lon": 139.6595312,
     "precision": "poi",
-    "website": "https://urawa.parco.jp",
+    "website": null,
     "sourcePage": "さいたま市"
   },
   {
@@ -14,7 +14,7 @@
     "lat": 35.8926572,
     "lon": 139.7336268,
     "precision": "neighbourhood",
-    "website": "https://www.aeon.jp/sc/urawamisono/",
+    "website": null,
     "sourcePage": "さいたま市"
   },
   {
@@ -23,7 +23,7 @@
     "lat": 35.8947047,
     "lon": 139.6361166,
     "precision": "poi",
-    "website": "https://www.cocooncity.jp/",
+    "website": null,
     "sourcePage": "さいたま市"
   },
   {
@@ -41,7 +41,7 @@
     "lat": 35.9200196,
     "lon": 139.6084315,
     "precision": "neighbourhood",
-    "website": "https://www.aeon.com/store/%E3%82%A4%E3%82%AA%E3%83%B3/%E3%82%A4%E3%82%AA%E3%83%B3%E5%A4%A7%E5%AE%AE%E5%BA%97/",
+    "website": null,
     "sourcePage": "さいたま市"
   },
   {
@@ -50,7 +50,7 @@
     "lat": 35.8066313,
     "lon": 139.7143636,
     "precision": "poi",
-    "website": "https://kawaguchi.ario.jp/",
+    "website": null,
     "sourcePage": "川口市"
   },
   {
@@ -59,7 +59,7 @@
     "lat": 35.8437257,
     "lon": 139.7180941,
     "precision": "neighbourhood",
-    "website": "https://kawaguchi-aeonmall.com/",
+    "website": null,
     "sourcePage": "川口市"
   },
   {

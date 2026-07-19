@@ -1,0 +1,74 @@
+[
+  {
+    "name": "イオンシネマ桑名",
+    "address": "三重県桑名市新西方1-35 イオンモール桑名3番街4階",
+    "lat": 35.0707224,
+    "lon": 136.6631354,
+    "precision": "poi",
+    "website": "https://cinema.aeoncinema.com/wm/kuwana/",
+    "sourcePage": "三重県の映画館"
+  },
+  {
+    "name": "イオンシネマ鈴鹿",
+    "address": "三重県鈴鹿市庄野羽山4-1-2 イオンモール鈴鹿内",
+    "lat": 34.8716328,
+    "lon": 136.5308467,
+    "precision": "poi",
+    "website": "https://www.aeoncinema.com/cinema/suzuka/",
+    "sourcePage": "三重県の映画館"
+  },
+  {
+    "name": "イオンシネマ東員",
+    "address": "三重県員弁郡東員町大字長深字築田510-1 イオンモール東員3階",
+    "lat": 35.0607787,
+    "lon": 136.5806499,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "三重県の映画館"
+  },
+  {
+    "name": "109シネマズ明和",
+    "address": "三重県多気郡明和町中村1223 イオン明和",
+    "lat": 34.581264,
+    "lon": 136.6128174,
+    "precision": "poi",
+    "website": "https://109cinemas.net/meiwa/",
+    "sourcePage": "三重県の映画館"
+  },
+  {
+    "name": "進富座",
+    "address": "三重県伊勢市曽祢2-8-27",
+    "lat": 34.4961499,
+    "lon": 136.7005151,
+    "precision": "neighbourhood",
+    "website": "https://shintomiza.whitesnow.jp/",
+    "sourcePage": "伊勢市の映画館"
+  },
+  {
+    "name": "ロッポニカ四日市",
+    "address": "三重県四日市市諏訪栄町9-2",
+    "lat": 34.9677177,
+    "lon": 136.6205853,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "四日市市の映画館"
+  },
+  {
+    "name": "109シネマズ四日市",
+    "address": "三重県四日市市安島1-3-31 トナリエ四日市6階",
+    "lat": 34.9676319,
+    "lon": 136.6167283,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "四日市市の映画館"
+  },
+  {
+    "name": "イオンシネマ津南",
+    "address": "三重県津市高茶屋小森145 イオンモール津南3階",
+    "lat": 34.7374875,
+    "lon": 136.5187277,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "津市の映画館"
+  }
+]

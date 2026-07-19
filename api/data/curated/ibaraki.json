@@ -14,7 +14,7 @@
     "lat": 36.3739128,
     "lon": 140.361794,
     "precision": "neighbourhood",
-    "website": "https://mitouchihara-aeonmall.com/",
+    "website": null,
     "sourcePage": "水戸市"
   },
   {
@@ -50,7 +50,7 @@
     "lat": 36.076263,
     "lon": 140.171451,
     "precision": "neighbourhood",
-    "website": "https://www.aeon.jp/sc/tsuchiura/",
+    "website": null,
     "sourcePage": "土浦市"
   }
 ]

@@ -23,7 +23,7 @@
     "lat": 35.4577528,
     "lon": 139.6317092,
     "precision": "poi",
-    "website": "https://www.mec-markis.jp/mm/",
+    "website": null,
     "sourcePage": "横浜市"
   },
   {
@@ -50,7 +50,7 @@
     "lat": 35.4073129,
     "lon": 139.5948843,
     "precision": "poi",
-    "website": "http://www.mioka.jp/",
+    "website": null,
     "sourcePage": "横浜市"
   },
   {
@@ -59,7 +59,7 @@
     "lat": 35.5413867,
     "lon": 139.5741863,
     "precision": "neighbourhood",
-    "website": "http://www.kohokutokyu-sc.com/",
+    "website": null,
     "sourcePage": "横浜市"
   },
   {
@@ -68,7 +68,7 @@
     "lat": 35.5194646,
     "lon": 139.5741302,
     "precision": "neighbourhood",
-    "website": "https://mitsui-shopping-park.com/lalaport/yokohama/",
+    "website": null,
     "sourcePage": "横浜市"
   },
   {
@@ -77,7 +77,7 @@
     "lat": 35.5532544,
     "lon": 139.5786318,
     "precision": "neighbourhood",
-    "website": "http://northport.jp/",
+    "website": null,
     "sourcePage": "横浜市"
   },
   {
@@ -149,7 +149,7 @@
     "lat": 35.531645,
     "lon": 139.7002564,
     "precision": "poi",
-    "website": "https://www.kawasaki-dice.jp/",
+    "website": null,
     "sourcePage": "川崎市"
   },
   {
@@ -158,7 +158,7 @@
     "lat": 35.5437285,
     "lon": 139.5727426,
     "precision": "poi",
-    "website": "https://mitsui-shopping-park.com/lazona-kawasaki/",
+    "website": null,
     "sourcePage": "川崎市"
   },
   {
@@ -167,7 +167,7 @@
     "lat": 35.6022953,
     "lon": 139.507926,
     "precision": "neighbourhood",
-    "website": "https://www.aeon.com/store/イオン/イオンスタイル新百合ヶ丘/",
+    "website": null,
     "sourcePage": "川崎市"
   },
   {
@@ -194,7 +194,7 @@
     "lat": 35.2826489,
     "lon": 139.664564,
     "precision": "neighbourhood",
-    "website": "https://coaska.jp/",
+    "website": null,
     "sourcePage": "横須賀市"
   },
   {
@@ -212,7 +212,7 @@
     "lat": 35.2837101,
     "lon": 139.1875797,
     "precision": "poi",
-    "website": "https://dynacity.jp/",
+    "website": null,
     "sourcePage": "小田原市"
   },
   {
@@ -239,7 +239,7 @@
     "lat": 35.4425102,
     "lon": 139.3656878,
     "precision": "poi",
-    "website": "http://www.amyu-atsugi.jp/index.html",
+    "website": null,
     "sourcePage": "厚木市"
   }
 ]

@@ -1,0 +1,227 @@
+[
+  {
+    "name": "イオンシネマ三田ウッディタウン",
+    "address": "兵庫県三田市けやき台1-6-4 イオン三田ウッディタウン店2番街2階",
+    "lat": 34.9077699,
+    "lon": 135.1872877,
+    "precision": "neighbourhood",
+    "website": "https://cinema.aeoncinema.com/wm/sanda/",
+    "sourcePage": "兵庫県の映画館"
+  },
+  {
+    "name": "プラット赤穂シネマ",
+    "address": "兵庫県赤穂市加里屋290-10 プラット赤穂2階",
+    "lat": 34.7563947,
+    "lon": 134.3925089,
+    "precision": "poi",
+    "website": "https://www.plat-ako.com/schedule/",
+    "sourcePage": "兵庫県の映画館"
+  },
+  {
+    "name": "ヱビスシネマ。",
+    "address": "兵庫県丹波市氷上町成松263-3",
+    "lat": 35.1748213,
+    "lon": 135.0316798,
+    "precision": "neighbourhood",
+    "website": "https://ebisucinema.jp/",
+    "sourcePage": "兵庫県の映画館"
+  },
+  {
+    "name": "洲本オリオン",
+    "address": "兵庫県洲本市本町5-4-8",
+    "lat": 34.3413555,
+    "lon": 134.8946899,
+    "precision": "neighbourhood",
+    "website": "https://sumoto-orion.jimdofree.com/",
+    "sourcePage": "兵庫県の映画館"
+  },
+  {
+    "name": "kino cinema神戸国際",
+    "address": "兵庫県神戸市中央区御幸通8-1-6 神戸国際会館11階",
+    "lat": 34.692116,
+    "lon": 135.1957086,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "神戸市の映画館"
+  },
+  {
+    "name": "シネリーブル神戸",
+    "address": "兵庫県神戸市中央区浪花町59 神戸朝日ビルディング地下1階",
+    "lat": 34.6895342,
+    "lon": 135.1929325,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "神戸市の映画館"
+  },
+  {
+    "name": "109シネマズHAT神戸",
+    "address": "兵庫県神戸市中央区脇浜海岸通2-2-2 プルメールHAT神戸2階",
+    "lat": 34.6995394,
+    "lon": 135.213602,
+    "precision": "poi",
+    "website": "https://109cinemas.net/hatkobe/",
+    "sourcePage": "神戸市の映画館"
+  },
+  {
+    "name": "OSシネマズミント神戸",
+    "address": "兵庫県神戸市中央区雲井7-1-1 M-INT KOBE 9階",
+    "lat": 34.6968736,
+    "lon": 135.2020065,
+    "precision": "neighbourhood",
+    "website": "https://www.oscinemas.net/cgi-bin/pc/site/det.cgi?tsc=21080",
+    "sourcePage": "神戸市の映画館"
+  },
+  {
+    "name": "元町映画館",
+    "address": "兵庫県神戸市中央区元町通4-1-12",
+    "lat": 34.6868435,
+    "lon": 135.1839861,
+    "precision": "neighbourhood",
+    "website": "https://www.motoei.com/",
+    "sourcePage": "神戸市の映画館"
+  },
+  {
+    "name": "OSシネマズ神戸ハーバーランド",
+    "address": "兵庫県神戸市中央区東川崎町1-7-2 神戸ハーバーランドumie A501",
+    "lat": 34.6790797,
+    "lon": 135.182358,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "神戸市の映画館"
+  },
+  {
+    "name": "福原国際東映",
+    "address": "兵庫県神戸市兵庫区福原町15-3",
+    "lat": 34.6788611,
+    "lon": 135.169553,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "神戸市の映画館"
+  },
+  {
+    "name": "パルシネマしんこうえん",
+    "address": "兵庫県神戸市兵庫区新開地1-4-3",
+    "lat": 34.6796625,
+    "lon": 135.1687588,
+    "precision": "neighbourhood",
+    "website": "https://www.palcinema.net/",
+    "sourcePage": "神戸市の映画館"
+  },
+  {
+    "name": "Cinema KOBE",
+    "address": "兵庫県神戸市兵庫区新開地6-2-20-101",
+    "lat": 34.6759204,
+    "lon": 135.1747231,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "神戸市の映画館"
+  },
+  {
+    "name": "神戸映画資料館",
+    "address": "兵庫県神戸市長田区腕塚町5-5-1-201 アスタくにづか1番館2階",
+    "lat": 34.6543635,
+    "lon": 135.1463454,
+    "precision": "poi",
+    "website": "https://kobe-eiga.net/",
+    "sourcePage": "神戸市の映画館"
+  },
+  {
+    "name": "カナートホール",
+    "address": "兵庫県神戸市西区竜が岡1-21-1 イズミヤ西神戸店2階",
+    "lat": 34.7104461,
+    "lon": 134.939199,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "神戸市の映画館"
+  },
+  {
+    "name": "アースシネマズ姫路",
+    "address": "兵庫県姫路市駅前町27 テラッソ姫路4階",
+    "lat": 34.8273281,
+    "lon": 134.6936544,
+    "precision": "poi",
+    "website": "http://terasso.jp/",
+    "sourcePage": "姫路市の映画館"
+  },
+  {
+    "name": "尼崎パレス",
+    "address": "兵庫県尼崎市昭和南通4-52",
+    "lat": 34.7209508,
+    "lon": 135.4135766,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "尼崎市の映画館"
+  },
+  {
+    "name": "塚口サンサン劇場",
+    "address": "兵庫県尼崎市南塚口町2-1-1-103",
+    "lat": 34.7525249,
+    "lon": 135.416519,
+    "precision": "poi",
+    "website": "https://www.sunsun.info/",
+    "sourcePage": "尼崎市の映画館"
+  },
+  {
+    "name": "MOVIXあまがさき",
+    "address": "兵庫県尼崎市潮江1-3-1 あまがさきキューズモール4階",
+    "lat": 34.7335575,
+    "lon": 135.4314092,
+    "precision": "poi",
+    "website": "https://www.smt-cinema.com/site/amagasaki/",
+    "sourcePage": "尼崎市の映画館"
+  },
+  {
+    "name": "TOHOシネマズ西宮OS",
+    "address": "兵庫県西宮市高松町14-2-501 阪急西宮ガーデンズ5階",
+    "lat": 34.7438563,
+    "lon": 135.3609149,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "西宮市の映画館"
+  },
+  {
+    "name": "イオンシネマ明石",
+    "address": "兵庫県明石市大久保町ゆりのき通1-3-2 イオン明石S.C.1番街6階",
+    "lat": 34.6810603,
+    "lon": 134.9384137,
+    "precision": "neighbourhood",
+    "website": "https://cinema.aeoncinema.com/wm/akashi/",
+    "sourcePage": "明石市の映画館"
+  },
+  {
+    "name": "TOHOシネマズ伊丹",
+    "address": "兵庫県伊丹市藤ノ木1-1-1 イオンモール伊丹4階",
+    "lat": 34.7806845,
+    "lon": 135.424733,
+    "precision": "poi",
+    "website": "https://hlo.tohotheater.jp/net/schedule/038/TNPI2000J01.do",
+    "sourcePage": "伊丹市の映画館"
+  },
+  {
+    "name": "シネ・ピピア",
+    "address": "兵庫県宝塚市売布2-5-1 ピピアめふ5階",
+    "lat": 34.8145743,
+    "lon": 135.3620626,
+    "precision": "neighbourhood",
+    "website": "http://www.cinepipia.com/",
+    "sourcePage": "宝塚市の映画館"
+  },
+  {
+    "name": "イオンシネマ加古川",
+    "address": "兵庫県加古川市平岡町新在家615-1 イオン加古川店内",
+    "lat": 34.7484735,
+    "lon": 134.8612133,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "加古川市の映画館"
+  },
+  {
+    "name": "KAVCキネマ",
+    "address": "兵庫県神戸市兵庫区新開地5丁目3番14号 神戸アートビレッジセンターB1F",
+    "lat": 34.6762811,
+    "lon": 135.1735551,
+    "precision": "poi",
+    "website": "https://kavccinema.jp/",
+    "sourcePage": "OSM補完（wiki未掲載・WebSearchで実在確認）"
+  }
+]

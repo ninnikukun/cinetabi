@@ -113,7 +113,7 @@
     "lat": 35.6308488,
     "lon": 139.7783151,
     "precision": "neighbourhood",
-    "website": "https://www.aquacity.jp/",
+    "website": null,
     "sourcePage": "港区"
   },
   {
@@ -122,7 +122,7 @@
     "lat": 35.6283914,
     "lon": 139.7359119,
     "precision": "poi",
-    "website": "https://www.princehotels.co.jp/shinagawa/",
+    "website": null,
     "sourcePage": "港区"
   },
   {
@@ -149,7 +149,7 @@
     "lat": 35.7068718,
     "lon": 139.7731586,
     "precision": "poi",
-    "website": "https://parcoya-ueno.parco.jp/",
+    "website": null,
     "sourcePage": "台東区"
   },
   {
@@ -194,7 +194,7 @@
     "lat": 35.654557,
     "lon": 139.7924434,
     "precision": "poi",
-    "website": "https://mitsui-shopping-park.com/lalaport/toyosu/",
+    "website": null,
     "sourcePage": "江東区"
   },
   {
@@ -203,7 +203,7 @@
     "lat": 35.7638517,
     "lon": 139.8485978,
     "precision": "neighbourhood",
-    "website": "http://www.ario-kameari.jp/",
+    "website": null,
     "sourcePage": "葛飾区"
   },
   {
@@ -275,7 +275,7 @@
     "lat": 35.7740149,
     "lon": 139.7894061,
     "precision": "neighbourhood",
-    "website": "https://nishiarai.ario.jp/",
+    "website": null,
     "sourcePage": "足立区"
   },
   {
@@ -311,7 +311,7 @@
     "lat": 35.7703312,
     "lon": 139.6606394,
     "precision": "poi",
-    "website": "https://www.aeon.jp/sc/itabashi/",
+    "website": null,
     "sourcePage": "板橋区"
   },
   {
@@ -365,7 +365,7 @@
     "lat": 35.6084367,
     "lon": 139.7325967,
     "precision": "poi",
-    "website": "https://www.oimachi-tracks.com/",
+    "website": null,
     "sourcePage": "品川区"
   },
   {
@@ -419,7 +419,7 @@
     "lat": 35.5858778,
     "lon": 139.7406596,
     "precision": "neighbourhood",
-    "website": "https://www.big-fun.jp/",
+    "website": null,
     "sourcePage": "大田区"
   },
   {
@@ -491,7 +491,7 @@
     "lat": 35.5095318,
     "lon": 139.4703551,
     "precision": "neighbourhood",
-    "website": "https://gbp.minamimachida-grandberrypark.com/",
+    "website": null,
     "sourcePage": "町田市"
   },
   {

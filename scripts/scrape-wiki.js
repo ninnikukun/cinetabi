@@ -61,7 +61,15 @@ async function fetchPage(pageName) {
   return fetchEucJp(url);
 }
 
-const stripTags = (html) => html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+// 数値文字参照（&#233; = é 等）とよく出る名前実体参照をデコードする。
+// 「kino cinéma」のようなアクセント付き文字が名前に含まれるケース対策。
+const decodeEntities = (s) =>
+  s
+    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(parseInt(n, 10)))
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, n) => String.fromCodePoint(parseInt(n, 16)))
+    .replace(/&amp;/g, "&")
+    .replace(/&nbsp;/g, " ");
+const stripTags = (html) => decodeEntities(html.replace(/<[^>]*>/g, "")).replace(/\s+/g, " ").trim();
 
 // 名称1つ分（「シネクイント1・2(新)」等）から装飾を除いて正規化
 // 末尾番号は「1・2」「1-6」のような複数スクリーン表記のみ除去する。

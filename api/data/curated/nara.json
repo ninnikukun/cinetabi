@@ -1,0 +1,29 @@
+[
+  {
+    "name": "シネマサンシャイン大和郡山",
+    "address": "奈良県大和郡山市下三橋町741 イオンモール大和郡山3階",
+    "lat": 34.6494902,
+    "lon": 135.8025413,
+    "precision": "poi",
+    "website": "https://www.cinemasunshine.co.jp/theater/yamatokoriyama/",
+    "sourcePage": "奈良県の映画館"
+  },
+  {
+    "name": "TOHOシネマズ橿原",
+    "address": "奈良県橿原市曲川町7-20-1-301 イオンモール橿原サウスモール3階",
+    "lat": 34.5068351,
+    "lon": 135.7636071,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "奈良県の映画館"
+  },
+  {
+    "name": "ユナイテッド・シネマ橿原",
+    "address": "奈良県橿原市十市町1222-1 ツインゲート橿原内",
+    "lat": 34.5325016,
+    "lon": 135.8037937,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "奈良県の映画館"
+  }
+]

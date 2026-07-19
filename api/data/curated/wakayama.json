@@ -1,0 +1,56 @@
+[
+  {
+    "name": "ジストシネマ御坊",
+    "address": "和歌山県御坊市湯川町財部181 ロマンシティ御坊3階",
+    "lat": 33.8974771,
+    "lon": 135.1491517,
+    "precision": "poi",
+    "website": "http://www.okuwa.net/store/wakayama/296.html",
+    "sourcePage": "和歌山県の映画館"
+  },
+  {
+    "name": "ジストシネマ南紀",
+    "address": "和歌山県新宮市佐野3-11-19",
+    "lat": 33.676171,
+    "lon": 135.9708027,
+    "precision": "neighbourhood",
+    "website": "http://www.okuwa.net/store/wakayama/345.html",
+    "sourcePage": "和歌山県の映画館"
+  },
+  {
+    "name": "ジストシネマ和歌山",
+    "address": "和歌山県和歌山市松江向鵜ノ島1469-1 ガーデンパーク和歌山2階",
+    "lat": 34.2392147,
+    "lon": 135.1534336,
+    "precision": "poi",
+    "website": "http://www.okuwa.net/store/wakayama/343.html",
+    "sourcePage": "和歌山市の映画館"
+  },
+  {
+    "name": "イオンシネマ和歌山",
+    "address": "和歌山県和歌山市中字楠谷573 イオンモール和歌山2階",
+    "lat": 34.2764645,
+    "lon": 135.1488167,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "和歌山市の映画館"
+  },
+  {
+    "name": "シネマ203",
+    "address": "和歌山県和歌山市中ノ店北ノ丁22 北ぶらくり丁会館203号",
+    "lat": 34.2353306,
+    "lon": 135.1760388,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "和歌山市の映画館"
+  },
+  {
+    "name": "ジストシネマ田辺",
+    "address": "和歌山県田辺市稲成町新江原3229 パビリオンシティ田辺C館3階",
+    "lat": 33.7442702,
+    "lon": 135.377263,
+    "precision": "poi",
+    "website": "https://www.okuwa.net/store/wakayama/276.html",
+    "sourcePage": "田辺市の映画館"
+  }
+]

@@ -36,6 +36,20 @@ const nameMatch = (a, b) => {
   return na && nb && (na.includes(nb) || nb.includes(na));
 };
 
+// 「イオンシネマ」「109シネマズ」等、ブランド名のみでロケーション名を持たないOSMタグは
+// 同一県内の複数館すべてと部分一致してしまう。.find()で最初の一致を採用すると、
+// 全く別の館（例: 桑名のノードが明和にマッチ）とペアになる誤りが起きるため、
+// 名前一致した候補が複数ある場合は必ず距離が最も近いものを採用する。
+function nearestByName(osmName, lat, lon, geocoded) {
+  const matches = geocoded.filter((c) => nameMatch(osmName, c.name));
+  if (matches.length <= 1) return matches[0] || null;
+  return matches.reduce((best, c) => {
+    const d = c.lat != null ? haversine(lat, lon, c.lat, c.lon) : Infinity;
+    const bestD = best.lat != null ? haversine(lat, lon, best.lat, best.lon) : Infinity;
+    return d < bestD ? c : best;
+  });
+}
+
 async function fetchOverpass(areaFilter) {
   const ql = `[out:json][timeout:25];${areaFilter.prefix}(node["amenity"="cinema"]${areaFilter.cond};way["amenity"="cinema"]${areaFilter.cond};);out center tags;`;
   for (let attempt = 0; attempt < 2; attempt++) {
@@ -87,6 +101,8 @@ async function main() {
 
   const closedCandidates = [];
   const websiteOverrides = [];
+  const coordMismatches = [];
+  const COORD_MISMATCH_THRESHOLD_M = 2000;
   for (const e of od.elements || []) {
     const lat = e.lat ?? (e.center && e.center.lat);
     const lon = e.lon ?? (e.center && e.center.lon);
@@ -96,7 +112,7 @@ async function main() {
 
     // 名前一致（営業中）・名前一致（閉館）・近接（営業中）をそれぞれ判定し、組み合わせで分類する。
     // 近接判定はAPIの重複判定と同じ基準（neighbourhood精度は300m、それ以外は100m）。
-    const opByName = geocoded.find((c) => nameMatch(osmName, c.name));
+    const opByName = nearestByName(osmName, lat, lon, geocoded);
     const clByName = scraped.closed.find((c) => (c.nameVariants || [c.name]).some((v) => nameMatch(osmName, v)));
     const opByDist = geocoded.find(
       (c) => c.lat != null && haversine(lat, lon, c.lat, c.lon) < (c.precision === "neighbourhood" ? 300 : 100)
@@ -107,6 +123,20 @@ async function main() {
     // OSM側にwebsiteタグがあれば優先候補として記録する（機械的に上書きはせず、目視確認のうえ適用する）。
     if (opByName && osmWebsite && osmWebsite !== opByName.website) {
       websiteOverrides.push({ name: opByName.name, current: opByName.website || null, osm: osmWebsite });
+    }
+
+    // OSM側は実座標なので、名前一致した館のcurated座標がここから大きく離れていたら
+    // ジオコーディング誤り（浜松市の区再編ケースのような）の可能性が高い。目視確認対象として記録する。
+    if (opByName && opByName.lat != null) {
+      const distM = haversine(lat, lon, opByName.lat, opByName.lon);
+      if (distM > COORD_MISMATCH_THRESHOLD_M) {
+        coordMismatches.push({
+          name: opByName.name,
+          curated: { lat: opByName.lat, lon: opByName.lon },
+          osm: { lat, lon },
+          distanceM: Math.round(distM),
+        });
+      }
     }
 
     if (clByName && (opByName || opByDist)) {
@@ -142,6 +172,11 @@ async function main() {
   if (websiteOverrides.length > 0) {
     console.log(`\n--- websiteをOSM側の値に差し替える候補（目視確認のうえ適用） ---`);
     console.log(JSON.stringify(websiteOverrides, null, 2));
+  }
+
+  if (coordMismatches.length > 0) {
+    console.log(`\n--- 座標がOSM実座標と${COORD_MISMATCH_THRESHOLD_M}m以上離れている館（ジオコーディング誤りの疑い、目視確認） ---`);
+    console.log(JSON.stringify(coordMismatches, null, 2));
   }
 }
 

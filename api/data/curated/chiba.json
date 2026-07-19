@@ -50,7 +50,7 @@
     "lat": 35.6499904,
     "lon": 140.0247357,
     "precision": "neighbourhood",
-    "website": "https://makuharishintoshin-aeonmall.com/",
+    "website": null,
     "sourcePage": "千葉市"
   },
   {
@@ -59,7 +59,7 @@
     "lat": 35.816225,
     "lon": 139.933352,
     "precision": "neighbourhood",
-    "website": "https://terracemall.com/matsudo/",
+    "website": null,
     "sourcePage": "松戸市"
   },
   {
@@ -68,7 +68,7 @@
     "lat": 35.8944122,
     "lon": 139.9539785,
     "precision": "neighbourhood",
-    "website": "https://mitsui-shopping-park.com/lalaport/kashiwa/",
+    "website": null,
     "sourcePage": "柏市"
   },
   {
@@ -86,7 +86,7 @@
     "lat": 35.8321498,
     "lon": 140.0134737,
     "precision": "poi",
-    "website": "https://sevenpark-kashiwa.ario.jp",
+    "website": null,
     "sourcePage": "柏市"
   },
   {
@@ -104,7 +104,7 @@
     "lat": 35.7099221,
     "lon": 140.7875104,
     "precision": "poi",
-    "website": "https://www.aeon.jp/sc/choshi/",
+    "website": null,
     "sourcePage": "銚子市"
   }
 ]

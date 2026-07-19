@@ -1,0 +1,47 @@
+[
+  {
+    "name": "イオンシネマ草津",
+    "address": "滋賀県草津市新浜町300 イオンモール草津3階",
+    "lat": 34.9973659,
+    "lon": 135.914528,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "滋賀県の映画館"
+  },
+  {
+    "name": "水口アレックスシネマ",
+    "address": "滋賀県甲賀市水口町本綾野566-1 アル・プラザ水口別棟2階",
+    "lat": 34.976029,
+    "lon": 136.1724269,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "滋賀県の映画館"
+  },
+  {
+    "name": "イオンシネマ近江八幡",
+    "address": "滋賀県近江八幡市鷹飼町190-9 イオン近江八幡S.C.2番街4階",
+    "lat": 35.1207224,
+    "lon": 136.1036921,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "滋賀県の映画館"
+  },
+  {
+    "name": "ユナイテッド・シネマ大津",
+    "address": "滋賀県大津市打出浜14-30 Oh!Me大津テラス7階",
+    "lat": 35.004513,
+    "lon": 135.8791935,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "大津市の映画館"
+  },
+  {
+    "name": "彦根ビバシティシネマ",
+    "address": "滋賀県彦根市竹ヶ鼻町43-1 ビバシティ彦根3階",
+    "lat": 35.2437695,
+    "lon": 136.2502272,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "彦根市の映画館"
+  }
+]

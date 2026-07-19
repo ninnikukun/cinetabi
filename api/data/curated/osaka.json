@@ -1,0 +1,317 @@
+[
+  {
+    "name": "109シネマズ箕面",
+    "address": "大阪府箕面市坊島4-1-24 みのおキューズモール内",
+    "lat": 34.8323161,
+    "lon": 135.4881071,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "大阪府の映画館"
+  },
+  {
+    "name": "高槻アレックスシネマ",
+    "address": "大阪府高槻市芥川町1-2 アルプラザ高槻内",
+    "lat": 34.8522027,
+    "lon": 135.6164467,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "大阪府の映画館"
+  },
+  {
+    "name": "イオンシネマ茨木",
+    "address": "大阪府茨木市松ケ本町8-30-2 イオンモール茨木4階",
+    "lat": 34.8117571,
+    "lon": 135.5586932,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "大阪府の映画館"
+  },
+  {
+    "name": "TOHOシネマズくずはモール",
+    "address": "大阪府枚方市楠葉花園町10-85 くずはモール南館3階",
+    "lat": 34.860151,
+    "lon": 135.676001,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "大阪府の映画館"
+  },
+  {
+    "name": "イオンシネマ大日",
+    "address": "大阪府守口市大日東町1-18 イオンモール大日4階",
+    "lat": 34.7496319,
+    "lon": 135.580478,
+    "precision": "poi",
+    "website": "https://cinema.aeoncinema.com/wm/dainichi/",
+    "sourcePage": "大阪府の映画館"
+  },
+  {
+    "name": "TOHOシネマズららぽーと門真",
+    "address": "大阪府門真市松生町1-11 三井ショッピングパークららぽーと門真",
+    "lat": 34.730413,
+    "lon": 135.584116,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "大阪府の映画館"
+  },
+  {
+    "name": "イオンシネマ四條畷",
+    "address": "大阪府四條畷市砂4-3-2 イオンモール四條畷4階",
+    "lat": 34.7463766,
+    "lon": 135.6298505,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "大阪府の映画館"
+  },
+  {
+    "name": "MOVIX八尾",
+    "address": "大阪府八尾市光町2-3 アリオ八尾4階",
+    "lat": 34.6331245,
+    "lon": 135.6057265,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "大阪府の映画館"
+  },
+  {
+    "name": "TOHOシネマズセブンパーク天美",
+    "address": "大阪府松原市天美東500番地 セブンパーク天美4階",
+    "lat": 34.5913326,
+    "lon": 135.5424413,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "大阪府の映画館"
+  },
+  {
+    "name": "イオンシネマりんくう泉南",
+    "address": "大阪府泉南市りんくう南浜3-12 イオンモールりんくう泉南2階",
+    "lat": 34.3825242,
+    "lon": 135.2682607,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "大阪府の映画館"
+  },
+  {
+    "name": "kino cinéma 心斎橋",
+    "address": "大阪府大阪市中央区西心斎橋1-6-14 ビッグステップビル4階",
+    "lat": 34.6725549,
+    "lon": 135.4988027,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "大阪市中央区の映画館"
+  },
+  {
+    "name": "TOHOシネマズなんば別館",
+    "address": "大阪市中央区千日前2-11-5 敷島ビル4階",
+    "lat": 34.6657685,
+    "lon": 135.5030906,
+    "precision": "poi",
+    "website": "https://hlo.tohotheater.jp/net/schedule/032/TNPI2000J01.do",
+    "sourcePage": "大阪市中央区の映画館"
+  },
+  {
+    "name": "TOHOシネマズなんば本館",
+    "address": "大阪府大阪市中央区難波3-8-9 東宝南街ビル8階",
+    "lat": 34.6654826,
+    "lon": 135.500751,
+    "precision": "poi",
+    "website": "https://hlo.tohotheater.jp/net/schedule/032/TNPI2000J01.do",
+    "sourcePage": "大阪市中央区の映画館"
+  },
+  {
+    "name": "イオンシネマシアタス心斎橋",
+    "address": "大阪府大阪市中央区心斎橋筋1-8-3 心斎橋パルコ12階",
+    "lat": 34.6734326,
+    "lon": 135.5013432,
+    "precision": "neighbourhood",
+    "website": "https://www.aeoncinema.com/",
+    "sourcePage": "大阪市中央区の映画館"
+  },
+  {
+    "name": "TOHOシネマズ梅田本館",
+    "address": "大阪府大阪市北区角田町7-10 HEPナビオ7階・8階・9階",
+    "lat": 34.7037444,
+    "lon": 135.4993314,
+    "precision": "neighbourhood",
+    "website": "https://hlo.tohotheater.jp/net/schedule/037/TNPI2000J01.do",
+    "sourcePage": "大阪市北区の映画館"
+  },
+  {
+    "name": "TOHOシネマズ梅田別館",
+    "address": "大阪府大阪市北区角田町5-1",
+    "lat": 34.7037444,
+    "lon": 135.4993314,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "大阪市北区の映画館"
+  },
+  {
+    "name": "テアトル梅田",
+    "address": "大阪府大阪市北区大淀中1-1-88 梅田スカイビルタワーイースト3階・4階",
+    "lat": 34.708068,
+    "lon": 135.5000746,
+    "precision": "poi",
+    "website": "https://www.ttcg.jp/theatre_umeda/",
+    "sourcePage": "大阪市北区の映画館"
+  },
+  {
+    "name": "T・ジョイ梅田",
+    "address": "大阪府大阪市北区梅田1-12-6 E-MAビル7階",
+    "lat": 34.7005703,
+    "lon": 135.4986245,
+    "precision": "poi",
+    "website": "https://tjoy.jp/t-joy_umeda",
+    "sourcePage": "大阪市北区の映画館"
+  },
+  {
+    "name": "プラネットプラスワン",
+    "address": "大阪府大阪市北区中崎2丁目3-12 パイロットビル2階",
+    "lat": 34.7088747,
+    "lon": 135.5063647,
+    "precision": "neighbourhood",
+    "website": "https://planetplusone.studio.site/",
+    "sourcePage": "大阪市北区の映画館"
+  },
+  {
+    "name": "大阪ステーションシティシネマ",
+    "address": "大阪府大阪市北区梅田3-1-3 ノースゲートビルディング11階",
+    "lat": 34.703372,
+    "lon": 135.4962387,
+    "precision": "poi",
+    "website": "https://www.osakastationcitycinema.com/",
+    "sourcePage": "大阪市北区の映画館"
+  },
+  {
+    "name": "扇町キネマ",
+    "address": "大阪府大阪市北区南扇町6-26 扇町ミュージアムキューブM2階",
+    "lat": 34.701294,
+    "lon": 135.5085851,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "大阪市北区の映画館"
+  },
+  {
+    "name": "第七芸術劇場",
+    "address": "大阪府大阪市淀川区十三本町1-7-27 サンポードシティビル6階",
+    "lat": 34.7188464,
+    "lon": 135.4805878,
+    "precision": "poi",
+    "website": "http://www.nanagei.com/",
+    "sourcePage": "大阪市北東部の映画館"
+  },
+  {
+    "name": "シアターセブン",
+    "address": "大阪府大阪市淀川区十三本町1-7-27 サンポードシティビル5階",
+    "lat": 34.7189695,
+    "lon": 135.4806456,
+    "precision": "poi",
+    "website": "https://www.theater-seven.com/index.html",
+    "sourcePage": "大阪市北東部の映画館"
+  },
+  {
+    "name": "あべのアポロシネマ8",
+    "address": "大阪府大阪市阿倍野区阿倍野筋1-5-1 アポロビル4階",
+    "lat": 34.6468479,
+    "lon": 135.5107357,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "大阪市南部の映画館"
+  },
+  {
+    "name": "あべのアポロシネマプラスワン",
+    "address": "大阪府大阪市阿倍野区阿倍野筋1-5-1",
+    "lat": 34.6468479,
+    "lon": 135.5107357,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "大阪市南部の映画館"
+  },
+  {
+    "name": "Theater cafe 土間シネマ",
+    "address": "大阪府大阪市城東区今福西4丁目4-37",
+    "lat": 34.7014232,
+    "lon": 135.5514904,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "大阪市東部の映画館"
+  },
+  {
+    "name": "日劇ローズ・日劇シネマ",
+    "address": "大阪府大阪市浪速区恵美須東2-2-8",
+    "lat": 34.6517376,
+    "lon": 135.5061633,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "大阪市浪速区の映画館"
+  },
+  {
+    "name": "新世界東映",
+    "address": "大阪府大阪市浪速区恵美須東2-2-8",
+    "lat": 34.652074,
+    "lon": 135.5065687,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "大阪市浪速区の映画館"
+  },
+  {
+    "name": "なんばパークスシネマ",
+    "address": "大阪府大阪市浪速区難波中2-10-70 なんばパークス8階",
+    "lat": 34.6608934,
+    "lon": 135.5024336,
+    "precision": "poi",
+    "website": "https://www.parkscinema.com/site/namba/",
+    "sourcePage": "大阪市浪速区の映画館"
+  },
+  {
+    "name": "シネ ヌーヴォ・シネ ヌーヴォX",
+    "address": "大阪府大阪市西区九条1-20-24",
+    "lat": 34.6740883,
+    "lon": 135.4753349,
+    "precision": "poi",
+    "website": "http://www.cinenouveau.com/",
+    "sourcePage": "大阪市都心部の映画館"
+  },
+  {
+    "name": "上六シネマ",
+    "address": "大阪府大阪市天王寺区上本町6-7-2",
+    "lat": 34.6644578,
+    "lon": 135.5186221,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "大阪市都心部の映画館"
+  },
+  {
+    "name": "TOHOシネマズ鳳",
+    "address": "大阪府堺市西区鳳南町3-199-12 アリオ鳳4階",
+    "lat": 34.5246819,
+    "lon": 135.4582687,
+    "precision": "poi",
+    "website": "https://hlo.tohotheater.jp/net/schedule/045/TNPI2000J01.do",
+    "sourcePage": "堺市の映画館"
+  },
+  {
+    "name": "TOHOシネマズ泉北",
+    "address": "大阪府堺市南区原山台5-9-5 アクロスモール内",
+    "lat": 34.4794291,
+    "lon": 135.4999855,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "堺市の映画館"
+  },
+  {
+    "name": "109シネマズ大阪エキスポシティ",
+    "address": "大阪府吹田市千里万博公園2-1 EXPOCITY内",
+    "lat": 34.805168,
+    "lon": 135.535483,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "吹田市の映画館"
+  },
+  {
+    "name": "ユナイテッド・シネマ岸和田",
+    "address": "大阪府岸和田市港緑町3-1 岸和田カンカンベイサイドモールWEST 3階",
+    "lat": 34.4672008,
+    "lon": 135.3710233,
+    "precision": "poi",
+    "website": "https://www.unitedcinemas.jp/kishiwada/",
+    "sourcePage": "岸和田市の映画館"
+  }
+]
