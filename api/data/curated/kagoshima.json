@@ -1,0 +1,56 @@
+[
+  {
+    "name": "シネマサンシャイン姶良",
+    "address": "鹿児島県姶良市東餅田336 イオンタウン姶良3階",
+    "lat": 31.7261391,
+    "lon": 130.635033,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "鹿児島県の映画館"
+  },
+  {
+    "name": "リナシアター",
+    "address": "鹿児島県鹿屋市大手町1-1 鹿屋市市民交流センター3階",
+    "lat": 31.3901135,
+    "lon": 130.8513039,
+    "precision": "neighbourhood",
+    "website": "https://www.kanoyashimin.jp/cinema/",
+    "sourcePage": "鹿児島県の映画館"
+  },
+  {
+    "name": "シネマパニック",
+    "address": "鹿児島県奄美市有屋町2-3 ブックス十番館プラス1-2階",
+    "lat": 28.3923301,
+    "lon": 129.529101,
+    "precision": "neighbourhood",
+    "website": "https://10bankanplus1.wixsite.com/books10bankan/blank",
+    "sourcePage": "鹿児島県の映画館"
+  },
+  {
+    "name": "鹿児島ミッテ10",
+    "address": "鹿児島県鹿児島市中央町1-1 アミュプラザ鹿児島本館6階",
+    "lat": 31.5845722,
+    "lon": 130.5425799,
+    "precision": "poi",
+    "website": "http://www.yu-raku.co.jp/",
+    "sourcePage": "鹿児島市の映画館"
+  },
+  {
+    "name": "ガーデンズシネマ",
+    "address": "鹿児島県鹿児島市呉服町6-5 マルヤガーデンズ7階",
+    "lat": 31.5904147,
+    "lon": 130.5569262,
+    "precision": "neighbourhood",
+    "website": "http://kagocine.net/",
+    "sourcePage": "鹿児島市の映画館"
+  },
+  {
+    "name": "天文館シネマパラダイス",
+    "address": "鹿児島県鹿児島市東千石町19-1 LAZO表参道3階",
+    "lat": 31.5912759,
+    "lon": 130.5527458,
+    "precision": "neighbourhood",
+    "website": "http://tenpara.com/",
+    "sourcePage": "鹿児島市の映画館"
+  }
+]

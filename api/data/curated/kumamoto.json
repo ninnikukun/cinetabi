@@ -1,0 +1,74 @@
+[
+  {
+    "name": "TOHOシネマズ光の森",
+    "address": "熊本県菊池郡菊陽町光の森7-39-1 ゆめタウン光の森内",
+    "lat": 32.8601498,
+    "lon": 130.785914,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "熊本県の映画館"
+  },
+  {
+    "name": "TOHOシネマズ宇城",
+    "address": "熊本県宇城市小川町河江1-1 イオンモール宇城内",
+    "lat": 32.605404,
+    "lon": 130.708589,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "熊本県の映画館"
+  },
+  {
+    "name": "イオンシネマ熊本",
+    "address": "熊本県上益城郡嘉島町大字上島字長池2232-2702 イオンモール熊本2階",
+    "lat": 32.738578,
+    "lon": 130.7430983,
+    "precision": "poi",
+    "website": "https://cinema.aeoncinema.com/wm/kumamoto/",
+    "sourcePage": "熊本県の映画館"
+  },
+  {
+    "name": "本渡第一映劇",
+    "address": "熊本県天草市栄町5-23",
+    "lat": 32.455351,
+    "lon": 130.191913,
+    "precision": "neighbourhood",
+    "website": "https://daiichieigeki.com",
+    "sourcePage": "熊本県の映画館"
+  },
+  {
+    "name": "Denkikan",
+    "address": "熊本県熊本市中央区新市街8-2",
+    "lat": 32.8027104,
+    "lon": 130.7068465,
+    "precision": "neighbourhood",
+    "website": "https://denkikan.com",
+    "sourcePage": "熊本市の映画館"
+  },
+  {
+    "name": "TOHOシネマズ熊本サクラマチ",
+    "address": "熊本県熊本市中央区桜町3-10 サクラマチクマモト4階",
+    "lat": 32.7988948,
+    "lon": 130.7015926,
+    "precision": "neighbourhood",
+    "website": "https://sakuramachi-kumamoto.jp/",
+    "sourcePage": "熊本市の映画館"
+  },
+  {
+    "name": "TOHOシネマズはません",
+    "address": "熊本県熊本市南区田井島1-2-1 ゆめタウンはません内",
+    "lat": 32.7705501,
+    "lon": 130.7258977,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "熊本市の映画館"
+  },
+  {
+    "name": "熊本ピカデリー",
+    "address": "熊本県熊本市西区春日3-15-26 アミュプラザくまもと7階",
+    "lat": 32.7914097,
+    "lon": 130.6916388,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "熊本市の映画館"
+  }
+]

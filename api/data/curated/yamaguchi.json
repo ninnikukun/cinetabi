@@ -1,0 +1,74 @@
+[
+  {
+    "name": "イオンシネマ防府",
+    "address": "山口県防府市中央町1-3 イオン防府店2階",
+    "lat": 34.0524481,
+    "lon": 131.5696027,
+    "precision": "poi",
+    "website": "https://cinema.aeoncinema.com/wm/hofu/",
+    "sourcePage": "山口県の映画館"
+  },
+  {
+    "name": "徳山毎日興行ビル",
+    "address": "山口県周南市銀座2-18 銀座毎日興行ビル2階",
+    "lat": 34.050207,
+    "lon": 131.805306,
+    "precision": "neighbourhood",
+    "website": "https://www.cinemanouvelle.com/",
+    "sourcePage": "山口県の映画館"
+  },
+  {
+    "name": "MOVIX周南",
+    "address": "山口県下松市中央町21-3 ゆめタウン下松内",
+    "lat": 34.0187244,
+    "lon": 131.8626778,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "山口県の映画館"
+  },
+  {
+    "name": "山口情報芸術センター",
+    "address": "山口県山口市中園町7-7",
+    "lat": 34.1695549,
+    "lon": 131.4672596,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "山口市の映画館"
+  },
+  {
+    "name": "シネマサンシャイン下関",
+    "address": "山口県下関市竹崎町4-1-37 シーモール下関",
+    "lat": 33.9494477,
+    "lon": 130.9247428,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "下関市の映画館"
+  },
+  {
+    "name": "シネマポスト",
+    "address": "山口県下関市大和町1丁目13-7 海町ビル 1階",
+    "lat": 33.9478969,
+    "lon": 130.9193972,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "下関市の映画館"
+  },
+  {
+    "name": "シネマスクエア7",
+    "address": "山口県宇部市明神町3-1-1 フジグラン宇部2階",
+    "lat": 33.929094,
+    "lon": 131.256325,
+    "precision": "neighbourhood",
+    "website": "https://cinesqu.com/",
+    "sourcePage": "宇部市の映画館"
+  },
+  {
+    "name": "萩ツインシネマ",
+    "address": "山口県萩市東田町18-4",
+    "lat": 34.412127,
+    "lon": 131.402231,
+    "precision": "neighbourhood",
+    "website": "https://hagi-twincinema.org/",
+    "sourcePage": "萩市の映画館"
+  }
+]

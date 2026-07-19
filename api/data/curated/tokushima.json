@@ -1,0 +1,38 @@
+[
+  {
+    "name": "資料館「キネマ・ミュージアム」",
+    "address": "徳島県鳴門市瀬戸町明神字上本城83-9",
+    "lat": 34.2033375,
+    "lon": 134.5787001,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "徳島県の映画館"
+  },
+  {
+    "name": "シネマサンシャイン北島",
+    "address": "徳島県板野郡北島町鯛浜字西ノ須174 フジグラン北島3階",
+    "lat": 34.1120291,
+    "lon": 134.5469313,
+    "precision": "poi",
+    "website": "https://kita-fuji.com/",
+    "sourcePage": "徳島県の映画館"
+  },
+  {
+    "name": "ufotable CINEMA",
+    "address": "徳島県徳島市東新町1-5-3",
+    "lat": 34.0707002,
+    "lon": 134.5477438,
+    "precision": "poi",
+    "website": "https://www.ufotable.com/cinema/",
+    "sourcePage": "徳島市の映画館"
+  },
+  {
+    "name": "イオンシネマ徳島",
+    "address": "徳島県徳島市南末広町4-1 イオンモール徳島5階",
+    "lat": 34.0613506,
+    "lon": 134.5728011,
+    "precision": "poi",
+    "website": "https://cinema.aeoncinema.com/wm/tokushima/",
+    "sourcePage": "徳島市の映画館"
+  }
+]

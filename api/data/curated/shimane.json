@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Shimane Cinema ONOZAWA",
+    "address": "島根県益田市あけぼの東町2-1 小野沢ビル3階",
+    "lat": 34.6784026,
+    "lon": 131.8437642,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "島根県の映画館"
+  },
+  {
+    "name": "イオンシネマ松江",
+    "address": "島根県松江市朝日町478 イオン松江ショッピングセンター内",
+    "lat": 35.4635039,
+    "lon": 133.0692873,
+    "precision": "poi",
+    "website": "https://www.aeoncinema.com/cinema/matsue/",
+    "sourcePage": "OSM補完（wiki未掲載・WebSearchで実在確認。2025年7月18日開業、閉館した松江東宝5の跡地）"
+  }
+]

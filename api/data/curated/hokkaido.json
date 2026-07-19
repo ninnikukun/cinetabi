@@ -1,0 +1,164 @@
+[
+  {
+    "name": "札幌シアターキノA・B",
+    "address": "北海道札幌市中央区南3条西6丁目 南3条グランドビル",
+    "lat": 43.0561458,
+    "lon": 141.3491856,
+    "precision": "poi",
+    "website": "http://theaterkino.net/",
+    "sourcePage": "札幌市の映画館"
+  },
+  {
+    "name": "札幌シネマフロンティア",
+    "address": "北海道札幌市中央区北5条西2丁目5 JRタワー・ステラプレイス7階",
+    "lat": 43.0679282,
+    "lon": 141.3509066,
+    "precision": "poi",
+    "website": "https://www.cinemafrontier.net/cgi-bin/pc/index.cgi",
+    "sourcePage": "札幌市の映画館"
+  },
+  {
+    "name": "ローソン・ユナイテッドシネマ札幌",
+    "address": "北海道札幌市中央区北1条東4丁目1-1 サッポロファクトリー1条館2階",
+    "lat": 43.0640333,
+    "lon": 141.3620967,
+    "precision": "neighbourhood",
+    "website": "https://www.unitedcinemas.jp/sapporo/",
+    "sourcePage": "札幌市の映画館"
+  },
+  {
+    "name": "TOHOシネマズすすきの",
+    "address": "北海道札幌市中央区南4条西4丁目1-1 COCONO SUSUKINO 5階",
+    "lat": 43.05533,
+    "lon": 141.35259,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "札幌市の映画館"
+  },
+  {
+    "name": "シネマアイリス",
+    "address": "北海道函館市本町22番11号 グリーンエステートビル1階",
+    "lat": 41.7888413,
+    "lon": 140.7526317,
+    "precision": "neighbourhood",
+    "website": "http://www.cinemairis.com/",
+    "sourcePage": "函館市の映画館"
+  },
+  {
+    "name": "シネマ太陽函館",
+    "address": "北海道函館市松風町2番8号 大門ビル6階",
+    "lat": 41.7720887,
+    "lon": 140.7327462,
+    "precision": "neighbourhood",
+    "website": "http://www.taiyogroup.jp/",
+    "sourcePage": "函館市の映画館"
+  },
+  {
+    "name": "シネプレックス旭川",
+    "address": "北海道旭川市永山12条3 ウェスタンパワーズ内",
+    "lat": 43.7795344,
+    "lon": 142.4133151,
+    "precision": "poi",
+    "website": "https://www.unitedcinemas.jp/asahikawa/index.html",
+    "sourcePage": "旭川市の映画館"
+  },
+  {
+    "name": "イオンシネマ旭川駅前",
+    "address": "北海道旭川市宮下通7-2-5 イオンモール旭川駅前4階",
+    "lat": 43.763683,
+    "lon": 142.35676,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "旭川市の映画館"
+  },
+  {
+    "name": "シネマ太陽帯広",
+    "address": "北海道帯広市西3条南11丁目7 帯広太陽ビル7階",
+    "lat": 42.9196064,
+    "lon": 143.2014841,
+    "precision": "poi",
+    "website": "https://www.taiyogroup.jp/movie/obihiro",
+    "sourcePage": "帯広市の映画館"
+  },
+  {
+    "name": "シネマ・トーラス",
+    "address": "北海道苫小牧市本町2丁目1の11 中央ボウル1階",
+    "lat": 42.630777,
+    "lon": 141.59328,
+    "precision": "neighbourhood",
+    "website": "https://cinema-taurus.info/",
+    "sourcePage": "苫小牧市の映画館"
+  },
+  {
+    "name": "ディノスシネマズ苫小牧",
+    "address": "北海道苫小牧市柳町3-1-20 イオンモール苫小牧2階",
+    "lat": 42.656538,
+    "lon": 141.64175,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "苫小牧市の映画館"
+  },
+  {
+    "name": "イオンシネマ小樽",
+    "address": "北海道小樽市築港11番2号 ウイングベイ小樽2番街4階",
+    "lat": 43.1825917,
+    "lon": 141.0251081,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "小樽市の映画館"
+  },
+  {
+    "name": "イオンシネマ北見",
+    "address": "北海道北見市北進町1-1-1 イオン北見店4階",
+    "lat": 43.8086875,
+    "lon": 143.8754763,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "北見市の映画館"
+  },
+  {
+    "name": "イオンシネマ釧路",
+    "address": "北海道釧路郡釧路町桂木1-2-2",
+    "lat": 43.0085687,
+    "lon": 144.4033347,
+    "precision": "poi",
+    "website": "https://www.aeoncinema.com/cinema/kushiro/",
+    "sourcePage": "OSM補完（wiki未掲載・WebSearchで実在確認）"
+  },
+  {
+    "name": "T・ジョイ稚内",
+    "address": "北海道稚内市中央3-6-1",
+    "lat": 45.4170301,
+    "lon": 141.6766165,
+    "precision": "poi",
+    "website": "https://saihoku-cinema.com/",
+    "sourcePage": "OSM補完（wiki未掲載・WebSearchで実在確認）"
+  },
+  {
+    "name": "イオンシネマ江別",
+    "address": "北海道江別市幸町35 イオン江別4階",
+    "lat": 43.0966265,
+    "lon": 141.5333739,
+    "precision": "poi",
+    "website": "https://www.aeoncinema.com/cinema/ebetsu/",
+    "sourcePage": "OSM補完（wiki未掲載・WebSearchで実在確認）"
+  },
+  {
+    "name": "ディノスシネマズ室蘭",
+    "address": "北海道室蘭市",
+    "lat": 42.3422272,
+    "lon": 141.0259145,
+    "precision": "neighbourhood",
+    "website": "https://www.cinemasunshine.co.jp/theater/muroran/",
+    "sourcePage": "OSM補完（wiki未掲載・WebSearchで実在確認。2026年8月31日閉館予定だが本記録時点では営業中）"
+  },
+  {
+    "name": "新千歳空港シアター",
+    "address": "北海道千歳市柏台南1丁目 新千歳空港国内線ターミナルビル4階",
+    "lat": 42.7871645,
+    "lon": 141.6804522,
+    "precision": "poi",
+    "website": "https://cts-theater.hokkaido-airports.com/",
+    "sourcePage": "OSM補完（wiki未掲載・WebSearchで実在確認）"
+  }
+]

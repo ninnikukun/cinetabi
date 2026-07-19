@@ -1,0 +1,47 @@
+[
+  {
+    "name": "岡山メルパ",
+    "address": "岡山県岡山市北区中山下1-10-30",
+    "lat": 34.6625749,
+    "lon": 133.9279319,
+    "precision": "poi",
+    "website": "https://www.merpa.info/",
+    "sourcePage": "岡山市の映画館"
+  },
+  {
+    "name": "シネマクレール丸の内",
+    "address": "岡山県岡山市北区丸の内1-5-1",
+    "lat": 34.6641316,
+    "lon": 133.9312331,
+    "precision": "neighbourhood",
+    "website": "http://www.cinemaclair.co.jp/",
+    "sourcePage": "岡山市の映画館"
+  },
+  {
+    "name": "イオンシネマ岡山",
+    "address": "岡山県岡山市北区下石井1-2-1 イオンモール岡山5階",
+    "lat": 34.6614188,
+    "lon": 133.9177394,
+    "precision": "poi",
+    "website": "https://www.aeoncinema.com/cinema/okayama/",
+    "sourcePage": "岡山市の映画館"
+  },
+  {
+    "name": "TOHOシネマズ岡南",
+    "address": "岡山県岡山市南区築港新町1-25-1 シネマタウン岡南2階",
+    "lat": 34.6047508,
+    "lon": 133.939852,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "岡山市の映画館"
+  },
+  {
+    "name": "MOVIX倉敷",
+    "address": "岡山県倉敷市水江1番地 イオンモール倉敷2階",
+    "lat": 34.6050075,
+    "lon": 133.7452931,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "倉敷市の映画館"
+  }
+]

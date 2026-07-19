@@ -1,0 +1,227 @@
+[
+  {
+    "name": "イオンシネマ大野城",
+    "address": "福岡県大野城市錦町4-1-1 イオン大野城4階",
+    "lat": 33.537695,
+    "lon": 130.4757057,
+    "precision": "poi",
+    "website": "https://cinema.aeoncinema.com/wm/ohnojo/",
+    "sourcePage": "福岡県の映画館"
+  },
+  {
+    "name": "TOHOシネマズ福津",
+    "address": "福岡県福津市日蒔野6-16-1 イオンモール福津3階",
+    "lat": 33.7534,
+    "lon": 130.4941052,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "福岡県の映画館"
+  },
+  {
+    "name": "ユナイテッド・シネマトリアス久山",
+    "address": "福岡県糟屋郡久山町大字山田1044-2 トリアス エンターテイメントプレイス",
+    "lat": 33.663439,
+    "lon": 130.488139,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "福岡県の映画館"
+  },
+  {
+    "name": "イオンシネマ福岡",
+    "address": "福岡県糟屋郡粕屋町大字酒殿字老ノ木192-1-2064 イオンモール福岡2階",
+    "lat": 33.5959213,
+    "lon": 130.4804403,
+    "precision": "poi",
+    "website": "https://cinema.aeoncinema.com/wm/fukuoka/",
+    "sourcePage": "福岡県の映画館"
+  },
+  {
+    "name": "ユナイテッド・シネマなかま16",
+    "address": "福岡県中間市上蓮花寺3-1-1 4階",
+    "lat": 33.8231005,
+    "lon": 130.722308,
+    "precision": "neighbourhood",
+    "website": "https://plazamallnakama.com/",
+    "sourcePage": "福岡県の映画館"
+  },
+  {
+    "name": "大川シネマホール",
+    "address": "福岡県大川市酒見215-1 おおかわ交流プラザ4階",
+    "lat": 33.2057619,
+    "lon": 130.3817664,
+    "precision": "poi",
+    "website": "https://cinema.okawa-kouryuplaza.jp/",
+    "sourcePage": "福岡県の映画館"
+  },
+  {
+    "name": "TOHOシネマズ直方",
+    "address": "福岡県直方市湯野原2-1-1 イオンモール直方内",
+    "lat": 33.76895,
+    "lon": 130.750289,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "福岡県の映画館"
+  },
+  {
+    "name": "見聞劇場",
+    "address": "福岡県田川郡川崎町川崎509-1",
+    "lat": 33.623517,
+    "lon": 130.798443,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "福岡県の映画館"
+  },
+  {
+    "name": "TOHOシネマズ天神ソラリア館",
+    "address": "福岡県福岡市中央区天神2-2-43 ソラリアプラザ7階",
+    "lat": 33.591402,
+    "lon": 130.396949,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "福岡市中央区の映画館"
+  },
+  {
+    "name": "KBCシネマ",
+    "address": "福岡県福岡市中央区那の津1-3-21",
+    "lat": 33.5966261,
+    "lon": 130.3964729,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "福岡市中央区の映画館"
+  },
+  {
+    "name": "ユナイテッド・シネマ福岡ももち",
+    "address": "福岡県福岡市中央区地行浜2-2-1 MARK IS 福岡ももち4階",
+    "lat": 33.5934389,
+    "lon": 130.3645596,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "福岡市中央区の映画館"
+  },
+  {
+    "name": "kino cinema天神",
+    "address": "福岡県福岡市中央区警固1-15-38 カイタックスクエアガーデン1号棟3階",
+    "lat": 33.5850187,
+    "lon": 130.3946503,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "福岡市中央区の映画館"
+  },
+  {
+    "name": "駅前パレス・駅前ロマン",
+    "address": "福岡県福岡市博多区博多駅前1-11-12",
+    "lat": 33.5937027,
+    "lon": 130.4189613,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "福岡市博多区の映画館"
+  },
+  {
+    "name": "ユナイテッド・シネマ キャナルシティ13",
+    "address": "福岡県福岡市博多区住吉1-2-22 キャナルシティ博多内",
+    "lat": 33.5897983,
+    "lon": 130.4112607,
+    "precision": "poi",
+    "website": "https://canalcity.co.jp/",
+    "sourcePage": "福岡市博多区の映画館"
+  },
+  {
+    "name": "T・ジョイ博多",
+    "address": "福岡県福岡市博多区博多駅中央街1-1 JR博多シティ内9階",
+    "lat": 33.5901276,
+    "lon": 130.4204431,
+    "precision": "poi",
+    "website": "https://tjoy.jp/t-joy_hakata",
+    "sourcePage": "福岡市博多区の映画館"
+  },
+  {
+    "name": "TOHOシネマズららぽーと福岡",
+    "address": "福岡県福岡市博多区那珂6-23-1 ららぽーと福岡4階",
+    "lat": 33.5649992,
+    "lon": 130.4400355,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "福岡市博多区の映画館"
+  },
+  {
+    "name": "イオンシネマ戸畑",
+    "address": "福岡県北九州市戸畑区汐井町2-2 イオン戸畑S.C 4階",
+    "lat": 33.8955146,
+    "lon": 130.8197935,
+    "precision": "poi",
+    "website": "https://cinema.aeoncinema.com/wm/tobata/",
+    "sourcePage": "北九州市の映画館"
+  },
+  {
+    "name": "小倉名画座",
+    "address": "福岡県北九州市小倉北区京町2-5-6",
+    "lat": 33.8864454,
+    "lon": 130.8807606,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "北九州市小倉地域の映画館"
+  },
+  {
+    "name": "ローソン・ユナイテッドシネマ小倉",
+    "address": "福岡県北九州市小倉北区砂津3-1-1 チャチャタウン小倉内",
+    "lat": 33.8839126,
+    "lon": 130.8911535,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "北九州市小倉地域の映画館"
+  },
+  {
+    "name": "T・ジョイリバーウォーク北九州",
+    "address": "福岡県北九州市小倉北区室町1-1-1-7100 リバーウォーク北九州デコシティ4階",
+    "lat": 33.8858647,
+    "lon": 130.8752466,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "北九州市小倉地域の映画館"
+  },
+  {
+    "name": "小倉コロナシネマワールド",
+    "address": "福岡県北九州市小倉北区西港町27-5",
+    "lat": 33.9041544,
+    "lon": 130.8704705,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "北九州市小倉地域の映画館"
+  },
+  {
+    "name": "小倉昭和館",
+    "address": "福岡県北九州市小倉北区魚町4-2-9",
+    "lat": 33.8815818,
+    "lon": 130.8799903,
+    "precision": "poi",
+    "website": "https://kokura-showakan.com/",
+    "sourcePage": "北九州市小倉地域の映画館"
+  },
+  {
+    "name": "T・ジョイ久留米",
+    "address": "福岡県久留米市新合川2-7-10 久留米アミューズメントビル2階",
+    "lat": 33.318915,
+    "lon": 130.540711,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "久留米市の映画館"
+  },
+  {
+    "name": "シネマサンシャイン飯塚",
+    "address": "福岡県飯塚市菰田西3丁目6-1 ゆめタウン飯塚3階",
+    "lat": 33.6350596,
+    "lon": 130.6897813,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "飯塚市の映画館"
+  },
+  {
+    "name": "イオンシネマ筑紫野",
+    "address": "福岡県筑紫野市立明寺434-1 イオンモール筑紫野3階",
+    "lat": 33.4815043,
+    "lon": 130.5271733,
+    "precision": "poi",
+    "website": "https://www.aeoncinema.com/cinema/chikushino/",
+    "sourcePage": "OSM補完（wiki未掲載・WebSearchで実在確認）"
+  }
+]

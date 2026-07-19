@@ -1,0 +1,65 @@
+[
+  {
+    "name": "シネマサンシャイン重信",
+    "address": "愛媛県東温市野田3-1-13 フジグラン重信3階",
+    "lat": 33.794556,
+    "lon": 132.835071,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "愛媛県の映画館"
+  },
+  {
+    "name": "シネマサンシャインエミフルMASAKI",
+    "address": "愛媛県伊予郡松前町筒井850 エミフルMASAKI 2階",
+    "lat": 33.794437,
+    "lon": 132.708756,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "愛媛県の映画館"
+  },
+  {
+    "name": "TOHOシネマズ新居浜",
+    "address": "愛媛県新居浜市前田町8-8 イオンモール新居浜2階",
+    "lat": 33.9532085,
+    "lon": 133.2698809,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "愛媛県の映画館"
+  },
+  {
+    "name": "湊町シネマローズ",
+    "address": "愛媛県松山市湊町3-1-9 マツゲキビル4階",
+    "lat": 33.835677,
+    "lon": 132.769073,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "松山市の映画館"
+  },
+  {
+    "name": "シネマルナティック",
+    "address": "愛媛県松山市湊町3-1-9 マツゲキビル2階",
+    "lat": 33.835677,
+    "lon": 132.769073,
+    "precision": "neighbourhood",
+    "website": "https://cinemalunatic.sx3.jp/",
+    "sourcePage": "松山市の映画館"
+  },
+  {
+    "name": "シネマサンシャイン衣山",
+    "address": "愛媛県松山市衣山1-188 パルティフジ衣山2階",
+    "lat": 33.8540587,
+    "lon": 132.7469533,
+    "precision": "poi",
+    "website": "https://www.cinemasunshine.co.jp/",
+    "sourcePage": "松山市の映画館"
+  },
+  {
+    "name": "イオンシネマ今治新都市",
+    "address": "愛媛県今治市にぎわい広場1-1 イオンモール今治新都市2階",
+    "lat": 34.043561,
+    "lon": 132.9613334,
+    "precision": "poi",
+    "website": "https://cinema.aeoncinema.com/wm/imabari/",
+    "sourcePage": "今治市の映画館"
+  }
+]

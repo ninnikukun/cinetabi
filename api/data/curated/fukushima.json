@@ -1,0 +1,65 @@
+[
+  {
+    "name": "フォーラム福島（本館）",
+    "address": "福島県福島市曽根田町7-8",
+    "lat": 37.7610517,
+    "lon": 140.4603533,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "福島市の映画館"
+  },
+  {
+    "name": "フォーラム福島（別館）",
+    "address": "福島県福島市曽根田町6-4",
+    "lat": 37.760113,
+    "lon": 140.4603875,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "福島市の映画館"
+  },
+  {
+    "name": "イオンシネマ福島",
+    "address": "福島県福島市曽根田町1-18 MAXふくしま5階",
+    "lat": 37.7587138,
+    "lon": 140.4610993,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "福島市の映画館"
+  },
+  {
+    "name": "郡山テアトル（本館）",
+    "address": "福島県郡山市駅前2-9-7",
+    "lat": 37.399532,
+    "lon": 140.387201,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "郡山市の映画館"
+  },
+  {
+    "name": "郡山テアトル（別館）",
+    "address": "福島県郡山市駅前2-379-1",
+    "lat": 37.399532,
+    "lon": 140.387201,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "郡山市の映画館"
+  },
+  {
+    "name": "まちポレいわき",
+    "address": "福島県いわき市平字白銀町1-15",
+    "lat": 37.0592434,
+    "lon": 140.8930352,
+    "precision": "neighbourhood",
+    "website": "https://machipole-iwaki.com/",
+    "sourcePage": "いわき市の映画館"
+  },
+  {
+    "name": "ポレポレシネマズいわき小名浜",
+    "address": "福島県いわき市小名浜字辰巳町79番地 イオンモール小名浜4階",
+    "lat": 36.9467011,
+    "lon": 140.9038978,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "いわき市の映画館"
+  }
+]

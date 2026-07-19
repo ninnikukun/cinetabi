@@ -1,0 +1,38 @@
+[
+  {
+    "name": "大心劇場",
+    "address": "高知県安芸郡安田町町内京坊992-1",
+    "lat": 33.4718579,
+    "lon": 133.9963066,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "高知県の映画館"
+  },
+  {
+    "name": "高知あたご劇場",
+    "address": "高知県高知市愛宕町1-1-22",
+    "lat": 33.5655237,
+    "lon": 133.5376247,
+    "precision": "poi",
+    "website": "http://neconote.jp/atago/",
+    "sourcePage": "高知市の映画館"
+  },
+  {
+    "name": "TOHOシネマズ高知",
+    "address": "高知県高知市秦南町1-4-8 イオンモール高知3階",
+    "lat": 33.5750552,
+    "lon": 133.542702,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "高知市の映画館"
+  },
+  {
+    "name": "キネマミュージアム",
+    "address": "高知県高知市帯屋町1-13-8",
+    "lat": 33.560597,
+    "lon": 133.539783,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "高知市の映画館"
+  }
+]

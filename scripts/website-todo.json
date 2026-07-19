@@ -42,6 +42,41 @@
     "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
   },
   {
+    "name": "イオンファミリーシアター能代",
+    "address": "秋田県能代市柳町11-1 イオン能代店3階",
+    "file": "akita.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "イオンシネマ大曲",
+    "address": "秋田県大仙市和合字坪立177 イオンモール大曲2階",
+    "file": "akita.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "TOHOシネマズ秋田",
+    "address": "秋田県秋田市御所野地蔵田1-1-1 イオンモール秋田内",
+    "file": "akita.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "シネマヴィレッジ8イオン柏",
+    "address": "青森県つがる市柏稲盛幾世41 イオンモールつがる柏内",
+    "file": "aomori.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "TOHOシネマズおいらせ下田",
+    "address": "青森県上北郡おいらせ町中野平40-1 イオンモール下田内",
+    "file": "aomori.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
     "name": "千葉劇場",
     "address": "千葉県千葉市中央区中央3-8-8",
     "file": "chiba.json",
@@ -105,9 +140,191 @@
     "reason": "モール/施設全体のサイトのみで、映画館個別の上映スケジュールページが確認できずnullに変更"
   },
   {
+    "name": "シネマサンシャイン重信",
+    "address": "愛媛県東温市野田3-1-13 フジグラン重信3階",
+    "file": "ehime.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "シネマサンシャインエミフルMASAKI",
+    "address": "愛媛県伊予郡松前町筒井850 エミフルMASAKI 2階",
+    "file": "ehime.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "TOHOシネマズ新居浜",
+    "address": "愛媛県新居浜市前田町8-8 イオンモール新居浜2階",
+    "file": "ehime.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "湊町シネマローズ",
+    "address": "愛媛県松山市湊町3-1-9 マツゲキビル4階",
+    "file": "ehime.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
     "name": "福井コロナシネマワールド",
     "address": "福井県福井市大和田2丁目1201 フェアモール福井",
     "file": "fukui.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "TOHOシネマズ福津",
+    "address": "福岡県福津市日蒔野6-16-1 イオンモール福津3階",
+    "file": "fukuoka.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "ユナイテッド・シネマトリアス久山",
+    "address": "福岡県糟屋郡久山町大字山田1044-2 トリアス エンターテイメントプレイス",
+    "file": "fukuoka.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "TOHOシネマズ直方",
+    "address": "福岡県直方市湯野原2-1-1 イオンモール直方内",
+    "file": "fukuoka.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "見聞劇場",
+    "address": "福岡県田川郡川崎町川崎509-1",
+    "file": "fukuoka.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "TOHOシネマズ天神ソラリア館",
+    "address": "福岡県福岡市中央区天神2-2-43 ソラリアプラザ7階",
+    "file": "fukuoka.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "KBCシネマ",
+    "address": "福岡県福岡市中央区那の津1-3-21",
+    "file": "fukuoka.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "ユナイテッド・シネマ福岡ももち",
+    "address": "福岡県福岡市中央区地行浜2-2-1 MARK IS 福岡ももち4階",
+    "file": "fukuoka.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "kino cinema天神",
+    "address": "福岡県福岡市中央区警固1-15-38 カイタックスクエアガーデン1号棟3階",
+    "file": "fukuoka.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "駅前パレス・駅前ロマン",
+    "address": "福岡県福岡市博多区博多駅前1-11-12",
+    "file": "fukuoka.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "TOHOシネマズららぽーと福岡",
+    "address": "福岡県福岡市博多区那珂6-23-1 ららぽーと福岡4階",
+    "file": "fukuoka.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "小倉名画座",
+    "address": "福岡県北九州市小倉北区京町2-5-6",
+    "file": "fukuoka.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "ローソン・ユナイテッドシネマ小倉",
+    "address": "福岡県北九州市小倉北区砂津3-1-1 チャチャタウン小倉内",
+    "file": "fukuoka.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "T・ジョイリバーウォーク北九州",
+    "address": "福岡県北九州市小倉北区室町1-1-1-7100 リバーウォーク北九州デコシティ4階",
+    "file": "fukuoka.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "小倉コロナシネマワールド",
+    "address": "福岡県北九州市小倉北区西港町27-5",
+    "file": "fukuoka.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "T・ジョイ久留米",
+    "address": "福岡県久留米市新合川2-7-10 久留米アミューズメントビル2階",
+    "file": "fukuoka.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "シネマサンシャイン飯塚",
+    "address": "福岡県飯塚市菰田西3丁目6-1 ゆめタウン飯塚3階",
+    "file": "fukuoka.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "フォーラム福島（本館）",
+    "address": "福島県福島市曽根田町7-8",
+    "file": "fukushima.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "フォーラム福島（別館）",
+    "address": "福島県福島市曽根田町6-4",
+    "file": "fukushima.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "イオンシネマ福島",
+    "address": "福島県福島市曽根田町1-18 MAXふくしま5階",
+    "file": "fukushima.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "郡山テアトル（本館）",
+    "address": "福島県郡山市駅前2-9-7",
+    "file": "fukushima.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "郡山テアトル（別館）",
+    "address": "福島県郡山市駅前2-379-1",
+    "file": "fukushima.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "ポレポレシネマズいわき小名浜",
+    "address": "福島県いわき市小名浜字辰巳町79番地 イオンモール小名浜4階",
+    "file": "fukushima.json",
     "previousWebsite": null,
     "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
   },
@@ -159,6 +376,62 @@
     "file": "gunma.json",
     "previousWebsite": "https://ota-aeonmall.com/",
     "reason": "モール/施設全体のサイトのみで、映画館個別の上映スケジュールページが確認できずnullに変更"
+  },
+  {
+    "name": "広島バルト11",
+    "address": "広島県安芸郡府中町大須2-1-1 イオンモール広島府中4階",
+    "file": "hiroshima.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "MOVIX広島駅",
+    "address": "広島県広島市南区松原町2-37 ミナモア7階",
+    "file": "hiroshima.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "福山コロナシネマワールド",
+    "address": "広島県福山市一文字町24-1",
+    "file": "hiroshima.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "TOHOシネマズすすきの",
+    "address": "北海道札幌市中央区南4条西4丁目1-1 COCONO SUSUKINO 5階",
+    "file": "hokkaido.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "イオンシネマ旭川駅前",
+    "address": "北海道旭川市宮下通7-2-5 イオンモール旭川駅前4階",
+    "file": "hokkaido.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "ディノスシネマズ苫小牧",
+    "address": "北海道苫小牧市柳町3-1-20 イオンモール苫小牧2階",
+    "file": "hokkaido.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "イオンシネマ小樽",
+    "address": "北海道小樽市築港11番2号 ウイングベイ小樽2番街4階",
+    "file": "hokkaido.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "イオンシネマ北見",
+    "address": "北海道北見市北進町1-1-1 イオン北見店4階",
+    "file": "hokkaido.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
   },
   {
     "name": "kino cinema神戸国際",
@@ -264,6 +537,34 @@
     "file": "ishikawa.json",
     "previousWebsite": "https://www.uny.co.jp/store/pickup-shop/kanazawabay/",
     "reason": "モール/施設全体のサイトのみで、映画館個別の上映スケジュールページが確認できずnullに変更"
+  },
+  {
+    "name": "フォーラム盛岡（本館）",
+    "address": "岩手県盛岡市大通2-8-14 MOSSビル5階",
+    "file": "iwate.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "フォーラム盛岡（別館）",
+    "address": "岩手県盛岡市大通3-1-29 ECO柳新道ビル",
+    "file": "iwate.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "一関シネプラザ",
+    "address": "岩手県一関市磐井町2-13",
+    "file": "iwate.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "シネマサンシャイン姶良",
+    "address": "鹿児島県姶良市東餅田336 イオンタウン姶良3階",
+    "file": "kagoshima.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
   },
   {
     "name": "kino cinema 横浜みなとみらい",
@@ -399,6 +700,55 @@
     "reason": "モール/施設全体のサイトのみで、映画館個別の上映スケジュールページが確認できずnullに変更"
   },
   {
+    "name": "大心劇場",
+    "address": "高知県安芸郡安田町町内京坊992-1",
+    "file": "kochi.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "TOHOシネマズ高知",
+    "address": "高知県高知市秦南町1-4-8 イオンモール高知3階",
+    "file": "kochi.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "キネマミュージアム",
+    "address": "高知県高知市帯屋町1-13-8",
+    "file": "kochi.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "TOHOシネマズ光の森",
+    "address": "熊本県菊池郡菊陽町光の森7-39-1 ゆめタウン光の森内",
+    "file": "kumamoto.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "TOHOシネマズ宇城",
+    "address": "熊本県宇城市小川町河江1-1 イオンモール宇城内",
+    "file": "kumamoto.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "TOHOシネマズはません",
+    "address": "熊本県熊本市南区田井島1-2-1 ゆめタウンはません内",
+    "file": "kumamoto.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "熊本ピカデリー",
+    "address": "熊本県熊本市西区春日3-15-26 アミュプラザくまもと7階",
+    "file": "kumamoto.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
     "name": "イオンシネマ高の原",
     "address": "京都府木津川市相楽台1丁目1-1 イオンモール高の原4階",
     "file": "kyoto.json",
@@ -476,6 +826,41 @@
     "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
   },
   {
+    "name": "109シネマズ富谷",
+    "address": "宮城県富谷市大清水1-33-1 イオンモール富谷別棟",
+    "file": "miyagi.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "ユナイテッド・シネマフォルテ宮城大河原",
+    "address": "宮城県柴田郡大河原町字小島2-1 シーズンズウォークフォルテたのし館内",
+    "file": "miyagi.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "フォーラム仙台",
+    "address": "宮城県仙台市青葉区木町通2-1-33 伊澤竹に雀ビル1階",
+    "file": "miyagi.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "イオンシネマ石巻",
+    "address": "宮城県石巻市茜平4-104 イオンモール石巻2階",
+    "file": "miyagi.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "シネポート",
+    "address": "宮崎県都城市中町17-9",
+    "file": "miyazaki.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
     "name": "トラゥム・ライゼ",
     "address": "長野県上田市中央1-6-13",
     "file": "nagano.json",
@@ -488,6 +873,20 @@
     "file": "nagano.json",
     "previousWebsite": "https://ueda.ario.jp/",
     "reason": "モール/施設全体のサイトのみで、映画館個別の上映スケジュールページが確認できずnullに変更"
+  },
+  {
+    "name": "長崎セントラル劇場",
+    "address": "長崎県長崎市万屋町5-9",
+    "file": "nagasaki.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "ローソン・ユナイテッドシネマ長崎",
+    "address": "長崎県長崎市尾上町1-1 アミュプラザ長崎4階",
+    "file": "nagasaki.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
   },
   {
     "name": "TOHOシネマズ橿原",
@@ -530,6 +929,90 @@
     "file": "niigata.json",
     "previousWebsite": "https://walk-uny.com/riverside-senshu/",
     "reason": "モール/施設全体のサイトのみで、映画館個別の上映スケジュールページが確認できずnullに変更"
+  },
+  {
+    "name": "TOHOシネマズ大分わさだ",
+    "address": "大分県大分市大字玉沢楠本755-1 トキハわさだタウン3階",
+    "file": "oita.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "TOHOシネマズアミュプラザおおいた",
+    "address": "大分県大分市要町1番14号 アミュプラザおおいた4階",
+    "file": "oita.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "別府南映劇場",
+    "address": "大分県別府市北浜1-3-27",
+    "file": "oita.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "TOHOシネマズ岡南",
+    "address": "岡山県岡山市南区築港新町1-25-1 シネマタウン岡南2階",
+    "file": "okayama.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "MOVIX倉敷",
+    "address": "岡山県倉敷市水江1番地 イオンモール倉敷2階",
+    "file": "okayama.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "シネマライカム",
+    "address": "沖縄県中頭郡北中城村ライカム1番地 イオンモール沖縄ライカム4階",
+    "file": "okinawa.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "ローソン・ユナイテッドシネマPARCO CITY浦添",
+    "address": "沖縄県浦添市西洲3-1-1 サンエー浦添西海岸PARCO CITY内",
+    "file": "okinawa.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "サザンプレックス",
+    "address": "沖縄県島尻郡南風原町宮城371-1",
+    "file": "okinawa.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "南の島パニパニシネマ",
+    "address": "沖縄県宮古島市平良字西里261-2",
+    "file": "okinawa.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "シネマパレット",
+    "address": "沖縄県那覇市久茂地1-1-1 9階",
+    "file": "okinawa.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "シネマQ",
+    "address": "沖縄県那覇市おもろまち4-4-9",
+    "file": "okinawa.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "シアタードーナツ・オキナワ",
+    "address": "沖縄県沖縄市中央1-3-17",
+    "file": "okinawa.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
   },
   {
     "name": "109シネマズ箕面",
@@ -672,6 +1155,13 @@
     "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
   },
   {
+    "name": "シアター シエマ",
+    "address": "佐賀県佐賀市松原2-14-16 セントラルプラザ3階",
+    "file": "saga.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
     "name": "ユナイテッド・シネマ浦和",
     "address": "埼玉県さいたま市浦和区東高砂町11-1 浦和パルコ6階",
     "file": "saitama.json",
@@ -770,6 +1260,13 @@
     "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
   },
   {
+    "name": "Shimane Cinema ONOZAWA",
+    "address": "島根県益田市あけぼの東町2-1 小野沢ビル3階",
+    "file": "shimane.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
     "name": "ジョイランドみしまシネマ",
     "address": "静岡県三島市梅名308-6",
     "file": "shizuoka.json",
@@ -850,6 +1347,13 @@
     "name": "ユナイテッド・シネマアシコタウンあしかが",
     "address": "栃木県足利市大月町3-2 アシコタウンあしかが内",
     "file": "tochigi.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "資料館「キネマ・ミュージアム」",
+    "address": "徳島県鳴門市瀬戸町明神字上本城83-9",
+    "file": "tokushima.json",
     "previousWebsite": null,
     "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
   },
@@ -1022,6 +1526,20 @@
     "reason": "モール/施設全体のサイトのみで、映画館個別の上映スケジュールページが確認できずnullに変更"
   },
   {
+    "name": "MOVIX日吉津",
+    "address": "鳥取県西伯郡日吉津村日吉津1160-1 イオンモール日吉津西館2階",
+    "file": "tottori.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "シネマドア",
+    "address": "鳥取県鳥取市元町222",
+    "file": "tottori.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
     "name": "TOHOシネマズファボーレ富山",
     "address": "富山県富山市婦中町下轡田165-1 フューチャーシティFavore内",
     "file": "toyama.json",
@@ -1060,6 +1578,55 @@
     "name": "シネマ203",
     "address": "和歌山県和歌山市中ノ店北ノ丁22 北ぶらくり丁会館203号",
     "file": "wakayama.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "イオンシネマ天童",
+    "address": "山形県天童市芳賀タウン北4-1-1 イオンモール天童2階",
+    "file": "yamagata.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "イオンシネマ三川",
+    "address": "山形県東田川郡三川町大字猪子字和田庫128-1 イオンモール三川2階",
+    "file": "yamagata.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "ソラリス",
+    "address": "山形県山形市城南町1-1-1 霞城セントラル地下2階",
+    "file": "yamagata.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "MOVIX周南",
+    "address": "山口県下松市中央町21-3 ゆめタウン下松内",
+    "file": "yamaguchi.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "山口情報芸術センター",
+    "address": "山口県山口市中園町7-7",
+    "file": "yamaguchi.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "シネマサンシャイン下関",
+    "address": "山口県下関市竹崎町4-1-37 シーモール下関",
+    "file": "yamaguchi.json",
+    "previousWebsite": null,
+    "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
+  },
+  {
+    "name": "シネマポスト",
+    "address": "山口県下関市大和町1丁目13-7 海町ビル 1階",
+    "file": "yamaguchi.json",
     "previousWebsite": null,
     "reason": "Wikipedia/wiki本文/OSMいずれからも公式サイトが見つからなかった"
   }

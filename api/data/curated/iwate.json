@@ -1,0 +1,65 @@
+[
+  {
+    "name": "イオンシネマ江釣子",
+    "address": "岩手県北上市北鬼柳19 江釣子ショッピングセンターパル",
+    "lat": 39.2936605,
+    "lon": 141.092323,
+    "precision": "poi",
+    "website": "https://esc-pal.com/",
+    "sourcePage": "岩手県の映画館"
+  },
+  {
+    "name": "シネマ・デ・アエル",
+    "address": "岩手県宮古市本町2",
+    "lat": 39.643284,
+    "lon": 141.956116,
+    "precision": "neighbourhood",
+    "website": "https://www.cinemadeaeru.com/",
+    "sourcePage": "岩手県の映画館"
+  },
+  {
+    "name": "盛岡ルミエール",
+    "address": "岩手県盛岡市菜園2-2-2",
+    "lat": 39.701631,
+    "lon": 141.145383,
+    "precision": "neighbourhood",
+    "website": "http://www.nanbukogyo.jp/morioka/",
+    "sourcePage": "盛岡市の映画館"
+  },
+  {
+    "name": "盛岡中央映画劇場",
+    "address": "岩手県盛岡市大通1-9-12",
+    "lat": 39.7031236,
+    "lon": 141.1474504,
+    "precision": "poi",
+    "website": "https://chugeki.jp/",
+    "sourcePage": "盛岡市の映画館"
+  },
+  {
+    "name": "フォーラム盛岡（本館）",
+    "address": "岩手県盛岡市大通2-8-14 MOSSビル5階",
+    "lat": 39.703128,
+    "lon": 141.145906,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "盛岡市の映画館"
+  },
+  {
+    "name": "フォーラム盛岡（別館）",
+    "address": "岩手県盛岡市大通3-1-29 ECO柳新道ビル",
+    "lat": 39.703933,
+    "lon": 141.141276,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "盛岡市の映画館"
+  },
+  {
+    "name": "一関シネプラザ",
+    "address": "岩手県一関市磐井町2-13",
+    "lat": 38.9330125,
+    "lon": 141.1344824,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "一関市の映画館"
+  }
+]

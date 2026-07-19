@@ -1,0 +1,56 @@
+[
+  {
+    "name": "シネマヴィレッジ8イオン柏",
+    "address": "青森県つがる市柏稲盛幾世41 イオンモールつがる柏内",
+    "lat": 40.8027657,
+    "lon": 140.4171739,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "青森県の映画館"
+  },
+  {
+    "name": "TOHOシネマズおいらせ下田",
+    "address": "青森県上北郡おいらせ町中野平40-1 イオンモール下田内",
+    "lat": 40.6022275,
+    "lon": 141.4180655,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "青森県の映画館"
+  },
+  {
+    "name": "イオンシネマ新青森",
+    "address": "青森県青森市三好1-15-8 ガーラタウンアネックス棟",
+    "lat": 40.8349445,
+    "lon": 140.7021981,
+    "precision": "poi",
+    "website": "https://www.aeoncinema.com/cinema/shinaomori/",
+    "sourcePage": "青森市の映画館"
+  },
+  {
+    "name": "シネマディクトルージュ・ノアール",
+    "address": "青森県青森市古川1-21-18 NARAYAビル3階",
+    "lat": 40.8253934,
+    "lon": 140.7365316,
+    "precision": "neighbourhood",
+    "website": "http://www.cinemadict.com/",
+    "sourcePage": "青森市の映画館"
+  },
+  {
+    "name": "青森松竹アムゼ",
+    "address": "青森県青森市緑3-9-2 サンロード青森アムゼ内",
+    "lat": 40.806685,
+    "lon": 140.7527501,
+    "precision": "neighbourhood",
+    "website": "http://www.s-cinema.com/",
+    "sourcePage": "青森市の映画館"
+  },
+  {
+    "name": "イオンシネマ弘前",
+    "address": "青森県弘前市高崎2-15-1 さくら野百貨店弘前店内",
+    "lat": 40.6091239,
+    "lon": 140.4955028,
+    "precision": "poi",
+    "website": "https://sakurano-dept.jp/",
+    "sourcePage": "弘前市の映画館"
+  }
+]

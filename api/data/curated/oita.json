@@ -1,0 +1,83 @@
+[
+  {
+    "name": "玉津東天紅",
+    "address": "大分県豊後高田市玉津380-2",
+    "lat": 33.5652645,
+    "lon": 131.4430895,
+    "precision": "neighbourhood",
+    "website": "https://www.city.bungotakada.oita.jp/site/showanomachi/1332.html",
+    "sourcePage": "大分県の映画館"
+  },
+  {
+    "name": "大分シネマ5",
+    "address": "大分県大分市府内町2-4-8",
+    "lat": 33.236755,
+    "lon": 131.609669,
+    "precision": "neighbourhood",
+    "website": "https://www.cinema5.gr.jp/",
+    "sourcePage": "大分市の映画館"
+  },
+  {
+    "name": "TOHOシネマズ大分わさだ",
+    "address": "大分県大分市大字玉沢楠本755-1 トキハわさだタウン3階",
+    "lat": 33.1884716,
+    "lon": 131.5817969,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "大分市の映画館"
+  },
+  {
+    "name": "T・ジョイパークプレイス大分",
+    "address": "大分県大分市公園通り西2-1 パークプレイス大分内",
+    "lat": 33.194973,
+    "lon": 131.658047,
+    "precision": "neighbourhood",
+    "website": "http://t-joy.net/site/oita/index.html",
+    "sourcePage": "大分市の映画館"
+  },
+  {
+    "name": "大分シネマ5 bis",
+    "address": "大分県大分市府内町3-7-7 ネクサスプラザ地下1階",
+    "lat": 33.238226,
+    "lon": 131.609575,
+    "precision": "neighbourhood",
+    "website": "http://www.cinema5.gr.jp/",
+    "sourcePage": "大分市の映画館"
+  },
+  {
+    "name": "TOHOシネマズアミュプラザおおいた",
+    "address": "大分県大分市要町1番14号 アミュプラザおおいた4階",
+    "lat": 33.2331399,
+    "lon": 131.6062932,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "大分市の映画館"
+  },
+  {
+    "name": "別府南映劇場",
+    "address": "大分県別府市北浜1-3-27",
+    "lat": 33.2786807,
+    "lon": 131.5040068,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "別府市の映画館"
+  },
+  {
+    "name": "別府ブルーバード劇場",
+    "address": "大分県別府市北浜1-2-12 ブルーバード会館2階",
+    "lat": 33.2790493,
+    "lon": 131.5027867,
+    "precision": "poi",
+    "website": "https://www.beppu-bluebird.info/",
+    "sourcePage": "別府市の映画館"
+  },
+  {
+    "name": "日田リベルテ",
+    "address": "大分県日田市三本松2-6-25 アストロボール2階",
+    "lat": 33.321152,
+    "lon": 130.931139,
+    "precision": "neighbourhood",
+    "website": "https://liberte.main.jp/",
+    "sourcePage": "日田市の映画館"
+  }
+]

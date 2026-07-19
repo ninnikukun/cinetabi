@@ -1,0 +1,47 @@
+[
+  {
+    "name": "倉吉シネマエポック",
+    "address": "鳥取県倉吉市山根557-1 パープルタウン本館3階",
+    "lat": 35.4483083,
+    "lon": 133.8504599,
+    "precision": "neighbourhood",
+    "website": "https://www.purpletown.com/cinema",
+    "sourcePage": "鳥取県の映画館"
+  },
+  {
+    "name": "ジグシアター",
+    "address": "鳥取県東伯郡湯梨浜町松崎619 旧湯梨浜町立桜小学校3階",
+    "lat": 35.4765567,
+    "lon": 133.9038052,
+    "precision": "poi",
+    "website": "https://jigtheater.com/information/",
+    "sourcePage": "鳥取県の映画館"
+  },
+  {
+    "name": "MOVIX日吉津",
+    "address": "鳥取県西伯郡日吉津村日吉津1160-1 イオンモール日吉津西館2階",
+    "lat": 35.4462372,
+    "lon": 133.3854037,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "鳥取県の映画館"
+  },
+  {
+    "name": "鳥取シネマ",
+    "address": "鳥取県鳥取市栄町606 まるもビル3階",
+    "lat": 35.4958912,
+    "lon": 134.2279233,
+    "precision": "poi",
+    "website": "https://tottoricinema.com/time_schedule/",
+    "sourcePage": "鳥取市の映画館"
+  },
+  {
+    "name": "シネマドア",
+    "address": "鳥取県鳥取市元町222",
+    "lat": 35.4998992,
+    "lon": 134.228741,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "鳥取市の映画館"
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "name": "イオンシネマ佐賀大和",
+    "address": "佐賀県佐賀市大和町尼寺2965 イオンモール佐賀大和内",
+    "lat": 33.3014797,
+    "lon": 130.2805164,
+    "precision": "poi",
+    "website": "https://cinema.aeoncinema.com/wm/sagayamato/",
+    "sourcePage": "佐賀市の映画館"
+  },
+  {
+    "name": "109シネマズ佐賀",
+    "address": "佐賀県佐賀市巨勢町牛島730 モラージュ佐賀2階",
+    "lat": 33.2512518,
+    "lon": 130.3198484,
+    "precision": "poi",
+    "website": "https://109cinemas.net/saga/",
+    "sourcePage": "佐賀市の映画館"
+  },
+  {
+    "name": "シアター シエマ",
+    "address": "佐賀県佐賀市松原2-14-16 セントラルプラザ3階",
+    "lat": 33.2529401,
+    "lon": 130.3033791,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "佐賀市の映画館"
+  },
+  {
+    "name": "THEATER ENYA",
+    "address": "佐賀県唐津市京町1783 KARAE 1階",
+    "lat": 33.447028,
+    "lon": 129.96978,
+    "precision": "neighbourhood",
+    "website": "https://theater-enya.com/",
+    "sourcePage": "唐津市の映画館"
+  }
+]

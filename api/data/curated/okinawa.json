@@ -1,0 +1,92 @@
+[
+  {
+    "name": "シネマプラザハウス1954",
+    "address": "沖縄県沖縄市久保田3-11-1 プラザハウスショッピングセンター3階",
+    "lat": 26.3188467,
+    "lon": 127.794629,
+    "precision": "neighbourhood",
+    "website": "https://startheaters.jp/theaters/6/",
+    "sourcePage": "沖縄県の映画館"
+  },
+  {
+    "name": "ミハマ7プレックス",
+    "address": "沖縄県中頭郡北谷町美浜8-7",
+    "lat": 26.3153107,
+    "lon": 127.7567284,
+    "precision": "poi",
+    "website": "https://www.kokubagumi.co.jp/",
+    "sourcePage": "沖縄県の映画館"
+  },
+  {
+    "name": "シネマライカム",
+    "address": "沖縄県中頭郡北中城村ライカム1番地 イオンモール沖縄ライカム4階",
+    "lat": 26.3139601,
+    "lon": 127.7963307,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "沖縄県の映画館"
+  },
+  {
+    "name": "ローソン・ユナイテッドシネマPARCO CITY浦添",
+    "address": "沖縄県浦添市西洲3-1-1 サンエー浦添西海岸PARCO CITY内",
+    "lat": 26.2602639,
+    "lon": 127.6959076,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "沖縄県の映画館"
+  },
+  {
+    "name": "サザンプレックス",
+    "address": "沖縄県島尻郡南風原町宮城371-1",
+    "lat": 26.2036734,
+    "lon": 127.7361162,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "沖縄県の映画館"
+  },
+  {
+    "name": "南の島パニパニシネマ",
+    "address": "沖縄県宮古島市平良字西里261-2",
+    "lat": 24.8043987,
+    "lon": 125.2799239,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "沖縄県の映画館"
+  },
+  {
+    "name": "桜坂劇場A・B・C",
+    "address": "沖縄県那覇市牧志3-6-10",
+    "lat": 26.2153394,
+    "lon": 127.6902428,
+    "precision": "neighbourhood",
+    "website": "http://sakura-zaka.com/",
+    "sourcePage": "那覇市の映画館"
+  },
+  {
+    "name": "シネマパレット",
+    "address": "沖縄県那覇市久茂地1-1-1 9階",
+    "lat": 26.2138541,
+    "lon": 127.6791384,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "那覇市の映画館"
+  },
+  {
+    "name": "シネマQ",
+    "address": "沖縄県那覇市おもろまち4-4-9",
+    "lat": 26.2251624,
+    "lon": 127.6946274,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "那覇市の映画館"
+  },
+  {
+    "name": "シアタードーナツ・オキナワ",
+    "address": "沖縄県沖縄市中央1-3-17",
+    "lat": 26.3362583,
+    "lon": 127.8006588,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "OSM補完（wiki未掲載・WebSearchで実在確認）"
+  }
+]

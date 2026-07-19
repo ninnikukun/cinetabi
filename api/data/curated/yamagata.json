@@ -1,0 +1,74 @@
+[
+  {
+    "name": "イオンシネマ天童",
+    "address": "山形県天童市芳賀タウン北4-1-1 イオンモール天童2階",
+    "lat": 38.3429842,
+    "lon": 140.3620367,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "山形県の映画館"
+  },
+  {
+    "name": "フォーラム東根",
+    "address": "山形県東根市蟹沢1797-1",
+    "lat": 38.4281119,
+    "lon": 140.3752939,
+    "precision": "poi",
+    "website": "http://www.forum-movie.net/",
+    "sourcePage": "山形県の映画館"
+  },
+  {
+    "name": "イオンシネマ三川",
+    "address": "山形県東田川郡三川町大字猪子字和田庫128-1 イオンモール三川2階",
+    "lat": 38.8160384,
+    "lon": 139.8352601,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "山形県の映画館"
+  },
+  {
+    "name": "ソラリス",
+    "address": "山形県山形市城南町1-1-1 霞城セントラル地下2階",
+    "lat": 38.2507983,
+    "lon": 140.3265077,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "山形市の映画館"
+  },
+  {
+    "name": "フォーラム山形",
+    "address": "山形県山形市香澄町2-8-1 ベガスベガスビル1階",
+    "lat": 38.248338,
+    "lon": 140.3324573,
+    "precision": "poi",
+    "website": "http://www.forum-movie.net/",
+    "sourcePage": "山形市の映画館"
+  },
+  {
+    "name": "MOVIE ON やまがた",
+    "address": "山形県山形市嶋北1-2-2 嶋グランガーデン",
+    "lat": 38.2863871,
+    "lon": 140.3222001,
+    "precision": "neighbourhood",
+    "website": "http://www.movieon.jp/",
+    "sourcePage": "山形市の映画館"
+  },
+  {
+    "name": "イオンシネマ米沢",
+    "address": "山形県米沢市中央7-1-12 イオン米沢店向い",
+    "lat": 37.9225139,
+    "lon": 140.1073062,
+    "precision": "poi",
+    "website": "https://aeontohoku.co.jp/stores/yonezawa",
+    "sourcePage": "米沢市の映画館"
+  },
+  {
+    "name": "鶴岡まちなかキネマ",
+    "address": "山形県鶴岡市山王町13-36",
+    "lat": 38.7305409,
+    "lon": 139.8357724,
+    "precision": "poi",
+    "website": "https://www.machikine.co.jp/",
+    "sourcePage": "鶴岡市の映画館"
+  }
+]

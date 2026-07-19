@@ -1,0 +1,47 @@
+[
+  {
+    "name": "イオンファミリーシアター能代",
+    "address": "秋田県能代市柳町11-1 イオン能代店3階",
+    "lat": 40.2088711,
+    "lon": 140.0243267,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "秋田県の映画館"
+  },
+  {
+    "name": "イオンシネマ大曲",
+    "address": "秋田県大仙市和合字坪立177 イオンモール大曲2階",
+    "lat": 39.4380865,
+    "lon": 140.5091061,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "秋田県の映画館"
+  },
+  {
+    "name": "ALVEシアター",
+    "address": "秋田県秋田市東通仲町4-1 秋田拠点センターアルヴェ2階",
+    "lat": 39.713973,
+    "lon": 140.132949,
+    "precision": "neighbourhood",
+    "website": "https://alvetheater.com",
+    "sourcePage": "秋田市の映画館"
+  },
+  {
+    "name": "TOHOシネマズ秋田",
+    "address": "秋田県秋田市御所野地蔵田1-1-1 イオンモール秋田内",
+    "lat": 39.6637878,
+    "lon": 140.1606719,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "秋田市の映画館"
+  },
+  {
+    "name": "御成座",
+    "address": "秋田県大館市御成町1",
+    "lat": 40.2868991,
+    "lon": 140.5584215,
+    "precision": "poi",
+    "website": "http://onariza.oodate.or.jp",
+    "sourcePage": "大館市"
+  }
+]

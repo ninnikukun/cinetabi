@@ -1,0 +1,83 @@
+[
+  {
+    "name": "イオンシネマ名取",
+    "address": "宮城県名取市杜せきのした5丁目3-1 イオンモール名取3階",
+    "lat": 38.163337,
+    "lon": 140.898277,
+    "precision": "neighbourhood",
+    "website": "https://www.aeoncinema.com/cinema/natori/",
+    "sourcePage": "宮城県の映画館"
+  },
+  {
+    "name": "109シネマズ富谷",
+    "address": "宮城県富谷市大清水1-33-1 イオンモール富谷別棟",
+    "lat": 38.3654683,
+    "lon": 140.876337,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "宮城県の映画館"
+  },
+  {
+    "name": "イオンシネマ新利府",
+    "address": "宮城県宮城郡利府町新中道3-1-1 イオンモール新利府南館3階",
+    "lat": 38.3244447,
+    "lon": 140.9729507,
+    "precision": "poi",
+    "website": "https://www.aeoncinema.com/cinema/rifu/",
+    "sourcePage": "宮城県の映画館"
+  },
+  {
+    "name": "ユナイテッド・シネマフォルテ宮城大河原",
+    "address": "宮城県柴田郡大河原町字小島2-1 シーズンズウォークフォルテたのし館内",
+    "lat": 38.066266,
+    "lon": 140.737743,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "宮城県の映画館"
+  },
+  {
+    "name": "シネマリオーネ古川",
+    "address": "宮城県大崎市古川台町9-20 リオーネふるかわ2階",
+    "lat": 38.574418,
+    "lon": 140.962926,
+    "precision": "neighbourhood",
+    "website": "http://www.cinema-rione.jp/",
+    "sourcePage": "宮城県の映画館"
+  },
+  {
+    "name": "フォーラム仙台",
+    "address": "宮城県仙台市青葉区木町通2-1-33 伊澤竹に雀ビル1階",
+    "lat": 38.2729112,
+    "lon": 140.8667381,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "仙台市の映画館"
+  },
+  {
+    "name": "TOHOシネマズ仙台",
+    "address": "宮城県仙台市青葉区中央3-7-5 仙台パルコ2 6階",
+    "lat": 38.2589474,
+    "lon": 140.8794369,
+    "precision": "poi",
+    "website": "https://www.tohotheater.jp/",
+    "sourcePage": "仙台市の映画館"
+  },
+  {
+    "name": "MOVIX仙台",
+    "address": "宮城県仙台市太白区長町7-20-15 ザ・モール仙台長町Part2内",
+    "lat": 38.227123,
+    "lon": 140.87657,
+    "precision": "poi",
+    "website": "https://www.smt-cinema.com/site/sendai/",
+    "sourcePage": "仙台市の映画館"
+  },
+  {
+    "name": "イオンシネマ石巻",
+    "address": "宮城県石巻市茜平4-104 イオンモール石巻2階",
+    "lat": 38.4473868,
+    "lon": 141.2661456,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "石巻市の映画館"
+  }
+]

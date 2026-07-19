@@ -1,0 +1,38 @@
+[
+  {
+    "name": "長崎セントラル劇場",
+    "address": "長崎県長崎市万屋町5-9",
+    "lat": 32.7451208,
+    "lon": 129.87908,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "長崎市の映画館"
+  },
+  {
+    "name": "ローソン・ユナイテッドシネマ長崎",
+    "address": "長崎県長崎市尾上町1-1 アミュプラザ長崎4階",
+    "lat": 32.7523375,
+    "lon": 129.8695092,
+    "precision": "poi",
+    "website": null,
+    "sourcePage": "長崎市の映画館"
+  },
+  {
+    "name": "TOHOシネマズ長崎",
+    "address": "長崎県長崎市茂里町1-55 みらい長崎ココウォーク6階",
+    "lat": 32.7641498,
+    "lon": 129.8645095,
+    "precision": "neighbourhood",
+    "website": "https://cocowalk.jp/",
+    "sourcePage": "長崎市の映画館"
+  },
+  {
+    "name": "佐世保シネマボックス太陽",
+    "address": "長崎県佐世保市島地町1-17",
+    "lat": 33.1688635,
+    "lon": 129.7202083,
+    "precision": "neighbourhood",
+    "website": "http://www.cinema-taiyo.co.jp/",
+    "sourcePage": "佐世保市の映画館"
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "name": "広島バルト11",
+    "address": "広島県安芸郡府中町大須2-1-1 イオンモール広島府中4階",
+    "lat": 34.394471,
+    "lon": 132.49922,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "広島県の映画館"
+  },
+  {
+    "name": "T・ジョイ東広島",
+    "address": "広島県東広島市西条町御薗宇4405 フジグラン東広島SC 3階",
+    "lat": 34.4037794,
+    "lon": 132.7444777,
+    "precision": "neighbourhood",
+    "website": "https://tjoy.jp/t-joy_higashihiroshima",
+    "sourcePage": "広島県の映画館"
+  },
+  {
+    "name": "サロンシネマ",
+    "address": "広島県広島市中区八丁堀16-10 広島東映プラザビル8階",
+    "lat": 34.3944431,
+    "lon": 132.4619132,
+    "precision": "poi",
+    "website": "https://johakyu.co.jp/",
+    "sourcePage": "広島市の映画館"
+  },
+  {
+    "name": "八丁座 壱・弐",
+    "address": "広島県広島市中区胡町6-26 福屋八丁堀本店8階",
+    "lat": 34.3933385,
+    "lon": 132.4663464,
+    "precision": "neighbourhood",
+    "website": "https://johakyu.co.jp/",
+    "sourcePage": "広島市の映画館"
+  },
+  {
+    "name": "イオンシネマ広島",
+    "address": "広島県広島市南区段原南1-3-52 広島段原S.C. 6階",
+    "lat": 34.385141,
+    "lon": 132.4757954,
+    "precision": "poi",
+    "website": "https://cinema.aeoncinema.com/wm/hiroshima/",
+    "sourcePage": "広島市の映画館"
+  },
+  {
+    "name": "MOVIX広島駅",
+    "address": "広島県広島市南区松原町2-37 ミナモア7階",
+    "lat": 34.396388,
+    "lon": 132.473655,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "広島市の映画館"
+  },
+  {
+    "name": "横川有楽座",
+    "address": "広島県広島市西区横川町2-4-26",
+    "lat": 34.4094445,
+    "lon": 132.4531355,
+    "precision": "neighbourhood",
+    "website": "https://yokogawayuuraku.chicappa.jp/",
+    "sourcePage": "広島市の映画館"
+  },
+  {
+    "name": "広島横川シネマ",
+    "address": "広島県広島市西区横川町3-1-12",
+    "lat": 34.4100818,
+    "lon": 132.4520564,
+    "precision": "poi",
+    "website": "https://yokogawa-cine.jugem.jp/",
+    "sourcePage": "広島市の映画館"
+  },
+  {
+    "name": "109シネマズ広島",
+    "address": "広島県広島市西区草津南4-7-1 アルパーク北棟3階",
+    "lat": 34.3755464,
+    "lon": 132.3935252,
+    "precision": "poi",
+    "website": "https://109cinemas.net/hiroshima/",
+    "sourcePage": "広島市の映画館"
+  },
+  {
+    "name": "TOHOシネマズ緑井",
+    "address": "広島県広島市安佐南区緑井1-5-2 フジグラン緑井3階",
+    "lat": 34.463848,
+    "lon": 132.4753371,
+    "precision": "neighbourhood",
+    "website": "http://hlo.tohotheater.jp/net/schedule/019/TNPI2000J01.do",
+    "sourcePage": "広島市の映画館"
+  },
+  {
+    "name": "イオンシネマ広島西風新都",
+    "address": "広島県広島市佐伯区石内東4-1-1 THE OUTLETS HIROSHIMA 1階",
+    "lat": 34.4086402,
+    "lon": 132.3958433,
+    "precision": "poi",
+    "website": "https://cinema.aeoncinema.com/wm/seifu/",
+    "sourcePage": "広島市の映画館"
+  },
+  {
+    "name": "福山コロナシネマワールド",
+    "address": "広島県福山市一文字町24-1",
+    "lat": 34.469654,
+    "lon": 133.408804,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "福山市の映画館"
+  },
+  {
+    "name": "福山エーガル8シネマズ",
+    "address": "広島県福山市神辺町大字新道上字2丁目10-26 フジグラン神辺3階",
+    "lat": 34.5441048,
+    "lon": 133.3579714,
+    "precision": "poi",
+    "website": "https://www.furec.jp/",
+    "sourcePage": "福山市の映画館"
+  },
+  {
+    "name": "呉ポポロ",
+    "address": "広島県呉市中通3-5-3 ポポロビル4階",
+    "lat": 34.2461082,
+    "lon": 132.5650213,
+    "precision": "poi",
+    "website": "https://popolo1.web.fc2.com/",
+    "sourcePage": "呉市の映画館"
+  },
+  {
+    "name": "シネマ尾道",
+    "address": "広島県尾道市東御所町6-2",
+    "lat": 34.4045657,
+    "lon": 133.1944298,
+    "precision": "poi",
+    "website": "http://cinemaonomichi.com/",
+    "sourcePage": "OSM補完（wiki未掲載・WebSearchで実在確認）"
+  }
+]

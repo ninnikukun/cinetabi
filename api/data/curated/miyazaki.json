@@ -1,0 +1,47 @@
+[
+  {
+    "name": "セントラルシネマ宮崎",
+    "address": "宮崎県宮崎市新別府町江口862-1 イオンモール宮崎内",
+    "lat": 31.9149879,
+    "lon": 131.4316935,
+    "precision": "poi",
+    "website": "http://www.mcc-9.jp/",
+    "sourcePage": "宮崎市の映画館"
+  },
+  {
+    "name": "ワンダーアティックシネマ",
+    "address": "宮崎県宮崎市老松2-2-22 アミュプラザみやざきうみ館5階",
+    "lat": 31.9135979,
+    "lon": 131.431189,
+    "precision": "neighbourhood",
+    "website": "http://www.mcc-9.jp/",
+    "sourcePage": "宮崎市の映画館"
+  },
+  {
+    "name": "宮崎キネマ館",
+    "address": "宮崎県宮崎市高千穂通1-178 カリーノTRUNK",
+    "lat": 31.9177934,
+    "lon": 131.4256246,
+    "precision": "poi",
+    "website": "http://www.bunkahonpo.or.jp/cinema/index.htm",
+    "sourcePage": "宮崎市の映画館"
+  },
+  {
+    "name": "延岡シネマ",
+    "address": "宮崎県延岡市北町1-1-13",
+    "lat": 32.5830041,
+    "lon": 131.6676986,
+    "precision": "neighbourhood",
+    "website": "https://www.nobeokacinema.com/index.html",
+    "sourcePage": "延岡市の映画館"
+  },
+  {
+    "name": "シネポート",
+    "address": "宮崎県都城市中町17-9",
+    "lat": 31.726461,
+    "lon": 131.064961,
+    "precision": "neighbourhood",
+    "website": null,
+    "sourcePage": "都城市の映画館"
+  }
+]

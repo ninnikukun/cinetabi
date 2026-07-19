@@ -1,0 +1,47 @@
+[
+  {
+    "name": "イオンシネマ綾川",
+    "address": "香川県綾歌郡綾川町萱原822-1 イオンモール綾川3階",
+    "lat": 34.2520775,
+    "lon": 133.9294526,
+    "precision": "poi",
+    "website": "https://cinema.aeoncinema.com/wm/ayagawa/",
+    "sourcePage": "香川県の映画館"
+  },
+  {
+    "name": "イオンシネマ宇多津",
+    "address": "香川県綾歌郡宇多津町浜2-16 イオンタウン宇多津内",
+    "lat": 34.307505,
+    "lon": 133.8102499,
+    "precision": "poi",
+    "website": "https://cinema.aeoncinema.com/wm/utazu/",
+    "sourcePage": "香川県の映画館"
+  },
+  {
+    "name": "ロッポニカ高松",
+    "address": "香川県高松市常磐町1-4-6 シャルマンビル2階",
+    "lat": 34.3387776,
+    "lon": 134.0510854,
+    "precision": "neighbourhood",
+    "website": "https://x.com/ropponika",
+    "sourcePage": "高松市の映画館"
+  },
+  {
+    "name": "ホールソレイユ",
+    "address": "香川県高松市亀井町10-10 ソレイユ第1ビル4階",
+    "lat": 34.3401075,
+    "lon": 134.0481231,
+    "precision": "neighbourhood",
+    "website": "https://kagawa-soleil.co.jp/",
+    "sourcePage": "高松市の映画館"
+  },
+  {
+    "name": "イオンシネマ高松東",
+    "address": "香川県高松市福岡町3-8-5 イオン高松東店3階",
+    "lat": 34.3454877,
+    "lon": 134.0716502,
+    "precision": "poi",
+    "website": "https://cinema.aeoncinema.com/wm/takamatsu/",
+    "sourcePage": "高松市の映画館"
+  }
+]
