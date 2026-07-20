@@ -19,6 +19,7 @@
 
 import { readFileSync, writeFileSync } from "node:fs";
 import * as cheerio from "cheerio";
+import { sleep } from "./lib/sleep.js";
 
 // Wikipediaのinfoboxで「公式サイト」を表すラベルの表記ゆれ
 const WEBSITE_LABEL_PATTERNS = [
@@ -34,10 +35,6 @@ const WEBSITE_LABEL_PATTERNS = [
 
 // リクエスト間隔（Wikipediaへの負荷軽減のため）
 const REQUEST_DELAY_MS = 500;
-
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 /**
  * 指定したWikipediaページタイトルから、infobox内の公式サイトURLを取得する。

@@ -24,11 +24,10 @@
  */
 
 import { writeFileSync } from "node:fs";
+import { sleep } from "./lib/sleep.js";
+import { USER_AGENT } from "./lib/user-agent.js";
 
-const USER_AGENT = "cinetabi-data-collector/1.0 (personal project; contact: ek17.fcsj@gmail.com)";
 const PAGE_DELAY_MS = 2000;
-
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function fetchEucJp(url) {
   const r = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
