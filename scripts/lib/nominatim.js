@@ -7,8 +7,13 @@ import { USER_AGENT } from "./user-agent.js";
 export async function searchNominatim(query, { delayMs = 0, userAgent = USER_AGENT } = {}) {
   if (delayMs > 0) await sleep(delayMs);
   const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=ja&countrycodes=jp&q=${encodeURIComponent(query)}`;
-  const r = await fetch(url, { headers: { "User-Agent": userAgent, "Accept-Language": "ja" } });
-  if (!r.ok) return null;
-  const d = await r.json();
-  return Array.isArray(d) && d.length > 0 ? d[0] : null;
+  try {
+    const r = await fetch(url, { headers: { "User-Agent": userAgent, "Accept-Language": "ja" } });
+    if (!r.ok) return null;
+    const d = await r.json();
+    return Array.isArray(d) && d.length > 0 ? d[0] : null;
+  } catch (err) {
+    console.warn(`  [nominatim error] ${query}: ${err.message}`);
+    return null;
+  }
 }
