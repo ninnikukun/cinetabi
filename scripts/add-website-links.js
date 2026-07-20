@@ -20,6 +20,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import * as cheerio from "cheerio";
 import { sleep } from "./lib/sleep.js";
+import { USER_AGENT } from "./lib/user-agent.js";
 
 // Wikipediaのinfoboxで「公式サイト」を表すラベルの表記ゆれ
 const WEBSITE_LABEL_PATTERNS = [
@@ -47,7 +48,7 @@ async function fetchOfficialWebsite(pageTitle) {
   try {
     const res = await fetch(url, {
       headers: {
-        "User-Agent": "cinetabi-data-collector/1.0 (personal project)",
+        "User-Agent": USER_AGENT,
       },
     });
     if (!res.ok) {
