@@ -19,20 +19,10 @@
  */
 
 import { readFileSync, writeFileSync } from "node:fs";
+import { searchNominatim } from "./lib/nominatim.js";
 
-const USER_AGENT = "cinetabi-data-collector/1.0 (personal project; contact: ek17.fcsj@gmail.com)";
 const REQUEST_DELAY_MS = 1100;
-
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-async function nominatim(query) {
-  await sleep(REQUEST_DELAY_MS);
-  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=ja&countrycodes=jp&q=${encodeURIComponent(query)}`;
-  const r = await fetch(url, { headers: { "User-Agent": USER_AGENT, "Accept-Language": "ja" } });
-  if (!r.ok) return null;
-  const d = await r.json();
-  return Array.isArray(d) && d.length > 0 ? d[0] : null;
-}
+const nominatim = (query) => searchNominatim(query, { delayMs: REQUEST_DELAY_MS });
 
 // 「東京都渋谷区渋谷2-10-2 イメージフォーラムビル」→「東京都渋谷区渋谷2丁目」
 function toChomeQuery(address) {
