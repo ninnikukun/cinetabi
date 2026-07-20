@@ -12,6 +12,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { haversine } from "../scripts/lib/geo.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -22,13 +23,6 @@ const curatedCinemas = readdirSync(curatedDir)
   .filter((f) => f.endsWith(".json"))
   .flatMap((f) => JSON.parse(readFileSync(path.join(curatedDir, f), "utf-8")));
 const closedCinemas = JSON.parse(readFileSync(path.join(__dirname, "data", "closed-cinemas.json"), "utf-8"));
-
-function haversine(lat1, lon1, lat2, lon2) {
-  const R = 6371000, toRad = (d) => (d * Math.PI) / 180;
-  const dLat = toRad(lat2 - lat1), dLon = toRad(lon2 - lon1);
-  const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
-  return 2 * R * Math.asin(Math.sqrt(a));
-}
 
 // 1回のMatrixリクエストで、出発地→各候補地の徒歩所要時間（秒）をまとめて取得。
 // 失敗時・キー未設定時は null を返し、呼び出し側は直線距離での概算にフォールバックする。
