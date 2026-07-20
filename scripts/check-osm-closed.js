@@ -17,38 +17,11 @@
  */
 
 import { readFileSync } from "node:fs";
-
-const USER_AGENT = "cinetabi-data-collector/1.0 (personal project; contact: ek17.fcsj@gmail.com)";
-
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-function haversine(lat1, lon1, lat2, lon2) {
-  const R = 6371000, toRad = (d) => (d * Math.PI) / 180;
-  const dLat = toRad(lat2 - lat1), dLon = toRad(lon2 - lon1);
-  const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
-  return 2 * R * Math.asin(Math.sqrt(a));
-}
-
-// 名前の表記ゆれ（大文字小文字・スペース・中黒）を吸収して比較する
-const normalize = (s) => (s || "").toLowerCase().replace(/[\s　・･]/g, "");
-const nameMatch = (a, b) => {
-  const na = normalize(a), nb = normalize(b);
-  return na && nb && (na.includes(nb) || nb.includes(na));
-};
-
-// 「イオンシネマ」「109シネマズ」等、ブランド名のみでロケーション名を持たないOSMタグは
-// 同一県内の複数館すべてと部分一致してしまう。.find()で最初の一致を採用すると、
-// 全く別の館（例: 桑名のノードが明和にマッチ）とペアになる誤りが起きるため、
-// 名前一致した候補が複数ある場合は必ず距離が最も近いものを採用する。
-function nearestByName(osmName, lat, lon, geocoded) {
-  const matches = geocoded.filter((c) => nameMatch(osmName, c.name));
-  if (matches.length <= 1) return matches[0] || null;
-  return matches.reduce((best, c) => {
-    const d = c.lat != null ? haversine(lat, lon, c.lat, c.lon) : Infinity;
-    const bestD = best.lat != null ? haversine(lat, lon, best.lat, best.lon) : Infinity;
-    return d < bestD ? c : best;
-  });
-}
+import { sleep } from "./lib/sleep.js";
+import { USER_AGENT } from "./lib/user-agent.js";
+import { haversine } from "./lib/geo.js";
+import { nameMatch, nearestByName } from "./lib/chain-match.js";
+import { searchNominatim } from "./lib/nominatim.js";
 
 async function fetchOverpass(areaFilter) {
   const ql = `[out:json][timeout:25];${areaFilter.prefix}(node["amenity"="cinema"]${areaFilter.cond};way["amenity"="cinema"]${areaFilter.cond};);out center tags;`;
@@ -80,18 +53,16 @@ async function main() {
   const geocoded = JSON.parse(readFileSync(geocodePath, "utf-8"));
 
   // 地域bboxをNominatimで取得
-  const gurl = `https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=ja&countrycodes=jp&q=${encodeURIComponent(region)}`;
-  const gr = await fetch(gurl, { headers: { "User-Agent": USER_AGENT } });
-  const gd = await gr.json();
-  if (!Array.isArray(gd) || gd.length === 0) { console.error(`地域「${region}」が見つかりません`); process.exit(1); }
+  const regionHit = await searchNominatim(region);
+  if (!regionHit) { console.error(`地域「${region}」が見つかりません`); process.exit(1); }
 
   // 行政区は形が複雑で、bbox（矩形）だと隣接区の映画館まで拾ってしまう。
   // Nominatimがrelationを返した場合はOSMのareaクエリで正確な区境ポリゴンを使う。
   let areaFilter;
-  if (gd[0].osm_type === "relation") {
-    areaFilter = { prefix: `area(${3600000000 + gd[0].osm_id})->.a;`, cond: "(area.a)" };
+  if (regionHit.osm_type === "relation") {
+    areaFilter = { prefix: `area(${3600000000 + regionHit.osm_id})->.a;`, cond: "(area.a)" };
   } else {
-    const [minLat, maxLat, minLon, maxLon] = gd[0].boundingbox.map(parseFloat);
+    const [minLat, maxLat, minLon, maxLon] = regionHit.boundingbox.map(parseFloat);
     areaFilter = { prefix: "", cond: `(${minLat},${minLon},${maxLat},${maxLon})` };
     console.warn("※ 区境ポリゴンが取れないためbboxで検索します（隣接地域の館が混ざることがあります）");
   }
