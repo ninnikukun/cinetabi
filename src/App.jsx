@@ -176,6 +176,45 @@ function FilmFrame({ m, showPhoto, code, style, onClick }) {
   );
 }
 
+/* ── 記録一覧の1エントリー：左にポスター・右におもいで写真を9:16で横並び ── */
+function RecordRow({ m, onClick }) {
+  const posterUrl = m.posterPath ? TMDB_IMG + m.posterPath : null;
+  const c = posterColors(m.title);
+  return (
+    <div className="reel-tap" onClick={onClick} style={{ cursor:"pointer" }}>
+      <div className="rec-pair">
+        <div className="rec-cell">
+          {posterUrl ? (
+            <>
+              <div className="blur" style={{ backgroundImage:`url(${posterUrl})` }} />
+              <img className="core" src={posterUrl} alt={m.title} loading="lazy" draggable={false} />
+            </>
+          ) : (
+            <>
+              <div className="blur" style={{ background:`linear-gradient(120deg, ${c.a}, ${c.b})` }} />
+              <div className="core" style={{ background:`linear-gradient(160deg, ${c.a}, ${c.b})`, display:"flex", alignItems:"flex-end", padding:8 }}>
+                <span style={{ fontWeight:900, fontSize:12.5, color:"#fff", lineHeight:1.22, textShadow:"0 1px 6px rgba(0,0,0,.6)" }}>{m.title}</span>
+              </div>
+            </>
+          )}
+        </div>
+        <div className="rec-cell">
+          {/* 写真必須化（仕様書§5）が入るまでは写真の無い記録が残るため、その場合は無地で埋める */}
+          {m.image
+            ? <img className="fill" src={m.image} alt="" loading="lazy" draggable={false} />
+            : <div className="fill" style={{ background:"var(--surface2)" }} />}
+        </div>
+      </div>
+      <div style={{ marginTop:9 }}>
+        <div style={{ fontWeight:700, fontSize:15, lineHeight:1.35 }}>{m.title}</div>
+        <div style={{ fontSize:12, color:"var(--ink-dim)", marginTop:3 }}>
+          <span className="mono">{new Date(m.watchedAt).toLocaleDateString("ja-JP")}</span>{m.year ? ` ・ ${m.year}` : ""}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* フィルムのコマ番号（12A形式）。indexから通し番号を作る */
 function frameCode(i) { return String(i + 1).padStart(2, "0") + "A"; }
 
@@ -237,6 +276,13 @@ img { -webkit-user-drag:none; user-select:none; }
 .film-frame .core { position:absolute; top:0; bottom:0; left:50%; transform:translateX(-50%); aspect-ratio:2/3; height:100%; box-shadow:0 0 0 1px rgba(0,0,0,.55); object-fit:cover; }
 .film-frame .no { position:absolute; bottom:3px; right:5px; font-family:'Space Mono',ui-monospace,monospace; font-size:8px; color:#a9863c; letter-spacing:.04em; }
 .film-frame .mem { position:absolute; bottom:3px; left:5px; font-family:'Space Mono',ui-monospace,monospace; font-size:8px; color:#a9863c; letter-spacing:.06em; }
+/* ── 記録一覧：ポスターと写真を9:16で横並び ── */
+.rec-pair { display:flex; gap:2px; background:rgba(255,255,255,.15); border-radius:10px; overflow:hidden; }
+.rec-cell { position:relative; flex:1; min-width:0; aspect-ratio:9/16; background:#101010; overflow:hidden; }
+/* ポスターは2:3。9:16の枠には収まらないので、幅いっぱい・上下中央に置き、余白はぼかし背景で埋める */
+.rec-cell .blur { position:absolute; inset:-16px; filter:blur(11px) brightness(.55) saturate(.9); background-size:cover; background-position:center; }
+.rec-cell .core { position:absolute; left:0; right:0; top:50%; transform:translateY(-50%); width:100%; aspect-ratio:2/3; object-fit:cover; display:block; box-shadow:0 0 0 1px rgba(0,0,0,.55); }
+.rec-cell .fill { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
 .mono { font-family:'Space Mono',ui-monospace,monospace; }
 @media (prefers-reduced-motion: no-preference){ .fade-up{ animation:fadeUp .42s cubic-bezier(.2,.7,.2,1) both; } .reel-detail-enter{ animation:detailIn .3s cubic-bezier(.2,.8,.2,1) both; } }
 @keyframes fadeUp{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;} }
@@ -957,10 +1003,8 @@ function RecapView({ movies, user, onClose, year, month }) {
 }
 
 function LogView({ movies, user, onAdd, onDelete, onShare, onUpdate }) {
-  const [thumb, setThumb] = useState("poster"); // "poster" | "photo"
   const [detail, setDetail] = useState(null);    // index or null
   const [recap, setRecap] = useState(null);       // {year, month} or null
-  const hasAnyPhoto = movies.some(m => m.image);
 
   if (movies.length === 0) {
     return (
@@ -975,17 +1019,12 @@ function LogView({ movies, user, onAdd, onDelete, onShare, onUpdate }) {
   const now = new Date();
   const yearCount = movies.filter(m => new Date(m.watchedAt).getFullYear() === now.getFullYear()).length;
 
-  // 各記録に「コマ番号（01A…）」を月ごとに割り当て（同月内で古い順に採番）
+  // 月ごとの本数（継ぎ目の「N EXP」表示用）
   const mkey = (d) => `${d.getFullYear()}-${d.getMonth()}`;
   const groups = {};
   movies.forEach((m, i) => { (groups[mkey(new Date(m.watchedAt))] ||= []).push(i); });
-  const codeOf = {};
   const countOf = {};
-  Object.values(groups).forEach(idxs => {
-    const sorted = [...idxs].sort((a,b)=> new Date(movies[a].watchedAt) - new Date(movies[b].watchedAt));
-    sorted.forEach((idx,n)=> { codeOf[idx] = frameCode(n); });
-    idxs.forEach(idx => { countOf[idx] = idxs.length; });
-  });
+  Object.values(groups).forEach(idxs => { idxs.forEach(idx => { countOf[idx] = idxs.length; }); });
 
   // 表示リスト（新しい順のまま）を走査し、月が変わる位置に「継ぎ目（英語月名）」を差し込む
   const rows = [];
@@ -997,38 +1036,27 @@ function LogView({ movies, user, onAdd, onDelete, onShare, onUpdate }) {
       rows.push({ type:"seam", key:"seam-"+k, year:d.getFullYear(), month:d.getMonth(), count:countOf[i] });
       prevKey = k;
     }
-    rows.push({ type:"frame", key:m.id, m, code:codeOf[i], index:i });
+    rows.push({ type:"frame", key:m.id, m, index:i });
   });
 
   return (
     <div style={{ padding:"0 0 110px" }}>
-      <div className="reel-narrow" style={{ padding:"12px 14px 8px", display:"flex", justifyContent:"space-between", alignItems:"center", borderBottom:"1px solid #17130b" }}>
+      <div className="reel-narrow" style={{ padding:"12px 14px 8px", display:"flex", justifyContent:"space-between", alignItems:"center", borderBottom:"1px solid var(--line)" }}>
         <span className="mono" style={{ fontSize:11, color:"var(--ink-dim)", letterSpacing:".06em" }}>{now.getFullYear()} — {yearCount} FILMS</span>
-        {hasAnyPhoto && (
-          <div style={{ display:"flex", border:"1px solid var(--line)", borderRadius:8, overflow:"hidden" }}>
-            {[["poster","POSTER"],["photo","MEM"]].map(([v,t]) => (
-              <button key={v} className="reel-tap mono" onClick={()=>setThumb(v)} style={{ padding:"5px 11px", border:"none", cursor:"pointer", fontSize:10.5, fontWeight:700, letterSpacing:".08em", background: thumb===v?"var(--amber)":"transparent", color: thumb===v?"#1a1305":"var(--ink-dim)" }}>{t}</button>
-            ))}
-          </div>
-        )}
       </div>
 
-      <div className="reel-narrow film-body">
-        <div className="film-spro" />
-        <div className="film-track">
-          {rows.map(r => r.type === "seam" ? (
-            <button key={r.key} className="reel-tap film-frame" onClick={()=>setRecap({ year:r.year, month:r.month })}
-              style={{ background:"#0a0a09", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", border:"none" }}>
-              <span className="mono" style={{ fontWeight:700, fontSize:26, letterSpacing:".28em", textIndent:".28em", color:"var(--amber)" }}>{RECAP_MONTHS[r.month]}</span>
-              <span className="mem">{r.count} EXP</span>
-            </button>
-          ) : (
-            <FilmFrame key={r.key} m={r.m} showPhoto={thumb==="photo"} code={r.code} onClick={()=>withViewTransition(()=>setDetail(r.index))} style={{ cursor:"pointer" }} />
-          ))}
-        </div>
-        <div className="film-spro" />
+      <div className="reel-narrow" style={{ display:"flex", flexDirection:"column", gap:24, padding:"16px 14px 0" }}>
+        {rows.map(r => r.type === "seam" ? (
+          <button key={r.key} className="reel-tap" onClick={()=>setRecap({ year:r.year, month:r.month })}
+            style={{ display:"flex", alignItems:"center", gap:12, background:"none", border:"none", padding:0, cursor:"pointer", marginBottom:-8 }}>
+            <span className="mono" style={{ fontWeight:700, fontSize:13, letterSpacing:".22em", color:"var(--amber)" }}>{RECAP_MONTHS[r.month]}</span>
+            <span style={{ flex:1, height:1, background:"var(--line)" }} />
+            <span className="mono" style={{ fontSize:10, color:"var(--ink-dim)", letterSpacing:".06em" }}>{r.count} EXP</span>
+          </button>
+        ) : (
+          <RecordRow key={r.key} m={r.m} onClick={()=>withViewTransition(()=>setDetail(r.index))} />
+        ))}
       </div>
-      <div className="reel-narrow mono" style={{ textAlign:"center", color:"#6f6a58", fontSize:10, padding:"10px 0 0", letterSpacing:".1em" }}>SLIDE ▼</div>
 
       {detail !== null && <DetailView movies={movies} index={detail} onClose={()=>withViewTransition(()=>setDetail(null))} onShare={onShare} onDelete={onDelete} onUpdate={onUpdate} />}
       {recap && <RecapView movies={movies} user={user} year={recap.year} month={recap.month} onClose={()=>setRecap(null)} />}
