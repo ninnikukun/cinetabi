@@ -24,6 +24,12 @@ alter table public.profiles
 -- 付与済みなら何も起きない）。更新できる行の制御は既存のRLSポリシーが行う。
 grant update (avatar_url) on public.profiles to authenticated;
 
+-- ※ 匿名ユーザーの除外は 3) のStorage側で行っている（画像をアップロードできない）。
+--   この列自体の更新可否は profiles の既存UPDATEポリシーに従うため、
+--   「匿名ユーザーが外部URLを avatar_url に直接書く」ことまでは防いでいない。
+--   そこまで塞ぐ場合は profiles のUPDATEポリシー側に同じ is_anonymous の条件を
+--   足す必要がある（既存ポリシーの変更になるため、ここでは触っていない）。
+
 -- ※ 参照については追加のポリシーは不要。
 --    既存の profiles_select_follow_parties は行単位のポリシーなので、
 --    フォロー関係の当事者には avatar_url も自動的に見える。
@@ -54,6 +60,11 @@ on conflict (id) do update
 --    ※ name の条件で「自分のIDのファイル名」に固定しているため、
 --      他人のファイルを上書きすることはできない。
 --      拡張子は .jpg 固定。将来pngも許可する場合はこの条件を広げる必要がある。
+--
+--    ※ 匿名ユーザー（メール・Google未連携）はアップロードできない。
+--      フォロー機能（stage2_follows_fix1.sql）と同じ is_anonymous の条件で
+--      書き込み系3つのポリシーを制限している。読み取りは制限しない
+--      （匿名ユーザーでも他人のアバターを表示する必要があるため）。
 -- ─────────────────────────────────────────────
 
 -- 読み取り：アプリ内の表示だけでなく、公開URLでの取得も想定
@@ -68,6 +79,7 @@ create policy "avatars_insert_own" on storage.objects
   with check (
     bucket_id = 'avatars'
     and name = auth.uid()::text || '.jpg'
+    and coalesce((auth.jwt()->>'is_anonymous')::boolean, false) = false
   );
 
 -- 上書き保存（2回目以降）
@@ -78,6 +90,7 @@ create policy "avatars_update_own" on storage.objects
   using (
     bucket_id = 'avatars'
     and name = auth.uid()::text || '.jpg'
+    and coalesce((auth.jwt()->>'is_anonymous')::boolean, false) = false
   )
   with check (
     bucket_id = 'avatars'
@@ -91,4 +104,5 @@ create policy "avatars_delete_own" on storage.objects
   using (
     bucket_id = 'avatars'
     and name = auth.uid()::text || '.jpg'
+    and coalesce((auth.jwt()->>'is_anonymous')::boolean, false) = false
   );
