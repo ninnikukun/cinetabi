@@ -284,7 +284,11 @@ img { -webkit-user-drag:none; user-select:none; }
 .rec-cell .core { position:absolute; left:0; right:0; top:50%; transform:translateY(-50%); width:100%; aspect-ratio:2/3; object-fit:cover; display:block; box-shadow:0 0 0 1px rgba(0,0,0,.55); }
 .rec-cell .fill { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
 /* ── 詳細画面（BeReal型）── */
-.bereal-main { position:absolute; inset:0; overflow:hidden; background:#0b0b12; }
+/* ノッチ／ホームバーと重ならないよう、上下にセーフエリア分の黒帯を確保する。
+   セーフエリアが0の端末（PC・ノッチ無しAndroid）でも操作できるよう最低値を持たせる。
+   この2つの変数は子孫（PostCard）にも継承される。 */
+.reel-detail-card { --safe-top: max(env(safe-area-inset-top, 0px), 44px); --safe-bot: max(env(safe-area-inset-bottom, 0px), 56px); }
+.bereal-main { position:absolute; top:var(--safe-top); bottom:var(--safe-bot); left:0; right:0; overflow:hidden; background:#0b0b12; }
 .bereal-main .fill { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
 .bereal-main .blur { position:absolute; inset:-24px; filter:blur(14px) brightness(.5) saturate(.9); background-size:cover; background-position:center; }
 .bereal-main .core { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); max-width:100%; max-height:100%; aspect-ratio:2/3; object-fit:cover; display:block; }
@@ -292,9 +296,10 @@ img { -webkit-user-drag:none; user-select:none; }
 .bereal-inset .ifill { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
 /* 閉じている時はハンドル(36px)だけを残して下へ隠す */
 .bereal-sheet { position:absolute; left:0; right:0; bottom:0; z-index:4; background:rgba(12,13,22,.96); border-radius:18px 18px 0 0; border-top:1px solid var(--line); transition:transform .28s cubic-bezier(.22,.68,0,1); }
-.bereal-handle { height:36px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; border:none; background:none; width:100%; padding:0; color:var(--ink-dim); }
-.bereal-handle .bar { width:38px; height:4px; border-radius:3px; background:rgba(255,255,255,.45); }
-.bereal-body { max-height:68vh; overflow-y:auto; padding:4px 20px calc(env(safe-area-inset-bottom, 0px) + 20px); }
+/* ハンドルは下部の黒帯にぴったり収まる高さにし、帯全体を当たり判定にする */
+.bereal-handle { height:var(--safe-bot); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; cursor:pointer; border:none; background:none; width:100%; padding:0; color:var(--ink-dim); touch-action:none; }
+.bereal-handle .bar { width:46px; height:5px; border-radius:3px; background:rgba(255,255,255,.5); }
+.bereal-body { max-height:64vh; overflow-y:auto; padding:4px 20px calc(env(safe-area-inset-bottom, 0px) + 20px); }
 .bereal-chip { display:inline-flex; align-items:center; gap:6px; padding:9px 15px; border-radius:999px; border:1px solid var(--line); background:var(--surface); color:var(--ink-dim); font-size:12.5px; font-weight:700; cursor:pointer; }
 @media (prefers-reduced-motion: no-preference){ .bereal-handle-anim { animation:handleBounce 1.9s ease-in-out infinite; } }
 @keyframes handleBounce { 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(4px); } }
@@ -839,8 +844,10 @@ function PostCard({ m, onShare, onDelete, onEdit, readOnly }) {
   // 写真必須化（仕様書§5）が入るまでは写真の無い記録が残る。その場合はポスターをメインにし、インセットは出さない
   const mainIsPhoto = hasPhoto && !swapped;
 
-  // ポスター表示（メイン・インセット共通）。2:3なので画面比率に合わせてぼかし背景で余白を埋める
-  const posterLayer = posterUrl ? (
+  // ポスター表示（メイン・インセット共通）。2:3なので画面比率に合わせてぼかし背景で余白を埋める。
+  // TMDBにポスターが無い作品は自動生成ポスター（タイトル文字）にフォールバックするため、
+  // 小さいインセット枠に入れる場合は文字と余白を縮める（small）。
+  const posterLayer = (small) => posterUrl ? (
     <>
       <div className="blur" style={{ backgroundImage:`url(${posterUrl})` }} />
       <img className="core" src={posterUrl} alt={m.title} draggable={false} />
@@ -848,8 +855,8 @@ function PostCard({ m, onShare, onDelete, onEdit, readOnly }) {
   ) : (
     <>
       <div className="blur" style={{ background:`linear-gradient(120deg, ${c.a}, ${c.b})` }} />
-      <div className="core" style={{ background:`linear-gradient(160deg, ${c.a}, ${c.b})`, display:"flex", alignItems:"flex-end", padding:18 }}>
-        <span style={{ fontWeight:900, fontSize:20, color:"#fff", lineHeight:1.25, textShadow:"0 2px 10px rgba(0,0,0,.6)" }}>{m.title}</span>
+      <div className="core" style={{ background:`linear-gradient(160deg, ${c.a}, ${c.b})`, display:"flex", alignItems:"flex-end", padding: small ? 7 : 18 }}>
+        <span style={{ fontWeight:900, fontSize: small ? 10.5 : 20, color:"#fff", lineHeight:1.25, textShadow:"0 2px 10px rgba(0,0,0,.6)", overflow:"hidden" }}>{m.title}</span>
       </div>
     </>
   );
@@ -864,23 +871,23 @@ function PostCard({ m, onShare, onDelete, onEdit, readOnly }) {
   const stop = (e) => e.stopPropagation();
 
   return (
-    <section className="reel-post" style={{ scrollSnapAlign:"start", position:"relative", overflow:"hidden" }}>
+    <section className="reel-post" style={{ scrollSnapAlign:"start", position:"relative", overflow:"hidden", background:"#000" }}>
       <div className="bereal-main">
         {mainIsPhoto
           ? <img className="fill" src={m.image} alt="" draggable={false} />
-          : posterLayer}
+          : posterLayer(false)}
       </div>
 
       {hasPhoto && (
         <button className="bereal-inset reel-tap" onClick={()=>setSwapped(s=>!s)} aria-label="ポスターと写真を入れ替える"
-          style={{ top:"calc(env(safe-area-inset-top, 0px) + 12px)", left:12, zIndex:3 }}>
+          style={{ top:"calc(var(--safe-top) + 12px)", left:12, zIndex:3 }}>
           {mainIsPhoto
-            ? posterLayer
+            ? posterLayer(true)
             : <img className="ifill" src={m.image} alt="" draggable={false} />}
         </button>
       )}
 
-      <div className="bereal-sheet" style={{ transform: sheet ? "translateY(0)" : "translateY(calc(100% - 36px))" }}>
+      <div className="bereal-sheet" style={{ transform: sheet ? "translateY(0)" : "translateY(calc(100% - var(--safe-bot)))" }}>
         <button className={"bereal-handle" + (sheet ? "" : " bereal-handle-anim")} onClick={()=>setSheet(s=>!s)}
           onTouchStart={onHandleStart} onTouchMove={onHandleMove} onTouchEnd={onHandleEnd}
           aria-label={sheet ? "詳細を閉じる" : "詳細をひらく"}>
@@ -914,7 +921,7 @@ function PostCard({ m, onShare, onDelete, onEdit, readOnly }) {
   );
 }
 
-function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate, readOnly }) {
+function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate, readOnly, owner }) {
   const feedRef = useRef(null);
   const [editingId, setEditingId] = useState(null);
 
@@ -960,6 +967,7 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate, readO
   };
 
   const del = (id) => { onDelete(id); };
+  const ownerName = owner?.name || "";
   const editingMovie = movies.find(x => x.id === editingId) || null;
   const closeProgress = Math.min(1, pull / 220);
   const cardRadius = closing ? 30 : Math.round(closeProgress * 26);
@@ -968,7 +976,7 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate, readO
 
   return (
     <div style={{ position:"fixed", inset:0, zIndex:70, background:"var(--bg)" }}>
-      <div className="reel-detail-enter" style={{ position:"absolute", inset:0, overflow:"hidden", background:"var(--bg)",
+      <div className="reel-detail-enter reel-detail-card" style={{ position:"absolute", inset:0, overflow:"hidden", background:"#000",
         borderRadius: cardRadius, boxShadow: cardShadow,
         transform: closing ? "translateY(100%) scale(.9)" : `translateY(${pull}px) scale(${cardScale})`,
         transformOrigin:"50% 0%",
@@ -977,9 +985,18 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate, readO
           : bouncing ? "transform .38s cubic-bezier(.34,1.56,.64,1), border-radius .38s ease, box-shadow .38s ease"
           : pulling ? "none" : "transform .22s ease, border-radius .22s ease, box-shadow .22s ease" }}
         onTransitionEnd={()=>setBouncing(false)}>
-        {/* 左上はポスターのインセット枠が入るため、戻るボタンは右上に置く */}
+        {/* 上部の黒帯の左側に投稿者（自分 or フレンド）を表示。アバターはヘッダー・フォロー一覧と
+            同じ「表示名の頭文字を入れたアンバーの丸」。名前が取れない場合（ローカル保存モード等）は出さない */}
+        {ownerName && (
+          <div style={{ position:"absolute", top:0, left:0, height:"var(--safe-top)", maxWidth:"calc(100% - 68px)", zIndex:8, display:"flex", alignItems:"center", gap:8, paddingLeft:12, pointerEvents:"none" }}>
+            <span style={{ width:28, height:28, borderRadius:"50%", background:"var(--amber)", color:"#1a1305", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:13, flexShrink:0 }}>{[...ownerName][0] || "?"}</span>
+            <span style={{ fontSize:13, color:"var(--ink-dim)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{ownerName}</span>
+          </div>
+        )}
+
+        {/* 左上はポスターのインセット枠が入るため、閉じるボタンは上部の黒帯の右側に置く */}
         <button className="reel-tap" onClick={requestClose} aria-label="もどる"
-          style={{ position:"absolute", top:"calc(env(safe-area-inset-top, 0px) + 12px)", right:12, zIndex:5, width:36, height:36, borderRadius:"50%", border:"none", background:"rgba(12,13,22,.55)", color:"#fff", fontSize:19, fontWeight:900, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", backdropFilter:"blur(2px)" }}>✕</button>
+          style={{ position:"absolute", top:0, right:0, zIndex:8, width:56, height:"var(--safe-top)", border:"none", background:"transparent", color:"#fff", fontSize:18, fontWeight:900, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>✕</button>
         <div ref={feedRef} className="reel-feed" style={{ height:"100%", overflowY:"auto", scrollSnapType:"y mandatory", WebkitOverflowScrolling:"touch", touchAction:"pan-y" }}
           onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
           {movies.map(m => <PostCard key={m.id} m={m} readOnly={readOnly} onShare={onShare} onDelete={del} onEdit={()=>setEditingId(m.id)} />)}
@@ -1106,7 +1123,7 @@ function LogView({ movies, user, onAdd, onDelete, onShare, onUpdate }) {
         ))}
       </div>
 
-      {detail !== null && <DetailView movies={movies} index={detail} onClose={()=>withViewTransition(()=>setDetail(null))} onShare={onShare} onDelete={onDelete} onUpdate={onUpdate} />}
+      {detail !== null && <DetailView movies={movies} index={detail} owner={user} onClose={()=>withViewTransition(()=>setDetail(null))} onShare={onShare} onDelete={onDelete} onUpdate={onUpdate} />}
       {recap && <RecapView movies={movies} user={user} year={recap.year} month={recap.month} onClose={()=>setRecap(null)} />}
     </div>
   );
@@ -1683,7 +1700,7 @@ function FriendView({ row, profile, onClose, onRemove }) {
           {accepted ? "フォローをやめる" : "申請を取り下げる"}
         </button>
       </div>
-      {detail !== null && recs && <DetailView movies={recs} index={detail} readOnly onClose={()=>setDetail(null)} />}
+      {detail !== null && recs && <DetailView movies={recs} index={detail} readOnly owner={{ name }} onClose={()=>setDetail(null)} />}
     </div>
   );
 }
