@@ -244,6 +244,29 @@ function resizeImage(file, maxDim = 1000, quality = 0.72) {
   });
 }
 
+/* ── アバター用：中央を正方形に切り出して縮小し、アップロード用のBlobにする ──
+   表示側は常に丸く出すので、保存時点で正方形にしておく（縦横比のズレを防ぐ）。 */
+function resizeToSquareBlob(file, size = 400, quality = 0.85) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const s = Math.min(img.width, img.height); // 短い辺に合わせて中央を切り出す
+        const canvas = document.createElement("canvas");
+        canvas.width = size; canvas.height = size;
+        canvas.getContext("2d").drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, size, size);
+        canvas.toBlob(
+          (blob) => blob ? resolve(blob) : reject(new Error("画像を変換できませんでした")),
+          "image/jpeg", quality
+        );
+      };
+      img.onerror = reject; img.src = e.target.result;
+    };
+    reader.onerror = reject; reader.readAsDataURL(file);
+  });
+}
+
 const STYLES = `
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap');
 * { box-sizing: border-box; }
@@ -1275,7 +1298,7 @@ function FindView() {
 const ACTIVE_VIEW_KEY = "cinetabi_active_view";
 
 /* ─────────── メインの画面（記録/でかける）。データ源に依存しない共通シェル ─────────── */
-function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onUpdateMovie, onLogout, isAnonymous, followInfo, followLink, onFollowLinkDone }) {
+function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onUpdateMovie, onLogout, isAnonymous, followInfo, followLink, onFollowLinkDone, onAvatarChange }) {
   const [view, setView] = useState(() => {
     try { return sessionStorage.getItem(ACTIVE_VIEW_KEY) || "log"; } catch { return "log"; }
   });
@@ -1322,7 +1345,7 @@ function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onUpdateMovie
         : view === "log" ? <LogView movies={movies} user={user} onAdd={()=>setAdding(true)} onDelete={deleteMovie} onShare={setSharing} onUpdate={onUpdateMovie} />
         : view === "find" ? <FindView />
         : isAnonymous ? <FollowLockedNotice onConnect={()=>setConnecting(true)} />
-        : <FollowView me={followInfo} />}
+        : <FollowView me={followInfo} onAvatarChange={onAvatarChange} />}
 
       {view === "log" && !loading && movies.length > 0 && (
         <button className="reel-btn reel-fab" onClick={()=>setAdding(true)} aria-label="記録を追加"
@@ -1706,12 +1729,41 @@ function FriendView({ row, profile, onClose, onRemove }) {
 }
 
 /* ── 「フォロー」タブ本体：自分のプロフィール・申請の承認/拒否・フォロー中一覧 ── */
-function FollowView({ me }) {
+function FollowView({ me, onAvatarChange }) {
   const [rows, setRows] = useState(null);     // follows の自分が当事者の行（null=読み込み中）
   const [people, setPeople] = useState({});   // 相手のプロフィール { uid: {display_name, public_id} }
   const [requesting, setRequesting] = useState(false);
   const [viewing, setViewing] = useState(null); // フォロー中一覧でタップした follows 行
   const [copied, setCopied] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState(me.avatarUrl || null);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef(null);
+
+  // アバター画像を選んでアップロード。avatars/{user_id}.jpg に上書き保存する。
+  const pickAvatar = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // 同じファイルを続けて選び直せるようにする
+    if (!file) return;
+    setUploading(true);
+    try {
+      const blob = await resizeToSquareBlob(file);
+      const path = `${me.uid}.jpg`;
+      const { error: upErr } = await supabase.storage.from("avatars")
+        .upload(path, blob, { upsert: true, contentType: "image/jpeg" });
+      if (upErr) throw upErr;
+      // 固定パスへの上書きなので、CDNの古い画像が出ないようURLにバージョンを付ける。
+      // この付きのURLをそのままDBに保存する（次回読み込み時も新しい画像になる）。
+      const { data: pub } = supabase.storage.from("avatars").getPublicUrl(path);
+      const url = `${pub.publicUrl}?v=${Date.now()}`;
+      const { error: dbErr } = await supabase.from("profiles").update({ avatar_url: url }).eq("id", me.uid);
+      if (dbErr) throw dbErr;
+      setAvatarUrl(url);
+      onAvatarChange?.(url);
+    } catch (err) {
+      alert("アバターの保存に失敗しました：" + (err?.message || err));
+    }
+    setUploading(false);
+  };
 
   const load = async () => {
     const { data } = await supabase.from("follows").select("*")
@@ -1761,11 +1813,21 @@ function FollowView({ me }) {
       <div style={{ background:"var(--surface)", border:"1px solid var(--line)", borderRadius:16, padding:"16px", marginBottom:14 }}>
         <div className="reel-mark" style={{ letterSpacing:".16em", fontSize:11, color:"var(--ink-dim)", marginBottom:12 }}>MY PROFILE ／ 自分のプロフィール</div>
         <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12 }}>
-          <span style={{ width:44, height:44, borderRadius:"50%", background:"var(--amber)", color:"#1a1305", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:19, flexShrink:0 }}>{[...me.name][0] || "?"}</span>
-          <div style={{ minWidth:0 }}>
+          {/* アバターは画像があれば丸く表示、無ければ従来どおり頭文字の丸 */}
+          {avatarUrl
+            ? <img src={avatarUrl} alt="" draggable={false} style={{ width:44, height:44, borderRadius:"50%", objectFit:"cover", flexShrink:0, background:"var(--surface2)" }} />
+            : <span style={{ width:44, height:44, borderRadius:"50%", background:"var(--amber)", color:"#1a1305", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:19, flexShrink:0 }}>{[...me.name][0] || "?"}</span>}
+          <div style={{ minWidth:0, flex:1 }}>
             <div style={{ fontWeight:900, fontSize:17 }}>{me.name}</div>
             <div style={{ fontSize:12.5, color:"var(--ink-dim)", marginTop:2 }}>フォロー中 {followingCount} ・ フォロワー {followers.length}<span style={{ fontSize:11, marginLeft:6, opacity:.8 }}>（あなたにだけ表示）</span></div>
           </div>
+          {/* 「その場で撮る」は仕様書§6のカメラコンポーネント実装後に追加する。
+              スマホでは画像選択のシートから「写真を撮る」も選べるため、今は画像選択のみ。 */}
+          <input ref={fileRef} type="file" accept="image/*" onChange={pickAvatar} style={{ display:"none" }} />
+          <button className="reel-tap" onClick={()=>fileRef.current?.click()} disabled={uploading}
+            style={{ flexShrink:0, padding:"8px 12px", borderRadius:10, border:"1px solid var(--line)", background:"var(--surface2)", color:"var(--ink)", fontSize:12, fontWeight:700, cursor: uploading?"default":"pointer", opacity: uploading?.6:1 }}>
+            {uploading ? "保存中…" : avatarUrl ? "画像を変える" : "画像を選ぶ"}
+          </button>
         </div>
         <label style={lbl}>あなたのID（相手に教えて、フォローしてもらう）</label>
         <div style={{ display:"flex", gap:8, marginBottom:10 }}>
@@ -1953,7 +2015,8 @@ function CloudApp() {
 
   const isAnonymous = !!session.user?.is_anonymous;
   return <Shell user={{ name: profile.display_name }} movies={movies} loading={loading} onAddMovie={addMovie} onDeleteMovie={deleteMovie} onUpdateMovie={updateMovie} onLogout={isAnonymous ? undefined : logout} isAnonymous={isAnonymous}
-    followInfo={{ uid: session.user.id, name: profile.display_name, publicId: profile.public_id || "" }}
+    followInfo={{ uid: session.user.id, name: profile.display_name, publicId: profile.public_id || "", avatarUrl: profile.avatar_url || null }}
+    onAvatarChange={(url)=>setProfile(p => p ? { ...p, avatar_url: url } : p)}
     followLink={followLink} onFollowLinkDone={finishFollowLink} />;
 }
 
