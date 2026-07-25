@@ -147,6 +147,22 @@ function Poster({ film, big, style }) {
   );
 }
 
+/* ── ユーザーのアバター ──
+   avatar_url があれば丸くクロップした画像、無ければ従来どおり表示名の頭文字の丸。
+   ヘッダー・フレンドの記録画面・フォロー一覧・詳細画面の上部帯で共通して使う。
+   muted は承認待ちの相手（フォロー一覧）用の控えめな配色。 */
+function Avatar({ url, name, size = 44, fontSize, muted = false }) {
+  const common = { width:size, height:size, borderRadius:"50%", flexShrink:0 };
+  if (url) return <img src={url} alt="" draggable={false} style={{ ...common, objectFit:"cover", background:"var(--surface2)" }} />;
+  return (
+    <span style={{ ...common, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900,
+      fontSize: fontSize ?? Math.round(size * 0.44),
+      background: muted ? "var(--surface)" : "var(--amber)",
+      color: muted ? "var(--ink-dim)" : "#1a1305",
+      border: muted ? "1px solid var(--line)" : "none" }}>{[...(name || "")][0] || "?"}</span>
+  );
+}
+
 /* ── フィルムのコマ（16:9）：ぼかし背景＋中央ポスター、または おもいで写真を全面 ── */
 function FilmFrame({ m, showPhoto, code, style, onClick }) {
   const usePhoto = showPhoto && m.image;
@@ -1012,7 +1028,7 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate, readO
             同じ「表示名の頭文字を入れたアンバーの丸」。名前が取れない場合（ローカル保存モード等）は出さない */}
         {ownerName && (
           <div style={{ position:"absolute", top:0, left:0, height:"var(--safe-top)", maxWidth:"calc(100% - 68px)", zIndex:8, display:"flex", alignItems:"center", gap:8, paddingLeft:12, pointerEvents:"none" }}>
-            <span style={{ width:28, height:28, borderRadius:"50%", background:"var(--amber)", color:"#1a1305", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:13, flexShrink:0 }}>{[...ownerName][0] || "?"}</span>
+            <Avatar url={owner?.avatarUrl} name={ownerName} size={28} fontSize={13} />
             <span style={{ fontSize:13, color:"var(--ink-dim)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{ownerName}</span>
           </div>
         )}
@@ -1321,7 +1337,7 @@ function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onUpdateMovie
             <div style={{ display:"flex", alignItems:"center", gap:8 }}>
               {onLogout && <button className="reel-tap" onClick={onLogout} style={{ background:"none", border:"none", color:"var(--ink-dim)", fontSize:12, cursor:"pointer" }}>ログアウト</button>}
               <span style={{ fontSize:13, color:"var(--ink-dim)" }}>{user.name}</span>
-              <span style={{ width:30, height:30, borderRadius:"50%", background:"var(--amber)", color:"#1a1305", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:14 }}>{[...user.name][0] || "?"}</span>
+              <Avatar url={user.avatarUrl} name={user.name} size={30} fontSize={14} />
             </div>
           )}
         </div>
@@ -1688,7 +1704,7 @@ function FriendView({ row, profile, onClose, onRemove }) {
         <button className="reel-tap" onClick={onClose} style={{ background:"none", border:"none", color:"var(--ink-dim)", fontSize:14, cursor:"pointer", padding:"6px 0", marginBottom:8 }}>‹ もどる</button>
 
         <div style={{ display:"flex", alignItems:"center", gap:12, background:"var(--surface)", border:"1px solid var(--line)", borderRadius:16, padding:"16px", marginBottom:16 }}>
-          <span style={{ width:44, height:44, borderRadius:"50%", background:"var(--amber)", color:"#1a1305", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:19, flexShrink:0 }}>{[...name][0] || "?"}</span>
+          <Avatar url={profile?.avatar_url} name={name} size={44} fontSize={19} />
           <div style={{ minWidth:0, flex:1 }}>
             <div style={{ fontWeight:900, fontSize:17 }}>{name}</div>
             {profile?.public_id && <div className="mono" style={{ fontSize:11.5, color:"var(--ink-dim)" }}>{profile.public_id}</div>}
@@ -1723,7 +1739,7 @@ function FriendView({ row, profile, onClose, onRemove }) {
           {accepted ? "フォローをやめる" : "申請を取り下げる"}
         </button>
       </div>
-      {detail !== null && recs && <DetailView movies={recs} index={detail} readOnly owner={{ name }} onClose={()=>setDetail(null)} />}
+      {detail !== null && recs && <DetailView movies={recs} index={detail} readOnly owner={{ name, avatarUrl: profile?.avatar_url || null }} onClose={()=>setDetail(null)} />}
     </div>
   );
 }
@@ -1773,7 +1789,7 @@ function FollowView({ me, onAvatarChange }) {
     const ids = [...new Set(fs.map(r => r.follower_id === me.uid ? r.followee_id : r.follower_id))];
     const map = {};
     if (ids.length) {
-      const { data: ps } = await supabase.from("profiles").select("id, display_name, public_id").in("id", ids);
+      const { data: ps } = await supabase.from("profiles").select("id, display_name, public_id, avatar_url").in("id", ids);
       (ps || []).forEach(p => { map[p.id] = p; });
     }
     setPeople(map); setRows(fs);
@@ -1814,9 +1830,7 @@ function FollowView({ me, onAvatarChange }) {
         <div className="reel-mark" style={{ letterSpacing:".16em", fontSize:11, color:"var(--ink-dim)", marginBottom:12 }}>MY PROFILE ／ 自分のプロフィール</div>
         <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12 }}>
           {/* アバターは画像があれば丸く表示、無ければ従来どおり頭文字の丸 */}
-          {avatarUrl
-            ? <img src={avatarUrl} alt="" draggable={false} style={{ width:44, height:44, borderRadius:"50%", objectFit:"cover", flexShrink:0, background:"var(--surface2)" }} />
-            : <span style={{ width:44, height:44, borderRadius:"50%", background:"var(--amber)", color:"#1a1305", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:19, flexShrink:0 }}>{[...me.name][0] || "?"}</span>}
+          <Avatar url={avatarUrl} name={me.name} size={44} fontSize={19} />
           <div style={{ minWidth:0, flex:1 }}>
             <div style={{ fontWeight:900, fontSize:17 }}>{me.name}</div>
             <div style={{ fontSize:12.5, color:"var(--ink-dim)", marginTop:2 }}>フォロー中 {followingCount} ・ フォロワー {followers.length}<span style={{ fontSize:11, marginLeft:6, opacity:.8 }}>（あなたにだけ表示）</span></div>
@@ -1883,7 +1897,8 @@ function FollowView({ me, onAvatarChange }) {
               return (
                 <button key={r.id} className="reel-tap" onClick={()=>setViewing(r)}
                   style={{ display:"flex", alignItems:"center", gap:11, textAlign:"left", background:"var(--surface2)", border:"1px solid var(--line)", borderRadius:12, padding:"11px 13px", cursor:"pointer" }}>
-                  <span style={{ width:34, height:34, borderRadius:"50%", background: pending?"var(--surface)":"var(--amber)", color: pending?"var(--ink-dim)":"#1a1305", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:15, flexShrink:0, border: pending?"1px solid var(--line)":"none" }}>{[...nm][0] || "?"}</span>
+                  {/* 承認待ちの相手は画像を出さず、従来どおり控えめな頭文字の丸のままにする */}
+                  <Avatar url={pending ? null : p?.avatar_url} name={nm} size={34} fontSize={15} muted={pending} />
                   <span style={{ flex:1, minWidth:0, fontWeight:700, fontSize:14.5, color:"var(--ink)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{nm}</span>
                   {pending
                     ? <span style={{ flexShrink:0, fontSize:11, color:"var(--ink-dim)", border:"1px solid var(--line)", borderRadius:20, padding:"3px 9px" }}>承認待ち</span>
@@ -2014,7 +2029,7 @@ function CloudApp() {
   if (!loading && !profile.onboarded && movies.length === 0) return <Gate><Onboarding onDone={finishOnboarding} /></Gate>;
 
   const isAnonymous = !!session.user?.is_anonymous;
-  return <Shell user={{ name: profile.display_name }} movies={movies} loading={loading} onAddMovie={addMovie} onDeleteMovie={deleteMovie} onUpdateMovie={updateMovie} onLogout={isAnonymous ? undefined : logout} isAnonymous={isAnonymous}
+  return <Shell user={{ name: profile.display_name, avatarUrl: profile.avatar_url || null }} movies={movies} loading={loading} onAddMovie={addMovie} onDeleteMovie={deleteMovie} onUpdateMovie={updateMovie} onLogout={isAnonymous ? undefined : logout} isAnonymous={isAnonymous}
     followInfo={{ uid: session.user.id, name: profile.display_name, publicId: profile.public_id || "", avatarUrl: profile.avatar_url || null }}
     onAvatarChange={(url)=>setProfile(p => p ? { ...p, avatar_url: url } : p)}
     followLink={followLink} onFollowLinkDone={finishFollowLink} />;
