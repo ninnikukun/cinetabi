@@ -15,6 +15,6 @@ createRoot(document.getElementById("root")).render(
 // PWA: ホーム画面追加・オフライン起動のためのservice worker登録
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js").catch(() => {});
+    navigator.serviceWorker.register("/sw.js").catch((err) => console.warn("[sw] registration failed:", err));
   });
 }
