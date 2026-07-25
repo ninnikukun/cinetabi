@@ -283,6 +283,21 @@ img { -webkit-user-drag:none; user-select:none; }
 .rec-cell .blur { position:absolute; inset:-16px; filter:blur(11px) brightness(.55) saturate(.9); background-size:cover; background-position:center; }
 .rec-cell .core { position:absolute; left:0; right:0; top:50%; transform:translateY(-50%); width:100%; aspect-ratio:2/3; object-fit:cover; display:block; box-shadow:0 0 0 1px rgba(0,0,0,.55); }
 .rec-cell .fill { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+/* ── 詳細画面（BeReal型）── */
+.bereal-main { position:absolute; inset:0; overflow:hidden; background:#0b0b12; }
+.bereal-main .fill { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+.bereal-main .blur { position:absolute; inset:-24px; filter:blur(14px) brightness(.5) saturate(.9); background-size:cover; background-position:center; }
+.bereal-main .core { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); max-width:100%; max-height:100%; aspect-ratio:2/3; object-fit:cover; display:block; }
+.bereal-inset { position:absolute; width:34%; aspect-ratio:9/16; border-radius:12px; overflow:hidden; border:2px solid rgba(0,0,0,.5); box-shadow:0 6px 22px rgba(0,0,0,.5); background:#101010; cursor:pointer; padding:0; }
+.bereal-inset .ifill { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+/* 閉じている時はハンドル(36px)だけを残して下へ隠す */
+.bereal-sheet { position:absolute; left:0; right:0; bottom:0; z-index:4; background:rgba(12,13,22,.96); border-radius:18px 18px 0 0; border-top:1px solid var(--line); transition:transform .28s cubic-bezier(.22,.68,0,1); }
+.bereal-handle { height:36px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; border:none; background:none; width:100%; padding:0; color:var(--ink-dim); }
+.bereal-handle .bar { width:38px; height:4px; border-radius:3px; background:rgba(255,255,255,.45); }
+.bereal-body { max-height:68vh; overflow-y:auto; padding:4px 20px calc(env(safe-area-inset-bottom, 0px) + 20px); }
+.bereal-chip { display:inline-flex; align-items:center; gap:6px; padding:9px 15px; border-radius:999px; border:1px solid var(--line); background:var(--surface); color:var(--ink-dim); font-size:12.5px; font-weight:700; cursor:pointer; }
+@media (prefers-reduced-motion: no-preference){ .bereal-handle-anim { animation:handleBounce 1.9s ease-in-out infinite; } }
+@keyframes handleBounce { 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(4px); } }
 .mono { font-family:'Space Mono',ui-monospace,monospace; }
 @media (prefers-reduced-motion: no-preference){ .fade-up{ animation:fadeUp .42s cubic-bezier(.2,.7,.2,1) both; } .reel-detail-enter{ animation:detailIn .3s cubic-bezier(.2,.8,.2,1) both; } }
 @keyframes fadeUp{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;} }
@@ -803,65 +818,97 @@ function EditSheet({ movie, onClose, onSave }) {
   );
 }
 
+/* 外部サービスの検索リンク（作品IDは持たないので、タイトルで検索する方式） */
+function searchLinks(title) {
+  const q = encodeURIComponent(title || "");
+  return [
+    { key:"eiga", label:"映画.com", url:`https://eiga.com/search/${q}/` },
+    { key:"filmarks", label:"Filmarks", url:`https://filmarks.com/search/movies?q=${q}` },
+  ];
+}
+
 function PostCard({ m, onShare, onDelete, onEdit, readOnly }) {
-  const trackRef = useRef(null);
-  const [page, setPage] = useState(0);
-  const pages = m.image ? ["poster", "photo"] : ["poster"];
-  const onScroll = () => {
-    const el = trackRef.current;
-    if (!el) return;
-    setPage(Math.round(el.scrollLeft / el.clientWidth));
-  };
-  const film = { title:m.title, posterPath:m.posterPath || null, year:m.year };
+  const [swapped, setSwapped] = useState(false); // true: ポスターをメインに入れ替え
+  const [sheet, setSheet] = useState(false);
+  const dragRef = useRef(null);
   const del = () => onDelete(m.id);
-  const q = encodeURIComponent(m.title);
   const openExt = (url) => { try { window.open(url, "_blank", "noopener"); } catch {} };
+  const posterUrl = m.posterPath ? TMDB_IMG + m.posterPath : null;
+  const c = posterColors(m.title);
+  const hasPhoto = !!m.image;
+  // 写真必須化（仕様書§5）が入るまでは写真の無い記録が残る。その場合はポスターをメインにし、インセットは出さない
+  const mainIsPhoto = hasPhoto && !swapped;
+
+  // ポスター表示（メイン・インセット共通）。2:3なので画面比率に合わせてぼかし背景で余白を埋める
+  const posterLayer = posterUrl ? (
+    <>
+      <div className="blur" style={{ backgroundImage:`url(${posterUrl})` }} />
+      <img className="core" src={posterUrl} alt={m.title} draggable={false} />
+    </>
+  ) : (
+    <>
+      <div className="blur" style={{ background:`linear-gradient(120deg, ${c.a}, ${c.b})` }} />
+      <div className="core" style={{ background:`linear-gradient(160deg, ${c.a}, ${c.b})`, display:"flex", alignItems:"flex-end", padding:18 }}>
+        <span style={{ fontWeight:900, fontSize:20, color:"#fff", lineHeight:1.25, textShadow:"0 2px 10px rgba(0,0,0,.6)" }}>{m.title}</span>
+      </div>
+    </>
+  );
+
+  // ハンドルを下方向にドラッグするとシートがせり上がる（目安40px）
+  const onHandleStart = (e) => { dragRef.current = e.touches[0].clientY; };
+  const onHandleMove = (e) => {
+    if (dragRef.current == null) return;
+    if (e.touches[0].clientY - dragRef.current > 40) { setSheet(true); dragRef.current = null; }
+  };
+  const onHandleEnd = () => { dragRef.current = null; };
+  const stop = (e) => e.stopPropagation();
 
   return (
-    <section className="reel-post" style={{ scrollSnapAlign:"start" }}>
-      <div style={{ position:"relative" }}>
-        <div ref={trackRef} onScroll={onScroll} className="reel-carousel" style={{ display:"flex", overflowX: pages.length>1 ? "auto" : "hidden", scrollSnapType:"x mandatory", WebkitOverflowScrolling:"touch", touchAction:"pan-x" }}>
-          <div style={{ minWidth:"100%", scrollSnapAlign:"start" }}>
-            <Poster film={film} big style={{ width:"100%", aspectRatio:"2 / 3", borderRadius:0 }} />
+    <section className="reel-post" style={{ scrollSnapAlign:"start", position:"relative", overflow:"hidden" }}>
+      <div className="bereal-main">
+        {mainIsPhoto
+          ? <img className="fill" src={m.image} alt="" draggable={false} />
+          : posterLayer}
+      </div>
+
+      {hasPhoto && (
+        <button className="bereal-inset reel-tap" onClick={()=>setSwapped(s=>!s)} aria-label="ポスターと写真を入れ替える"
+          style={{ top:"calc(env(safe-area-inset-top, 0px) + 12px)", left:12, zIndex:3 }}>
+          {mainIsPhoto
+            ? posterLayer
+            : <img className="ifill" src={m.image} alt="" draggable={false} />}
+        </button>
+      )}
+
+      <div className="bereal-sheet" style={{ transform: sheet ? "translateY(0)" : "translateY(calc(100% - 36px))" }}>
+        <button className={"bereal-handle" + (sheet ? "" : " bereal-handle-anim")} onClick={()=>setSheet(s=>!s)}
+          onTouchStart={onHandleStart} onTouchMove={onHandleMove} onTouchEnd={onHandleEnd}
+          aria-label={sheet ? "詳細を閉じる" : "詳細をひらく"}>
+          <span className="bar" />
+          <span style={{ fontSize:10, letterSpacing:".14em" }}>{sheet ? "▼" : "詳細 ▲"}</span>
+        </button>
+
+        <div className="bereal-body" onClick={()=>setSheet(false)}>
+          <h2 style={{ margin:"6px 0 5px", fontSize:21, fontWeight:900, lineHeight:1.3, color:"#fff" }}>{m.title}</h2>
+          <div style={{ fontSize:12.5, color:"var(--ink-dim)" }}>
+            <span className="mono">{new Date(m.watchedAt).toLocaleDateString("ja-JP")}</span>{m.year ? ` ・ ${m.year}` : ""}
           </div>
-          {m.image && (
-            <div style={{ minWidth:"100%", scrollSnapAlign:"start" }}>
-              <img src={m.image} alt="" draggable={false} style={{ width:"100%", aspectRatio:"2 / 3", objectFit:"cover", display:"block" }} />
+          {m.note && <p style={{ margin:"14px 0 0", fontSize:15, lineHeight:1.75, whiteSpace:"pre-wrap" }}>{m.note}</p>}
+
+          <div style={{ display:"flex", gap:8, marginTop:18, flexWrap:"wrap" }}>
+            {searchLinks(m.title).map(l => (
+              <button key={l.key} className="bereal-chip reel-tap" onClick={(e)=>{ stop(e); openExt(l.url); }}>{l.label} ↗</button>
+            ))}
+          </div>
+
+          {!readOnly && (
+            <div style={{ display:"flex", gap:10, marginTop:14 }}>
+              <button className="reel-btn" onClick={(e)=>{ stop(e); onShare(m); }} style={{ flex:1, padding:"13px", borderRadius:11, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:14, cursor:"pointer" }}>共有する</button>
+              <button className="reel-tap" onClick={(e)=>{ stop(e); onEdit(); }} style={{ padding:"13px 18px", borderRadius:11, border:"1px solid var(--line)", background:"transparent", color:"var(--ink)", fontSize:14, fontWeight:700, cursor:"pointer" }}>編集</button>
+              <button className="reel-tap" onClick={(e)=>{ stop(e); del(); }} style={{ padding:"13px 18px", borderRadius:11, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:14, cursor:"pointer" }}>削除</button>
             </div>
           )}
         </div>
-        {pages.length>1 && (
-          <div style={{ position:"absolute", top:10, left:0, right:0, display:"flex", justifyContent:"center", gap:5 }}>
-            {pages.map((p,idx) => <span key={p} style={{ width: idx===page?16:5, height:5, borderRadius:3, background: idx===page?"var(--amber)":"rgba(255,255,255,.45)", transition:"width .2s ease" }} />)}
-          </div>
-        )}
-        {pages.length>1 && (
-          <span style={{ position:"absolute", bottom:10, right:10, fontSize:9, color:"#fff", background:"rgba(0,0,0,.45)", padding:"2px 7px", borderRadius:20 }}>
-            {page===0 ? "ポスター" : "おもいで"} ・ スワイプで切替
-          </span>
-        )}
-      </div>
-
-      <div className="reel-narrow" style={{ padding:"16px 16px 40px" }}>
-        <h2 style={{ margin:"0 0 4px", fontSize:22, fontWeight:900, lineHeight:1.3 }}>{m.title}</h2>
-        <div className="reel-mark" style={{ fontSize:12.5, color:"var(--ink-dim)" }}>{new Date(m.watchedAt).toLocaleDateString("ja-JP")}{m.year ? ` ・ ${m.year}` : ""}</div>
-        {m.genres?.length>0 && (
-          <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginTop:10 }}>
-            {m.genres.map(g => <span key={g} style={{ fontSize:11.5, color:"var(--amber-dim)", border:"1px solid var(--line)", borderRadius:20, padding:"2px 8px" }}>{g}</span>)}
-          </div>
-        )}
-        {m.note && <p style={{ margin:"14px 0 0", fontSize:15, lineHeight:1.75, whiteSpace:"pre-wrap" }}>{m.note}</p>}
-        <div style={{ display:"flex", gap:8, marginTop:18 }}>
-          <button className="reel-tap" onClick={()=>openExt(`https://eiga.com/search/${q}/`)} style={{ flex:1, padding:"11px", borderRadius:10, border:"1px solid var(--line)", background:"var(--surface)", color:"var(--ink-dim)", fontSize:12.5, fontWeight:700, cursor:"pointer" }}>映画.comで探す ↗</button>
-          <button className="reel-tap" onClick={()=>openExt(`https://filmarks.com/search/movies?q=${q}`)} style={{ flex:1, padding:"11px", borderRadius:10, border:"1px solid var(--line)", background:"var(--surface)", color:"var(--ink-dim)", fontSize:12.5, fontWeight:700, cursor:"pointer" }}>Filmarksで探す ↗</button>
-        </div>
-        {!readOnly && (
-          <div style={{ display:"flex", gap:10, marginTop:10 }}>
-            <button className="reel-btn" onClick={()=>onShare(m)} style={{ flex:1, padding:"13px", borderRadius:11, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:14, cursor:"pointer" }}>共有する</button>
-            <button className="reel-tap" onClick={onEdit} style={{ padding:"13px 18px", borderRadius:11, border:"1px solid var(--line)", background:"transparent", color:"var(--ink)", fontSize:14, fontWeight:700, cursor:"pointer" }}>編集</button>
-            <button className="reel-tap" onClick={del} style={{ padding:"13px 18px", borderRadius:11, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:14, cursor:"pointer" }}>削除</button>
-          </div>
-        )}
       </div>
     </section>
   );
@@ -930,8 +977,9 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate, readO
           : bouncing ? "transform .38s cubic-bezier(.34,1.56,.64,1), border-radius .38s ease, box-shadow .38s ease"
           : pulling ? "none" : "transform .22s ease, border-radius .22s ease, box-shadow .22s ease" }}
         onTransitionEnd={()=>setBouncing(false)}>
+        {/* 左上はポスターのインセット枠が入るため、戻るボタンは右上に置く */}
         <button className="reel-tap" onClick={requestClose} aria-label="もどる"
-          style={{ position:"absolute", top:"calc(env(safe-area-inset-top, 0px) + 12px)", left:12, zIndex:5, width:36, height:36, borderRadius:"50%", border:"none", background:"rgba(12,13,22,.55)", color:"#fff", fontSize:19, fontWeight:900, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", backdropFilter:"blur(2px)" }}>‹</button>
+          style={{ position:"absolute", top:"calc(env(safe-area-inset-top, 0px) + 12px)", right:12, zIndex:5, width:36, height:36, borderRadius:"50%", border:"none", background:"rgba(12,13,22,.55)", color:"#fff", fontSize:19, fontWeight:900, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", backdropFilter:"blur(2px)" }}>✕</button>
         <div ref={feedRef} className="reel-feed" style={{ height:"100%", overflowY:"auto", scrollSnapType:"y mandatory", WebkitOverflowScrolling:"touch", touchAction:"pan-y" }}
           onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
           {movies.map(m => <PostCard key={m.id} m={m} readOnly={readOnly} onShare={onShare} onDelete={del} onEdit={()=>setEditingId(m.id)} />)}
