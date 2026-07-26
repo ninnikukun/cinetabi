@@ -328,7 +328,10 @@ img { -webkit-user-drag:none; user-select:none; }
    この2つの変数は子孫（PostCard）にも継承される。 */
 /* セーフエリアに余白を足したものを黒帯の高さにする（ノッチ／ホームバーとの間に余裕を持たせる）。
    上部はダイナミックアイランドと投稿者表示が重ならないよう、下部より多めに取っている。 */
-.reel-detail-card { --safe-top: calc(max(env(safe-area-inset-top, 0px), 44px) + 32px); --safe-bot: calc(max(env(safe-area-inset-bottom, 0px), 56px) + 16px); }
+.reel-detail-card { --safe-top: calc(max(env(safe-area-inset-top, 0px), 64px) + 32px); --safe-bot: calc(max(env(safe-area-inset-bottom, 0px), 56px) + 16px); }
+/* 帯の上端はステータスバー（時刻・電池）と重なる領域なので、その分を除いた
+   残りの範囲で上下中央に置く。ノッチの無い端末では env() が 0 になり帯全体が対象になる。 */
+.bereal-topbar { position:absolute; top:0; height:var(--safe-top); padding-top:env(safe-area-inset-top, 0px); box-sizing:border-box; display:flex; align-items:center; z-index:8; }
 .bereal-main { position:absolute; top:var(--safe-top); bottom:var(--safe-bot); left:0; right:0; overflow:hidden; background:#0b0b12; }
 .bereal-main .fill { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
 /* ポスターのぼかし背景＋中央配置。メイン領域とワイプ枠の両方で使う。
@@ -1043,15 +1046,15 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate, readO
         {/* 上部の黒帯の左側に投稿者（自分 or フレンド）を表示。アバターはヘッダー・フォロー一覧と
             同じ「表示名の頭文字を入れたアンバーの丸」。名前が取れない場合（ローカル保存モード等）は出さない */}
         {ownerName && (
-          <div style={{ position:"absolute", top:0, left:0, height:"var(--safe-top)", maxWidth:"calc(100% - 68px)", zIndex:8, display:"flex", alignItems:"center", gap:8, paddingLeft:12, pointerEvents:"none" }}>
+          <div className="bereal-topbar" style={{ left:0, maxWidth:"calc(100% - 68px)", gap:8, paddingLeft:12, pointerEvents:"none" }}>
             <Avatar url={owner?.avatarUrl} name={ownerName} size={28} fontSize={13} />
             <span style={{ fontSize:13, color:"var(--ink-dim)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{ownerName}</span>
           </div>
         )}
 
         {/* 左上はポスターのインセット枠が入るため、閉じるボタンは上部の黒帯の右側に置く */}
-        <button className="reel-tap" onClick={requestClose} aria-label="もどる"
-          style={{ position:"absolute", top:0, right:0, zIndex:8, width:56, height:"var(--safe-top)", border:"none", background:"transparent", color:"#fff", fontSize:18, fontWeight:900, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>✕</button>
+        <button className="reel-tap bereal-topbar" onClick={requestClose} aria-label="もどる"
+          style={{ right:0, width:56, border:"none", background:"transparent", color:"#fff", fontSize:18, fontWeight:900, cursor:"pointer", justifyContent:"center" }}>✕</button>
         <div ref={feedRef} className="reel-feed" style={{ height:"100%", overflowY:"auto", scrollSnapType:"y mandatory", WebkitOverflowScrolling:"touch", touchAction:"pan-y" }}
           onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
           {movies.map(m => <PostCard key={m.id} m={m} readOnly={readOnly} onShare={onShare} onDelete={del} onEdit={()=>setEditingId(m.id)} />)}
