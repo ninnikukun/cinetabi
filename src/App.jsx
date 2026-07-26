@@ -326,8 +326,9 @@ img { -webkit-user-drag:none; user-select:none; }
 /* ノッチ／ホームバーと重ならないよう、上下にセーフエリア分の黒帯を確保する。
    セーフエリアが0の端末（PC・ノッチ無しAndroid）でも操作できるよう最低値を持たせる。
    この2つの変数は子孫（PostCard）にも継承される。 */
-/* セーフエリア＋16pxを黒帯の高さにする（ノッチ／ホームバーとの間に余裕を持たせる） */
-.reel-detail-card { --safe-top: calc(max(env(safe-area-inset-top, 0px), 44px) + 16px); --safe-bot: calc(max(env(safe-area-inset-bottom, 0px), 56px) + 16px); }
+/* セーフエリアに余白を足したものを黒帯の高さにする（ノッチ／ホームバーとの間に余裕を持たせる）。
+   上部はダイナミックアイランドと投稿者表示が重ならないよう、下部より多めに取っている。 */
+.reel-detail-card { --safe-top: calc(max(env(safe-area-inset-top, 0px), 44px) + 32px); --safe-bot: calc(max(env(safe-area-inset-bottom, 0px), 56px) + 16px); }
 .bereal-main { position:absolute; top:var(--safe-top); bottom:var(--safe-bot); left:0; right:0; overflow:hidden; background:#0b0b12; }
 .bereal-main .fill { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
 /* ポスターのぼかし背景＋中央配置。メイン領域とワイプ枠の両方で使う。
