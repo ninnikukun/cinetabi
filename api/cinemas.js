@@ -13,6 +13,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { haversine } from "../scripts/lib/geo.js";
+import { isAllowedOrigin, rateLimit } from "./lib/guard.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -50,6 +51,11 @@ async function fetchWalkDurations(lat, lon, points) {
 }
 
 export default async function handler(req, res) {
+  // 他サイトのJSから黙って呼ばれ、ORS_API_KEYの利用枠やNominatim/Overpassの
+  // 無料枠を消費されるのを防ぐ簡易対策。
+  if (!isAllowedOrigin(req)) return res.status(403).json({ error: "forbidden_origin" });
+  if (!rateLimit(req, { max: 30, windowMs: 60_000, key: "cinemas" })) return res.status(429).json({ error: "rate_limited" });
+
   const q = (req.query.q || "").toString().trim();
   const latQ = req.query.lat, lonQ = req.query.lon;
 
