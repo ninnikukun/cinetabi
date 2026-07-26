@@ -151,10 +151,11 @@ function Poster({ film, big, style }) {
    端末のカメラアプリに遷移せず、その場で撮影する。撮影後は必ず確認画面を挟む。
    aspect は撮影ガイド枠＝切り出しの比率（幅/高さ）。記録用は9:16、アバターは1。
    getUserMediaが使えない場合（権限拒否・非対応・HTTP接続）はファイル選択に切り替える。 */
-function CameraCapture({ aspect = 9 / 16, onCancel, onUse }) {
+function CameraCapture({ aspect = 9 / 16, maxDim = 1000, quality = 0.75, onCancel, onUse }) {
   const videoRef = useRef(null);
   const streamRef = useRef(null);
-  const fileRef = useRef(null);
+  const fileRef = useRef(null); // フォールバック用（capture付き＝端末のカメラを優先）
+  const libRef = useRef(null);  // 撮影画面からのアルバム選択用（captureなし）
   const [facing, setFacing] = useState("environment"); // environment=外カメラ / user=内カメラ
   const [shot, setShot] = useState(null);              // 撮影結果（dataURL）→ 確認画面
   const [fallback, setFallback] = useState(false);
@@ -185,7 +186,7 @@ function CameraCapture({ aspect = 9 / 16, onCancel, onUse }) {
     const v = videoRef.current;
     if (!v || !v.videoWidth) return;
     // 内カメラはプレビューを鏡像にしているが、保存するのは正像（見たままではなく実際の向き）
-    setShot(cropToAspectDataUrl(v, v.videoWidth, v.videoHeight, aspect));
+    setShot(cropToAspectDataUrl(v, v.videoWidth, v.videoHeight, aspect, { maxDim, quality }));
   };
 
   const pickFile = async (e) => {
@@ -193,7 +194,7 @@ function CameraCapture({ aspect = 9 / 16, onCancel, onUse }) {
     e.target.value = "";
     if (!file) return;
     setBusy(true);
-    try { setShot(await cropImageFileToAspect(file, aspect)); }
+    try { setShot(await cropImageFileToAspect(file, aspect, { maxDim, quality })); }
     catch { alert("画像を読み込めませんでした"); }
     setBusy(false);
   };
@@ -246,7 +247,16 @@ function CameraCapture({ aspect = 9 / 16, onCancel, onUse }) {
         aria-label="カメラを切り替える" style={{ right:12, fontSize:17 }}>⟳</button>
 
       <div className="cam-bar">
+        {/* アルバムから選んだ画像も、撮影と同じクロップ・縮小を通して同じ確認画面へ入る */}
+        <div className="cam-side">
+          <input ref={libRef} type="file" accept="image/*" onChange={pickFile} style={{ display:"none" }} />
+          <button className="cam-lib reel-tap" onClick={()=>libRef.current?.click()} disabled={busy} aria-label="アルバムから選ぶ">
+            <span style={{ fontSize:17, lineHeight:1 }}>🖼</span>
+            <span>{busy ? "読込中" : "アルバム"}</span>
+          </button>
+        </div>
         <button className="cam-shutter" onClick={capture} aria-label="撮影する" />
+        <div className="cam-side" />
       </div>
     </div>
   );
@@ -320,7 +330,8 @@ function RecordRow({ m, onClick }) {
           )}
         </div>
         <div className="rec-cell">
-          {/* 写真必須化（仕様書§5）が入るまでは写真の無い記録が残るため、その場合は無地で埋める */}
+          {/* 新規の記録は写真必須（§5）だが、それ以前に作られた写真の無い記録が残っているため、
+              その場合は無地で埋める（既存データを壊さないためのフォールバック） */}
           {m.image
             ? <img className="fill" src={m.image} alt="" loading="lazy" draggable={false} />
             : <div className="fill" style={{ background:"var(--surface2)" }} />}
@@ -368,23 +379,29 @@ function resizeImage(file, maxDim = 1000, quality = 0.72) {
 /* ── 中央を指定の縦横比で切り出して dataURL にする ──
    aspect は 幅/高さ（9:16なら 9/16 = 0.5625）。カメラの映像フレームと
    フォールバックで選んだ画像ファイルの両方で同じ切り出しに使う。 */
-function cropToAspectDataUrl(source, sw, sh, aspect, quality = 0.85) {
+function cropToAspectDataUrl(source, sw, sh, aspect, { maxDim = 0, quality = 0.85 } = {}) {
   let cw = sw, ch = Math.round(sw / aspect);
   if (ch > sh) { ch = sh; cw = Math.round(sh * aspect); }
   const sx = Math.round((sw - cw) / 2), sy = Math.round((sh - ch) / 2);
+  // 撮影データはそのままだと大きいので、必要なら長辺をmaxDimまで縮める
+  let dw = cw, dh = ch;
+  if (maxDim && Math.max(dw, dh) > maxDim) {
+    const r = maxDim / Math.max(dw, dh);
+    dw = Math.round(dw * r); dh = Math.round(dh * r);
+  }
   const canvas = document.createElement("canvas");
-  canvas.width = cw; canvas.height = ch;
-  canvas.getContext("2d").drawImage(source, sx, sy, cw, ch, 0, 0, cw, ch);
+  canvas.width = dw; canvas.height = dh;
+  canvas.getContext("2d").drawImage(source, sx, sy, cw, ch, 0, 0, dw, dh);
   return canvas.toDataURL("image/jpeg", quality);
 }
 
 /* 画像ファイルを読み込んで、上と同じ中央クロップをかける（カメラが使えない時用） */
-function cropImageFileToAspect(file, aspect, quality = 0.85) {
+function cropImageFileToAspect(file, aspect, opts) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new Image();
-      img.onload = () => resolve(cropToAspectDataUrl(img, img.width, img.height, aspect, quality));
+      img.onload = () => resolve(cropToAspectDataUrl(img, img.width, img.height, aspect, opts));
       img.onerror = reject; img.src = e.target.result;
     };
     reader.onerror = reject; reader.readAsDataURL(file);
@@ -491,7 +508,10 @@ img { -webkit-user-drag:none; user-select:none; }
 .cam-guide > span { width:100%; max-width:86%; max-height:70%; border:2px dashed rgba(255,255,255,.85); border-radius:10px; box-shadow:0 0 0 100vmax rgba(0,0,0,.28); }
 .cam-btn { position:absolute; top:calc(env(safe-area-inset-top, 0px) + 12px); width:44px; height:44px; border-radius:50%; border:none; background:rgba(0,0,0,.5); color:#fff; font-size:19px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:3; }
 .cam-bar { position:absolute; left:0; right:0; bottom:0; padding:20px 20px calc(env(safe-area-inset-bottom, 0px) + 24px); display:flex; align-items:center; justify-content:center; gap:14px; z-index:3; }
-.cam-shutter { width:70px; height:70px; border-radius:50%; border:4px solid rgba(255,255,255,.9); background:rgba(255,255,255,.25); cursor:pointer; padding:0; }
+/* 左右に同じ幅の枠を置き、シャッターが常に画面中央に来るようにする */
+.cam-side { flex:1; display:flex; align-items:center; min-width:0; }
+.cam-lib { display:flex; flex-direction:column; align-items:center; gap:3px; padding:8px 10px; border:none; border-radius:12px; background:rgba(0,0,0,.5); color:#fff; font-size:10px; letter-spacing:.04em; cursor:pointer; }
+.cam-shutter { width:70px; height:70px; flex-shrink:0; border-radius:50%; border:4px solid rgba(255,255,255,.9); background:rgba(255,255,255,.25); cursor:pointer; padding:0; }
 .cam-shutter:active { transform:scale(.94); }
 .cam-action { flex:1; max-width:200px; padding:14px; border-radius:12px; font-size:14px; font-weight:700; cursor:pointer; border:1px solid var(--line); }
 .mono { font-family:'Space Mono',ui-monospace,monospace; }
@@ -751,8 +771,8 @@ function AddSheet({ onClose, onSave, existingIds }) {
   const [selected, setSelected] = useState(null);
   const [note, setNote] = useState("");
   const [image, setImage] = useState(null);
+  const [camOpen, setCamOpen] = useState(false);
   const [busy, setBusy] = useState(false);
-  const fileRef = useRef(null);
   const inputRef = useRef(null);
   const sheetRef = useRef(null);
   const [confirmLeave, setConfirmLeave] = useState(false);
@@ -773,15 +793,8 @@ function AddSheet({ onClose, onSave, existingIds }) {
     setTimeout(() => { inputRef.current?.scrollIntoView({ block:"start", behavior:"smooth" }); }, 260);
   };
 
-  const pickImage = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try { setImage(await resizeImage(file)); }
-    catch { alert("写真を読み込めませんでした。別の画像で試してください。"); }
-  };
-
   const save = async () => {
-    if (!selected) return;
+    if (!selected || !image) return; // 写真は必須（仕様書§5）
     setBusy(true);
     await onSave({ id:"m"+Date.now(), filmId:selected.id, title:selected.title, year:selected.year, posterPath:selected.posterPath, genres:selected.genres, note:note.trim(), image, watchedAt:new Date().toISOString() });
     setBusy(false); onClose();
@@ -867,27 +880,36 @@ function AddSheet({ onClose, onSave, existingIds }) {
             <label style={lbl}>文章</label>
             <textarea value={note} onChange={e=>setNote(e.target.value)} rows={4} placeholder="観て感じたこと、思い出など" style={{ ...inp, resize:"vertical", lineHeight:1.6 }} />
 
-            <label style={lbl}>おもいで（任意・写真1枚）</label>
-            <input ref={fileRef} type="file" accept="image/*" onChange={pickImage} style={{ display:"none" }} />
+            <label style={lbl}>おもいで（必須・写真1枚）</label>
             {image ? (
               <div style={{ position:"relative", marginBottom:18 }}>
                 <img src={image} alt="" draggable={false} style={{ width:"100%", borderRadius:12, display:"block", maxHeight:320, objectFit:"cover" }} />
-                <button className="reel-tap" onClick={()=>{ setImage(null); if (fileRef.current) fileRef.current.value=""; }}
-                  style={{ position:"absolute", top:8, right:8, background:"rgba(12,13,22,.82)", color:"var(--ink)", border:"1px solid var(--line)", borderRadius:8, padding:"6px 12px", fontSize:13, cursor:"pointer" }}>削除</button>
+                <button className="reel-tap" onClick={()=>setCamOpen(true)}
+                  style={{ position:"absolute", top:8, right:8, background:"rgba(12,13,22,.82)", color:"var(--ink)", border:"1px solid var(--line)", borderRadius:8, padding:"6px 12px", fontSize:13, cursor:"pointer" }}>撮り直す</button>
               </div>
             ) : (
-              <button className="reel-tap" onClick={()=>fileRef.current?.click()}
-                style={{ width:"100%", marginBottom:18, padding:"18px", border:"1px dashed var(--line)", borderRadius:12, background:"var(--surface)", color:"var(--ink-dim)", cursor:"pointer", fontSize:14 }}>
-                ＋ おもいでの写真を追加（チケット・劇場など）
+              <button className="reel-tap" onClick={()=>setCamOpen(true)}
+                style={{ width:"100%", marginBottom:8, padding:"18px", border:"1px dashed var(--line)", borderRadius:12, background:"var(--surface)", color:"var(--ink-dim)", cursor:"pointer", fontSize:14 }}>
+                📷 写真を撮る（チケット・劇場など）
               </button>
             )}
+            {!image && <p style={{ margin:"0 0 18px", color:"var(--ink-dim)", fontSize:12, lineHeight:1.7 }}>写真を1枚撮ると記録できます。</p>}
 
-            <button className="reel-btn" disabled={busy} onClick={save} style={{ width:"100%", padding:"15px", borderRadius:12, border:"none", cursor:"pointer", fontSize:15, fontWeight:700, background:"var(--amber)", color:"#1a1305" }}>
+            <button className="reel-btn" disabled={busy || !image} onClick={save}
+              style={{ width:"100%", padding:"15px", borderRadius:12, border:"none", cursor: (busy || !image) ? "default" : "pointer", fontSize:15, fontWeight:700,
+                background: image ? "var(--amber)" : "var(--surface2)", color: image ? "#1a1305" : "var(--ink-dim)" }}>
               {busy ? "保存中…" : "記録する"}
             </button>
           </>
         )}
       </div>
+
+      {/* 写真は必須。「この写真を使う」を押すまで記録できない（仕様書§5・§6） */}
+      {camOpen && (
+        <div onClick={e=>e.stopPropagation()}>
+          <CameraCapture onCancel={()=>setCamOpen(false)} onUse={(d)=>{ setImage(d); setCamOpen(false); }} />
+        </div>
+      )}
 
       {confirmLeave && (
         <div style={{ position:"fixed", inset:0, zIndex:90, display:"flex", alignItems:"center", justifyContent:"center", background:"rgba(4,5,10,.7)", padding:24 }} onClick={e=>e.stopPropagation()}>
@@ -1032,7 +1054,8 @@ function PostCard({ m, onShare, onDelete, onEdit, readOnly }) {
   const posterUrl = m.posterPath ? TMDB_IMG + m.posterPath : null;
   const c = posterColors(m.title);
   const hasPhoto = !!m.image;
-  // 写真必須化（仕様書§5）が入るまでは写真の無い記録が残る。その場合はポスターをメインにし、インセットは出さない
+  // 新規の記録は写真必須（§5）だが、それ以前の写真の無い記録が残っているため、
+  // その場合はポスターをメインにし、インセットは出さない（既存データ向けのフォールバック）
   const mainIsPhoto = hasPhoto && !swapped;
 
   // ポスター表示（メイン・インセット共通）。2:3なので画面比率に合わせてぼかし背景で余白を埋める。
@@ -1270,9 +1293,6 @@ function RecapView({ movies, user, onClose, year, month }) {
 function LogView({ movies, user, onAdd, onDelete, onShare, onUpdate }) {
   const [detail, setDetail] = useState(null);    // index or null
   const [recap, setRecap] = useState(null);       // {year, month} or null
-  // TODO(§6): 投稿フローへの組み込み前の動作確認用。組み込み時にこの3つは削除する
-  const [camOpen, setCamOpen] = useState(false);
-  const [camShot, setCamShot] = useState(null);
 
   if (movies.length === 0) {
     return (
@@ -1311,9 +1331,6 @@ function LogView({ movies, user, onAdd, onDelete, onShare, onUpdate }) {
     <div style={{ padding:"0 0 110px" }}>
       <div className="reel-narrow" style={{ padding:"12px 14px 8px", display:"flex", justifyContent:"space-between", alignItems:"center", borderBottom:"1px solid var(--line)" }}>
         <span className="mono" style={{ fontSize:11, color:"var(--ink-dim)", letterSpacing:".06em" }}>{now.getFullYear()} — {yearCount} FILMS</span>
-        {/* TODO(§6): 動作確認用の一時ボタン。投稿フローに組み込む際に削除する */}
-        <button className="reel-tap" onClick={()=>setCamOpen(true)}
-          style={{ padding:"5px 10px", borderRadius:8, border:"1px dashed var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:11, cursor:"pointer" }}>📷 カメラ試用</button>
       </div>
 
       <div className="reel-narrow" style={{ display:"flex", flexDirection:"column", gap:24, padding:"16px 14px 0" }}>
@@ -1328,17 +1345,6 @@ function LogView({ movies, user, onAdd, onDelete, onShare, onUpdate }) {
           <RecordRow key={r.key} m={r.m} onClick={()=>withViewTransition(()=>setDetail(r.index))} />
         ))}
       </div>
-
-      {/* TODO(§6): 動作確認用。撮影結果を確認するだけの一時的な表示 */}
-      {camOpen && <CameraCapture onCancel={()=>setCamOpen(false)} onUse={(d)=>{ setCamShot(d); setCamOpen(false); }} />}
-      {camShot && (
-        <div style={{ position:"fixed", inset:0, zIndex:95, background:"rgba(0,0,0,.9)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:14, padding:20 }}>
-          <img src={camShot} alt="" style={{ maxWidth:"86%", maxHeight:"70%", borderRadius:10 }} />
-          <div className="mono" style={{ fontSize:11, color:"var(--ink-dim)" }}>撮影結果（保存はしていません）</div>
-          <button className="reel-btn" onClick={()=>setCamShot(null)}
-            style={{ padding:"12px 26px", borderRadius:11, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, cursor:"pointer" }}>とじる</button>
-        </div>
-      )}
 
       {detail !== null && <DetailView movies={movies} index={detail} owner={user} onClose={()=>withViewTransition(()=>setDetail(null))} onShare={onShare} onDelete={onDelete} onUpdate={onUpdate} />}
       {recap && <RecapView movies={movies} user={user} year={recap.year} month={recap.month} onClose={()=>setRecap(null)} />}
