@@ -3,7 +3,13 @@
 // 環境変数 TMDB_API_KEY が未設定なら { error: "no_key" } を返し、
 // フロント側はデモデータにフォールバックする。
 
+import { isAllowedOrigin, rateLimit } from "./lib/guard.js";
+
 export default async function handler(req, res) {
+  // 他サイトのJSから黙って呼ばれ、TMDB_API_KEYの利用枠を消費されるのを防ぐ簡易対策。
+  if (!isAllowedOrigin(req)) return res.status(403).json({ error: "forbidden_origin" });
+  if (!rateLimit(req, { max: 60, windowMs: 60_000, key: "tmdb" })) return res.status(429).json({ error: "rate_limited" });
+
   const key = process.env.TMDB_API_KEY;
   if (!key) {
     return res.status(200).json({ error: "no_key" });
