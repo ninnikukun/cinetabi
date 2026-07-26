@@ -326,12 +326,18 @@ img { -webkit-user-drag:none; user-select:none; }
 /* ノッチ／ホームバーと重ならないよう、上下にセーフエリア分の黒帯を確保する。
    セーフエリアが0の端末（PC・ノッチ無しAndroid）でも操作できるよう最低値を持たせる。
    この2つの変数は子孫（PostCard）にも継承される。 */
-.reel-detail-card { --safe-top: max(env(safe-area-inset-top, 0px), 44px); --safe-bot: max(env(safe-area-inset-bottom, 0px), 56px); }
+/* セーフエリア＋16pxを黒帯の高さにする（ノッチ／ホームバーとの間に余裕を持たせる） */
+.reel-detail-card { --safe-top: calc(max(env(safe-area-inset-top, 0px), 44px) + 16px); --safe-bot: calc(max(env(safe-area-inset-bottom, 0px), 56px) + 16px); }
 .bereal-main { position:absolute; top:var(--safe-top); bottom:var(--safe-bot); left:0; right:0; overflow:hidden; background:#0b0b12; }
 .bereal-main .fill { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
-.bereal-main .blur { position:absolute; inset:-24px; filter:blur(14px) brightness(.5) saturate(.9); background-size:cover; background-position:center; }
-.bereal-main .core { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); max-width:100%; max-height:100%; aspect-ratio:2/3; object-fit:cover; display:block; }
-.bereal-inset { position:absolute; width:34%; aspect-ratio:9/16; border-radius:12px; overflow:hidden; border:2px solid rgba(0,0,0,.5); box-shadow:0 6px 22px rgba(0,0,0,.5); background:#101010; cursor:pointer; padding:0; }
+/* ポスターのぼかし背景＋中央配置。メイン領域とワイプ枠の両方で使う。
+   ここを .bereal-main だけにスコープすると、ワイプ枠内のポスターが通常フローで
+   原寸表示され、枠の高さ（aspect-ratio）を押し広げてしまう。 */
+.bereal-main .blur, .bereal-inset .blur { position:absolute; inset:-24px; filter:blur(14px) brightness(.5) saturate(.9); background-size:cover; background-position:center; }
+.bereal-main .core, .bereal-inset .core { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); max-width:100%; max-height:100%; aspect-ratio:2/3; object-fit:cover; display:block; }
+/* 幅だけを指定し、高さは9:16から自動計算させる（高さの固定値・flexの伸縮は使わない）。
+   中身はすべて絶対配置なので、コンテンツが高さを押し広げることはない。 */
+.bereal-inset { position:absolute; display:block; width:34%; aspect-ratio:9/16; border-radius:12px; overflow:hidden; border:2px solid rgba(0,0,0,.5); box-shadow:0 6px 22px rgba(0,0,0,.5); background:#101010; cursor:pointer; padding:0; }
 .bereal-inset .ifill { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
 /* 閉じている時はハンドル(36px)だけを残して下へ隠す */
 .bereal-sheet { position:absolute; left:0; right:0; bottom:0; z-index:4; background:rgba(12,13,22,.96); border-radius:18px 18px 0 0; border-top:1px solid var(--line); transition:transform .28s cubic-bezier(.22,.68,0,1); }
@@ -931,7 +937,16 @@ function PostCard({ m, onShare, onDelete, onEdit, readOnly }) {
           onTouchStart={onHandleStart} onTouchMove={onHandleMove} onTouchEnd={onHandleEnd}
           aria-label={sheet ? "詳細を閉じる" : "詳細をひらく"}>
           <span className="bar" />
-          <span style={{ fontSize:10, letterSpacing:".14em" }}>{sheet ? "▼" : "詳細 ▲"}</span>
+          {/* 閉じている時は作品タイトルを出す。長いタイトルは「…」で省略し、
+              矢印はflexShrink:0で必ず残す（ハンドルの幅からはみ出させない） */}
+          {sheet ? (
+            <span style={{ fontSize:10, letterSpacing:".14em" }}>▼</span>
+          ) : (
+            <span style={{ display:"flex", alignItems:"center", gap:5, maxWidth:"78%", minWidth:0, fontSize:11, letterSpacing:".04em" }}>
+              <span style={{ overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", minWidth:0 }}>{m.title}</span>
+              <span style={{ flexShrink:0 }}>▲</span>
+            </span>
+          )}
         </button>
 
         <div className="bereal-body" onClick={()=>setSheet(false)}>
