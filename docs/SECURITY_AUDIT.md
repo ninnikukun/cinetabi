@@ -27,8 +27,8 @@
 中程度の指摘のうち項目1・2・4、低程度の指摘のうち項目5・6・8を対応済み。項目3（共有リンク）・項目7（base64保存の移行）はスコープ外として未対応。
 
 - **項目1・2**（`api/lib/guard.js`・`vercel.json`）: PR [#4](https://github.com/ninnikukun/cinetabi/pull/4) にて実装し、`main` へマージ・本番反映済み
-- **項目4・8**（`supabase/records_image_guard.sql`・`supabase/follow_rate_limit.sql`）: 本番Supabaseプロジェクトに適用済み（Success確認済み）
-- **項目5**（`supabase/core_tables_rls.sql`）: 適用前にダッシュボードの実際のポリシー一覧と照合。`records_update_own`（本人による記録編集のUPDATEポリシー）が実際には存在していなかったことが判明し、本人確認のうえ新規追加。他のポリシーは既存設定と一致していた。適用済み
+- **項目4・8**（`supabase/records_image_guard.sql`・`supabase/follow_rate_limit.sql`）: claude.aiのSupabase MCP（コネクタ）経由で本番Supabaseプロジェクトに適用済み（Success確認済み）
+- **項目5**（`supabase/core_tables_rls.sql`）: 同じくclaude.aiのSupabase MCP経由で適用。適用前にダッシュボードの実際のポリシー一覧と照合したところ、`records_update_own`（本人による記録編集のUPDATEポリシー）が実際には存在していなかったという差分が1件見つかり、本人確認のうえ新規追加した上で適用。他のポリシーは既存設定と完全に一致していた（詳細は`supabase/core_tables_rls.sql`冒頭のコメント参照）
 - **項目6**（`.env.bak_utf16`）: ローカルから削除済み（gitには未追跡だったためコミットなし）
 
 ---
