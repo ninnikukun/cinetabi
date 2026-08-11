@@ -1065,7 +1065,12 @@ function PostCard({ m, onShare, onDelete, onEdit, readOnly }) {
           transform: dragY != null ? `translateY(${dragY}px)` : (sheet ? "translateY(0)" : "translateY(calc(100% - var(--safe-bot)))"),
           transition: dragging ? "none" : "transform .28s cubic-bezier(.22,.68,0,1)",
         }}
-        onTransitionEnd={() => setDragY(null)}>
+        onTransitionEnd={() => setDragY(null)}
+        // 下部パネル内でのタッチ（ハンドルのドラッグ・本文のスクロール）が
+        // DetailView側の「引っ張って閉じる」ジェスチャーハンドラーまで伝播しないようにする。
+        // ハンドル自身のonTouchStart/Move/Endは先にここまでバブルしてくる前に処理済みなので、
+        // ここで止めても内側の開閉ロジックには影響しない。
+        onTouchStart={(e)=>e.stopPropagation()} onTouchMove={(e)=>e.stopPropagation()} onTouchEnd={(e)=>e.stopPropagation()}>
         <button ref={handleRef} className={"bereal-handle" + (sheet || dragging ? "" : " bereal-handle-anim")} onClick={()=>setSheet(s=>!s)}
           onTouchStart={onHandleStart} onTouchMove={onHandleMove} onTouchEnd={onHandleEnd}
           aria-label={sheet ? "詳細を閉じる" : "詳細をひらく"}>
