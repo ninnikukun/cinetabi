@@ -341,7 +341,7 @@ function resizeToSquareBlob(file, size = 400, quality = 0.85) {
 }
 
 const STYLES = `
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
 * { box-sizing: border-box; }
 body { margin:0; }
 img { -webkit-user-drag:none; user-select:none; }
@@ -2114,6 +2114,14 @@ function CloudApp() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
+  // getSession()の解決とonAuthStateChangeの発火（INITIAL_SESSION等）は、
+  // 同じログインでも毎回新しいsessionオブジェクトを渡してくる。[session]を
+  // そのまま依存配列にすると、同一ユーザーでもオブジェクト参照が変わるたびに
+  // このeffectが再実行され、records・サムネイル補完クエリが二重に発行されて
+  // いた。ユーザーIDだけを見る安定したキーに変えて、実際にログイン状態が
+  // 変わった時（未確定→ログイン済み／ログアウト、別ユーザーへの切替）だけ
+  // 再実行されるようにする。
+  const sessionUserKey = session === undefined ? undefined : (session?.user?.id ?? null);
   useEffect(() => {
     if (session === undefined) return;
     if (session === null) { setProfile(null); setLoading(false); return; }
@@ -2133,7 +2141,7 @@ function CloudApp() {
       }
       setLoading(false);
     })();
-  }, [session]);
+  }, [sessionUserKey]);
 
   const createProfile = async (name) => {
     const { data, error } = await supabase.from("profiles").insert({ id: session.user.id, display_name: name }).select().single();
