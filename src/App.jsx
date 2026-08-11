@@ -224,7 +224,7 @@ function CameraCapture({ aspect = 9 / 16, maxDim = 1000, quality = 0.75, onCance
           カメラの使用が許可されていないか、安全な接続（https）でない可能性があります。<br/>
           端末のカメラ・写真から選ぶこともできます。
         </p>
-        <input ref={fileRef} type="file" accept="image/*" capture="environment" onChange={pickFile} style={{ display:"none" }} />
+        <input ref={fileRef} type="file" accept="image/*" onChange={pickFile} style={{ display:"none" }} />
         <button className="reel-btn" onClick={()=>fileRef.current?.click()} disabled={busy}
           style={{ width:"100%", maxWidth:280, padding:"14px", borderRadius:12, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:14, cursor:"pointer" }}>
           {busy ? "読み込み中…" : "カメラ・写真から選ぶ"}
