@@ -341,7 +341,7 @@ function resizeToSquareBlob(file, size = 400, quality = 0.85) {
 }
 
 const STYLES = `
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400&family=Zen+Kaku+Gothic+New:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
 * { box-sizing: border-box; }
 body { margin:0; }
 img { -webkit-user-drag:none; user-select:none; }
