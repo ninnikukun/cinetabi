@@ -1113,13 +1113,14 @@ function PostCard({ m, onShare, onDelete, onEdit, readOnly }) {
   );
 }
 
-function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate, readOnly, owner }) {
+function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate, readOnly, owner, hasMore, loadingMore, onLoadMore }) {
   const feedRef = useRef(null);
   const [editingId, setEditingId] = useState(null);
 
   // 一覧はimage列を読んでいない（thumbnailのみ）ため、詳細画面を開いた時点で
-  // このフィード分（movies全件）のimageだけをまとめて個別取得する。
-  // 1件ずつ都度リクエストするのではなく、開いた時に1回のクエリでまとめて取る形。
+  // このフィード分のimageだけをまとめて個別取得する。1件ずつ都度リクエストするのではなく、
+  // その時点でまだ取得していないid分だけをまとめて取る形（無限スクロールで後からmoviesに
+  // 追加された分にも対応できるよう、movies変化のたびに「未取得分だけ」を見る）。
   const [images, setImages] = useState({}); // id -> image dataURL
   // imagesLoadedがfalseの間は編集を開かせない：EditSheetはmovie.imageを初期値に
   // 使うため、取得が終わる前に開くと「元々写真があったのにnullで保存されて
@@ -1127,20 +1128,21 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate, readO
   const [imagesLoaded, setImagesLoaded] = useState(!supabase); // 端末保存モードは元から不要
   useEffect(() => {
     if (!supabase) return; // 端末保存モードはmoviesに元々フルサイズのimageが入っている
-    const ids = movies.map(m => m.id);
-    if (ids.length === 0) { setImagesLoaded(true); return; }
+    const missingIds = movies.map(m => m.id).filter(id => !(id in images));
+    if (missingIds.length === 0) { setImagesLoaded(true); return; }
     let alive = true;
+    setImagesLoaded(false);
     (async () => {
-      const { data } = await supabase.from("records").select("id, image").in("id", ids);
+      const { data } = await supabase.from("records").select("id, image").in("id", missingIds);
       if (alive && data) {
         const map = {};
         data.forEach(r => { map[r.id] = r.image; });
-        setImages(map);
+        setImages(prev => ({ ...prev, ...map }));
       }
       if (alive) setImagesLoaded(true);
     })();
     return () => { alive = false; };
-  }, []); // 開いた時点のmoviesに対して1回だけ取得する
+  }, [movies]);
 
   const enrichedMovies = movies.map(m => (
     m.id in images ? { ...m, image: images[m.id] } : m
@@ -1224,6 +1226,7 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate, readO
         <div ref={feedRef} className="reel-feed" style={{ height:"100%", overflowY:"auto", scrollSnapType:"y mandatory", WebkitOverflowScrolling:"touch", touchAction:"pan-y" }}
           onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
           {enrichedMovies.map(m => <PostCard key={m.id} m={m} readOnly={readOnly} onShare={onShare} onDelete={del} onEdit={()=>{ if (imagesLoaded) setEditingId(m.id); }} />)}
+          {onLoadMore && <InfiniteScrollSentinel onLoadMore={onLoadMore} hasMore={hasMore} loadingMore={loadingMore} />}
         </div>
       </div>
       {editingMovie && <EditSheet movie={editingMovie} onClose={()=>setEditingId(null)} onSave={onUpdate} />}
@@ -1291,7 +1294,7 @@ function RecapView({ movies, user, onClose, year, month }) {
   );
 }
 
-function LogView({ movies, user, onAdd, onDelete, onShare, onUpdate }) {
+function LogView({ movies, user, yearCount, hasMore, loadingMore, onLoadMore, onAdd, onDelete, onShare, onUpdate }) {
   const [detail, setDetail] = useState(null);    // index or null
   const [recap, setRecap] = useState(null);       // {year, month} or null
 
@@ -1306,7 +1309,8 @@ function LogView({ movies, user, onAdd, onDelete, onShare, onUpdate }) {
   }
 
   const now = new Date();
-  const yearCount = movies.filter(m => new Date(m.watchedAt).getFullYear() === now.getFullYear()).length;
+  // 正確な件数は親（CloudApp）が別クエリで持っている。届く前の一瞬だけ、読み込み済み分からの概算で埋める。
+  const displayYearCount = yearCount ?? movies.filter(m => new Date(m.watchedAt).getFullYear() === now.getFullYear()).length;
 
   // 月ごとの本数（継ぎ目の「N EXP」表示用）
   const mkey = (d) => `${d.getFullYear()}-${d.getMonth()}`;
@@ -1331,7 +1335,7 @@ function LogView({ movies, user, onAdd, onDelete, onShare, onUpdate }) {
   return (
     <div style={{ padding:"0 0 110px" }}>
       <div className="reel-narrow" style={{ padding:"12px 14px 8px", display:"flex", justifyContent:"space-between", alignItems:"center", borderBottom:"1px solid var(--line)" }}>
-        <span className="mono" style={{ fontSize:11, color:"var(--ink-dim)", letterSpacing:".06em" }}>{now.getFullYear()} — {yearCount} FILMS</span>
+        <span className="mono" style={{ fontSize:11, color:"var(--ink-dim)", letterSpacing:".06em" }}>{now.getFullYear()} — {displayYearCount} FILMS</span>
       </div>
 
       <div className="reel-narrow" style={{ display:"flex", flexDirection:"column", gap:24, padding:"16px 14px 0" }}>
@@ -1347,7 +1351,9 @@ function LogView({ movies, user, onAdd, onDelete, onShare, onUpdate }) {
         ))}
       </div>
 
-      {detail !== null && <DetailView movies={movies} index={detail} owner={user} onClose={()=>withViewTransition(()=>setDetail(null))} onShare={onShare} onDelete={onDelete} onUpdate={onUpdate} />}
+      {onLoadMore && <InfiniteScrollSentinel onLoadMore={onLoadMore} hasMore={hasMore} loadingMore={loadingMore} />}
+
+      {detail !== null && <DetailView movies={movies} index={detail} owner={user} hasMore={hasMore} loadingMore={loadingMore} onLoadMore={onLoadMore} onClose={()=>withViewTransition(()=>setDetail(null))} onShare={onShare} onDelete={onDelete} onUpdate={onUpdate} />}
       {recap && <RecapView movies={movies} user={user} year={recap.year} month={recap.month} onClose={()=>setRecap(null)} />}
     </div>
   );
@@ -1499,7 +1505,7 @@ function FindView() {
 const ACTIVE_VIEW_KEY = "cinetabi_active_view";
 
 /* ─────────── メインの画面（記録/でかける）。データ源に依存しない共通シェル ─────────── */
-function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onUpdateMovie, onLogout, isAnonymous, followInfo, followLink, onFollowLinkDone, onAvatarChange }) {
+function Shell({ user, movies, loading, hasMoreMovies, loadingMoreMovies, onLoadMoreMovies, yearCount, onAddMovie, onDeleteMovie, onUpdateMovie, onLogout, isAnonymous, followInfo, followLink, onFollowLinkDone, onAvatarChange }) {
   const [view, setView] = useState(() => {
     try { return sessionStorage.getItem(ACTIVE_VIEW_KEY) || "log"; } catch { return "log"; }
   });
@@ -1543,7 +1549,7 @@ function Shell({ user, movies, loading, onAddMovie, onDeleteMovie, onUpdateMovie
       )}
 
       {loading ? <p style={{ textAlign:"center", color:"var(--ink-dim)", padding:"60px" }}>読み込み中…</p>
-        : view === "log" ? <LogView movies={movies} user={user} onAdd={()=>setAdding(true)} onDelete={deleteMovie} onShare={setSharing} onUpdate={onUpdateMovie} />
+        : view === "log" ? <LogView movies={movies} user={user} yearCount={yearCount} hasMore={hasMoreMovies} loadingMore={loadingMoreMovies} onLoadMore={onLoadMoreMovies} onAdd={()=>setAdding(true)} onDelete={deleteMovie} onShare={setSharing} onUpdate={onUpdateMovie} />
         : view === "find" ? <FindView />
         : isAnonymous ? <FollowLockedNotice onConnect={()=>setConnecting(true)} />
         : <FollowView me={followInfo} onAvatarChange={onAvatarChange} />}
@@ -1602,6 +1608,89 @@ function LocalApp() {
 const RECORD_LIST_COLUMNS = "id, tmdb_id, title, year, poster_path, genres, note, thumbnail, watched_at";
 const toApp = (r) => ({ id:r.id, filmId:r.tmdb_id, title:r.title, year:r.year, posterPath:r.poster_path, genres:r.genres || [], note:r.note || "", image:r.image || null, thumbnail:r.thumbnail || null, watchedAt:r.watched_at });
 const toRow = (m, uid) => ({ user_id:uid, tmdb_id:m.filmId, title:m.title, year:m.year || null, poster_path:m.posterPath || null, genres:m.genres || [], note:m.note || "", image:m.image || null, thumbnail:m.thumbnail || null, watched_at:m.watchedAt });
+
+// 一覧は無限スクロールで少しずつ取得する（一度に全件は読まない）。
+const RECORDS_PAGE_SIZE = 20;
+// from〜to（0始まり、両端含む）の範囲だけをrangeで取得する共通ヘルパー。
+// records一覧（自分／フレンド）で共用する。
+async function fetchRecordsPage(userId, from, to) {
+  const { data, error } = await supabase.from("records").select(RECORD_LIST_COLUMNS)
+    .eq("user_id", userId).order("watched_at", { ascending: false }).range(from, to);
+  if (error) throw error;
+  return data || [];
+}
+
+// records一覧の無限スクロール状態管理（自分の記録／フレンドの記録のどちらでも使う共通ロジック）。
+// userIdがnull/undefinedの間は何も取得しない（フレンドが未承認・プロフィール未確定などの状態向け）。
+function useRecordsPagination(userId) {
+  const [records, setRecords] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+  // 取得済み件数（=次にrangeで取る開始位置）。addMovie等のローカルな楽観的更新で
+  // recordsの長さが変わってもズレないよう、実際にサーバーから取得した件数だけを別で持つ。
+  const fetchedCountRef = useRef(0);
+
+  useEffect(() => {
+    if (!userId) { setRecords([]); setHasMore(false); setInitialLoading(false); return; }
+    let alive = true;
+    fetchedCountRef.current = 0;
+    setInitialLoading(true);
+    (async () => {
+      try {
+        const page = await fetchRecordsPage(userId, 0, RECORDS_PAGE_SIZE - 1);
+        if (!alive) return;
+        fetchedCountRef.current = page.length;
+        setRecords(page.map(toApp));
+        setHasMore(page.length === RECORDS_PAGE_SIZE);
+      } finally {
+        if (alive) setInitialLoading(false);
+      }
+    })();
+    return () => { alive = false; };
+  }, [userId]);
+
+  const loadMore = async () => {
+    if (loadingMore || !hasMore || !userId) return;
+    setLoadingMore(true);
+    try {
+      const from = fetchedCountRef.current;
+      const page = await fetchRecordsPage(userId, from, from + RECORDS_PAGE_SIZE - 1);
+      fetchedCountRef.current += page.length;
+      // 追加中に記録の追加・削除がローカルで起きていても重複表示しないよう、idで念のため除外する。
+      setRecords(prev => {
+        const seen = new Set(prev.map(x => x.id));
+        return [...prev, ...page.map(toApp).filter(x => !seen.has(x.id))];
+      });
+      setHasMore(page.length === RECORDS_PAGE_SIZE);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  return { records, setRecords, hasMore, loadingMore, initialLoading, loadMore };
+}
+
+// スクロールでリストの下端付近まで来たらonLoadMoreを呼ぶための監視用コンポーネント。
+// 空のdivをIntersectionObserverで見張るだけ（レイアウトに影響しない高さ1px）。
+function InfiniteScrollSentinel({ onLoadMore, hasMore, loadingMore }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !hasMore) return;
+    const io = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) onLoadMore();
+    }, { rootMargin: "600px 0px" }); // 実際に見える少し手前で先読みする
+    io.observe(el);
+    return () => io.disconnect();
+  }, [onLoadMore, hasMore]);
+  if (!hasMore) return null;
+  return (
+    <div ref={ref} style={{ display:"flex", justifyContent:"center", padding:"18px 0", color:"var(--ink-dim)", fontSize:12.5 }}>
+      {loadingMore ? "読み込み中…" : ""}
+    </div>
+  );
+}
 
 // thumbnail列が無かった時期に作られた記録（image はあるがthumbnailが無い）を、
 // ログイン時に裏で1件ずつ補完する。本人のRLS（records_update_own）でしか
@@ -1884,18 +1973,8 @@ function LinkConfirmSheet({ payload, onClose, isAnonymous, onConnect }) {
 /* ── フォロー相手の画面：承認待ちなら非公開表示、承認後は記録を閲覧 ── */
 function FriendView({ row, profile, onClose, onRemove }) {
   const accepted = row.status === "accepted";
-  const [recs, setRecs] = useState(null); // null=読み込み中
   const [detail, setDetail] = useState(null);
-
-  useEffect(() => {
-    if (!accepted) { setRecs([]); return; }
-    let alive = true;
-    (async () => {
-      const { data } = await supabase.from("records").select(RECORD_LIST_COLUMNS).eq("user_id", row.followee_id).order("watched_at", { ascending:false });
-      if (alive) setRecs((data || []).map(toApp));
-    })();
-    return () => { alive = false; };
-  }, []);
+  const { records: recs, initialLoading: recsLoading, hasMore, loadingMore, loadMore } = useRecordsPagination(accepted ? row.followee_id : null);
 
   const name = profile?.display_name || "（名前を取得できません）";
   const remove = () => {
@@ -1925,25 +2004,28 @@ function FriendView({ row, profile, onClose, onRemove }) {
             <div style={{ fontWeight:700, fontSize:15, marginBottom:8 }}>このユーザーの記録は非公開です</div>
             <p style={{ margin:0, color:"var(--ink-dim)", fontSize:13, lineHeight:1.8 }}>{name} さんが申請を承認すると、<br/>ここに記録が表示されます。</p>
           </div>
-        ) : recs === null ? (
+        ) : recsLoading ? (
           <p style={{ textAlign:"center", color:"var(--ink-dim)", padding:"40px 0" }}>読み込み中…</p>
         ) : recs.length === 0 ? (
           <p style={{ textAlign:"center", color:"var(--ink-dim)", padding:"40px 0", lineHeight:1.8 }}>まだ記録がありません。</p>
         ) : (
-          <div className="film-body" style={{ borderRadius:12, overflow:"hidden" }}>
-            <div className="film-spro" />
-            <div className="film-track">
-              {recs.map((m, i) => <FilmFrame key={m.id} m={m} showPhoto={false} code={frameCode(i)} onClick={()=>setDetail(i)} style={{ cursor:"pointer" }} />)}
+          <>
+            <div className="film-body" style={{ borderRadius:12, overflow:"hidden" }}>
+              <div className="film-spro" />
+              <div className="film-track">
+                {recs.map((m, i) => <FilmFrame key={m.id} m={m} showPhoto={false} code={frameCode(i)} onClick={()=>setDetail(i)} style={{ cursor:"pointer" }} />)}
+              </div>
+              <div className="film-spro" />
             </div>
-            <div className="film-spro" />
-          </div>
+            <InfiniteScrollSentinel onLoadMore={loadMore} hasMore={hasMore} loadingMore={loadingMore} />
+          </>
         )}
 
         <button className="reel-tap" onClick={remove} style={{ width:"100%", marginTop:22, padding:"13px", borderRadius:11, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:13.5, cursor:"pointer" }}>
           {accepted ? "フォローをやめる" : "申請を取り下げる"}
         </button>
       </div>
-      {detail !== null && recs && <DetailView movies={recs} index={detail} readOnly owner={{ name, avatarUrl: profile?.avatar_url || null }} onClose={()=>setDetail(null)} />}
+      {detail !== null && recs && <DetailView movies={recs} index={detail} readOnly owner={{ name, avatarUrl: profile?.avatar_url || null }} hasMore={hasMore} loadingMore={loadingMore} onLoadMore={loadMore} onClose={()=>setDetail(null)} />}
     </div>
   );
 }
@@ -2148,8 +2230,25 @@ function NameSetup({ onDone }) {
 function CloudApp() {
   const [session, setSession] = useState(undefined); // undefined=確認中, null=未ログイン
   const [profile, setProfile] = useState(undefined); // undefined=確認中, null=未作成
-  const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
+  // recordsはプロフィールが確定してから取得したいので、プロフィールが無い間はnullにしてhook側の取得を止める。
+  const recordsUserId = (session && profile) ? session.user.id : null;
+  const { records: movies, setRecords: setMovies, hasMore: hasMoreMovies, loadingMore: loadingMoreMovies,
+    initialLoading: moviesInitialLoading, loadMore: loadMoreMovies } = useRecordsPagination(recordsUserId);
+  // 「今年N本」の表示は一覧の取得件数（ページングで少しずつしか読まない）と切り離し、
+  // 件数だけを別途正確に取得する（headリクエストなのでデータ本体は転送しない）。
+  const [yearCount, setYearCount] = useState(null);
+  useEffect(() => {
+    if (!recordsUserId) { setYearCount(null); return; }
+    let alive = true;
+    const y = new Date().getFullYear();
+    (async () => {
+      const { count } = await supabase.from("records").select("id", { count:"exact", head:true })
+        .eq("user_id", recordsUserId).gte("watched_at", `${y}-01-01`).lt("watched_at", `${y+1}-01-01`);
+      if (alive) setYearCount(count ?? 0);
+    })();
+    return () => { alive = false; };
+  }, [recordsUserId]);
 
   // 招待リンク（/#f=…）で開かれた場合、その中身を保持しておく。
   // Googleログイン等のリダイレクトでURLのハッシュが消えるため localStorage にも退避し、
@@ -2194,11 +2293,8 @@ function CloudApp() {
       const { data: prof } = await supabase.from("profiles").select("*").eq("id", session.user.id).maybeSingle();
       setProfile(prof || null);
       if (prof) {
-        // 自分の記録だけに絞る（フォロー機能のRLS拡張で、承認済みフォロー相手の記録も
-        // 読める＝select("*")だけだと他人の記録が自分のログに混ざるため）。
-        // image列は一覧では読まず、thumbnailだけを取得する（詳細表示時に個別取得）。
-        const { data: recs } = await supabase.from("records").select(RECORD_LIST_COLUMNS).eq("user_id", session.user.id).order("watched_at", { ascending: false });
-        setMovies((recs || []).map(toApp));
+        // recordsの取得自体はuseRecordsPagination（一覧の無限スクロール用）が
+        // 別途行う。ここではthumbnail補完だけ（一覧のページングとは独立した処理）。
         backfillThumbnails(session.user.id, (id, thumbnail) => {
           setMovies(prev => prev.map(x => x.id === id ? { ...x, thumbnail } : x));
         });
@@ -2206,6 +2302,11 @@ function CloudApp() {
       setLoading(false);
     })();
   }, [sessionUserKey]);
+
+  // Gate（読み込み中）表示・オンボーディング判定は、プロフィール確定だけでなく
+  // 一覧の最初のページが届くまでは「読み込み中」として扱う（でないと、既存記録の
+  // あるユーザーでも一瞬movies=[]に見えてオンボーディング画面が誤って挟まりうる）。
+  const combinedLoading = loading || moviesInitialLoading;
 
   const createProfile = async (name) => {
     const { data, error } = await supabase.from("profiles").insert({ id: session.user.id, display_name: name }).select().single();
@@ -2216,11 +2317,14 @@ function CloudApp() {
     const { data, error } = await supabase.from("records").insert(toRow(m, session.user.id)).select().single();
     if (error) { alert("保存に失敗しました：" + error.message); return; }
     setMovies(prev => [toApp(data), ...prev]);
+    setYearCount(c => c == null ? c : c + (new Date(data.watched_at).getFullYear() === new Date().getFullYear() ? 1 : 0));
   };
   const deleteMovie = async (id) => {
+    const target = movies.find(x => x.id === id);
     const { error } = await supabase.from("records").delete().eq("id", id);
     if (error) { alert("削除に失敗しました：" + error.message); return; }
     setMovies(prev => prev.filter(x => x.id !== id));
+    if (target) setYearCount(c => c == null ? c : c - (new Date(target.watchedAt).getFullYear() === new Date().getFullYear() ? 1 : 0));
   };
   const updateMovie = async (m) => {
     const { error } = await supabase.from("records").update({ note:m.note, image:m.image, thumbnail:m.thumbnail, watched_at:m.watchedAt }).eq("id", m.id);
@@ -2231,6 +2335,9 @@ function CloudApp() {
     if (records.length) {
       const { data } = await supabase.from("records").insert(records.map(r => toRow(r, session.user.id))).select();
       setMovies(prev => [...(data || []).map(toApp), ...prev]);
+      const y = new Date().getFullYear();
+      const added = (data || []).filter(r => new Date(r.watched_at).getFullYear() === y).length;
+      setYearCount(c => (c ?? 0) + added);
     }
     await supabase.from("profiles").update({ onboarded: true }).eq("id", session.user.id);
     setProfile(p => ({ ...p, onboarded: true }));
@@ -2242,10 +2349,12 @@ function CloudApp() {
   }
   if (session === null) return <Welcome />;
   if (profile === null) return <NameSetup onDone={createProfile} />;
-  if (!loading && !profile.onboarded && movies.length === 0) return <Gate><Onboarding onDone={finishOnboarding} /></Gate>;
+  if (!combinedLoading && !profile.onboarded && movies.length === 0) return <Gate><Onboarding onDone={finishOnboarding} /></Gate>;
 
   const isAnonymous = !!session.user?.is_anonymous;
-  return <Shell user={{ name: profile.display_name, avatarUrl: profile.avatar_url || null }} movies={movies} loading={loading} onAddMovie={addMovie} onDeleteMovie={deleteMovie} onUpdateMovie={updateMovie} onLogout={isAnonymous ? undefined : logout} isAnonymous={isAnonymous}
+  return <Shell user={{ name: profile.display_name, avatarUrl: profile.avatar_url || null }} movies={movies} loading={combinedLoading}
+    hasMoreMovies={hasMoreMovies} loadingMoreMovies={loadingMoreMovies} onLoadMoreMovies={loadMoreMovies} yearCount={yearCount}
+    onAddMovie={addMovie} onDeleteMovie={deleteMovie} onUpdateMovie={updateMovie} onLogout={isAnonymous ? undefined : logout} isAnonymous={isAnonymous}
     followInfo={{ uid: session.user.id, name: profile.display_name, publicId: profile.public_id || "", avatarUrl: profile.avatar_url || null }}
     onAvatarChange={(url)=>setProfile(p => p ? { ...p, avatar_url: url } : p)}
     followLink={followLink} onFollowLinkDone={finishFollowLink} />;
