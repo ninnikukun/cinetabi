@@ -147,121 +147,6 @@ function Poster({ film, big, style }) {
   );
 }
 
-/* ── サイト内カメラ撮影（仕様書§6）──
-   端末のカメラアプリに遷移せず、その場で撮影する。撮影後は必ず確認画面を挟む。
-   aspect は撮影ガイド枠＝切り出しの比率（幅/高さ）。記録用は9:16、アバターは1。
-   getUserMediaが使えない場合（権限拒否・非対応・HTTP接続）はファイル選択に切り替える。 */
-function CameraCapture({ aspect = 9 / 16, maxDim = 1000, quality = 0.75, onCancel, onUse }) {
-  const videoRef = useRef(null);
-  const streamRef = useRef(null);
-  const fileRef = useRef(null); // フォールバック用（capture付き＝端末のカメラを優先）
-  const libRef = useRef(null);  // 撮影画面からのアルバム選択用（captureなし）
-  const [facing, setFacing] = useState("environment"); // environment=外カメラ / user=内カメラ
-  const [shot, setShot] = useState(null);              // 撮影結果（dataURL）→ 確認画面
-  const [fallback, setFallback] = useState(false);
-  const [busy, setBusy] = useState(false);
-
-  useEffect(() => {
-    if (shot) return; // 確認画面の間はカメラを止めておく（電池とプライバシーのため）
-    let alive = true;
-    (async () => {
-      try {
-        if (!navigator.mediaDevices?.getUserMedia) throw new Error("unsupported");
-        const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: facing }, audio: false });
-        if (!alive) { s.getTracks().forEach(t => t.stop()); return; }
-        streamRef.current = s;
-        if (videoRef.current) { videoRef.current.srcObject = s; videoRef.current.muted = true; }
-      } catch {
-        if (alive) setFallback(true);
-      }
-    })();
-    return () => {
-      alive = false;
-      streamRef.current?.getTracks().forEach(t => t.stop());
-      streamRef.current = null;
-    };
-  }, [facing, shot]);
-
-  const capture = () => {
-    const v = videoRef.current;
-    if (!v || !v.videoWidth) return;
-    // 内カメラはプレビューを鏡像にしているが、保存するのは正像（見たままではなく実際の向き）
-    setShot(cropToAspectDataUrl(v, v.videoWidth, v.videoHeight, aspect, { maxDim, quality }));
-  };
-
-  const pickFile = async (e) => {
-    const file = e.target.files?.[0];
-    e.target.value = "";
-    if (!file) return;
-    setBusy(true);
-    try { setShot(await cropImageFileToAspect(file, aspect, { maxDim, quality })); }
-    catch { alert("画像を読み込めませんでした"); }
-    setBusy(false);
-  };
-
-  // 確認画面（撮影後・ファイル選択後の共通）
-  if (shot) {
-    return (
-      <div className="cam-root">
-        <img className="cam-view" src={shot} alt="" style={{ objectFit:"contain" }} />
-        <div className="cam-bar">
-          <button className="cam-action reel-tap" onClick={()=>setShot(null)}
-            style={{ background:"rgba(0,0,0,.55)", color:"#fff" }}>撮り直す</button>
-          <button className="cam-action reel-btn" onClick={()=>onUse(shot)}
-            style={{ background:"var(--amber)", color:"#1a1305", border:"none" }}>この写真を使う</button>
-        </div>
-      </div>
-    );
-  }
-
-  // カメラが使えない場合のフォールバック（端末標準のカメラ／ファイル選択）
-  if (fallback) {
-    return (
-      <div className="cam-root" style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"32px 26px", textAlign:"center" }}>
-        <div style={{ fontSize:34, marginBottom:14 }}>📷</div>
-        <p style={{ color:"var(--ink)", fontSize:15, lineHeight:1.8, margin:"0 0 6px" }}>このブラウザではその場での撮影ができません。</p>
-        <p style={{ color:"var(--ink-dim)", fontSize:12.5, lineHeight:1.8, margin:"0 0 22px" }}>
-          カメラの使用が許可されていないか、安全な接続（https）でない可能性があります。<br/>
-          端末のカメラ・写真から選ぶこともできます。
-        </p>
-        <input ref={fileRef} type="file" accept="image/*" onChange={pickFile} style={{ display:"none" }} />
-        <button className="reel-btn" onClick={()=>fileRef.current?.click()} disabled={busy}
-          style={{ width:"100%", maxWidth:280, padding:"14px", borderRadius:12, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:14, cursor:"pointer" }}>
-          {busy ? "読み込み中…" : "カメラ・写真から選ぶ"}
-        </button>
-        <button className="reel-tap" onClick={onCancel}
-          style={{ marginTop:12, background:"none", border:"none", color:"var(--ink-dim)", fontSize:13, cursor:"pointer", padding:"8px 16px" }}>とじる</button>
-      </div>
-    );
-  }
-
-  // 撮影画面
-  return (
-    <div className="cam-root">
-      <video ref={videoRef} className="cam-view" autoPlay playsInline muted
-        style={{ transform: facing === "user" ? "scaleX(-1)" : "none" }} />
-      <div className="cam-guide"><span style={{ aspectRatio: aspect }} /></div>
-
-      <button className="cam-btn reel-tap" onClick={onCancel} aria-label="とじる" style={{ left:12 }}>✕</button>
-      <button className="cam-btn reel-tap" onClick={()=>setFacing(f => f === "user" ? "environment" : "user")}
-        aria-label="カメラを切り替える" style={{ right:12, fontSize:17 }}>⟳</button>
-
-      <div className="cam-bar">
-        {/* アルバムから選んだ画像も、撮影と同じクロップ・縮小を通して同じ確認画面へ入る */}
-        <div className="cam-side">
-          <input ref={libRef} type="file" accept="image/*" onChange={pickFile} style={{ display:"none" }} />
-          <button className="cam-lib reel-tap" onClick={()=>libRef.current?.click()} disabled={busy} aria-label="アルバムから選ぶ">
-            <span style={{ fontSize:17, lineHeight:1 }}>🖼</span>
-            <span>{busy ? "読込中" : "アルバム"}</span>
-          </button>
-        </div>
-        <button className="cam-shutter" onClick={capture} aria-label="撮影する" />
-        <div className="cam-side" />
-      </div>
-    </div>
-  );
-}
-
 /* ── ユーザーのアバター ──
    avatar_url があれば丸くクロップした画像、無ければ従来どおり表示名の頭文字の丸。
    ヘッダー・フレンドの記録画面・フォロー一覧・詳細画面の上部帯で共通して使う。
@@ -524,20 +409,6 @@ img { -webkit-user-drag:none; user-select:none; }
 .bereal-chip { display:inline-flex; align-items:center; gap:6px; padding:9px 15px; border-radius:999px; border:1px solid var(--line); background:var(--surface); color:var(--ink-dim); font-size:12.5px; font-weight:700; cursor:pointer; }
 @media (prefers-reduced-motion: no-preference){ .bereal-handle-anim { animation:handleBounce 1.9s ease-in-out infinite; } }
 @keyframes handleBounce { 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(4px); } }
-/* ── サイト内カメラ撮影 ── */
-.cam-root { position:fixed; inset:0; z-index:90; background:#000; overflow:hidden; }
-.cam-view { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; background:#000; }
-/* 撮影ガイド枠：指定の比率で中央に点線の枠を出す（実際の切り出し範囲と一致させる） */
-.cam-guide { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; }
-.cam-guide > span { width:100%; max-width:86%; max-height:70%; border:2px dashed rgba(255,255,255,.85); border-radius:10px; box-shadow:0 0 0 100vmax rgba(0,0,0,.28); }
-.cam-btn { position:absolute; top:calc(env(safe-area-inset-top, 0px) + 12px); width:44px; height:44px; border-radius:50%; border:none; background:rgba(0,0,0,.5); color:#fff; font-size:19px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:3; }
-.cam-bar { position:absolute; left:0; right:0; bottom:0; padding:20px 20px calc(env(safe-area-inset-bottom, 0px) + 24px); display:flex; align-items:center; justify-content:center; gap:14px; z-index:3; }
-/* 左右に同じ幅の枠を置き、シャッターが常に画面中央に来るようにする */
-.cam-side { flex:1; display:flex; align-items:center; min-width:0; }
-.cam-lib { display:flex; flex-direction:column; align-items:center; gap:3px; padding:8px 10px; border:none; border-radius:12px; background:rgba(0,0,0,.5); color:#fff; font-size:10px; letter-spacing:.04em; cursor:pointer; }
-.cam-shutter { width:70px; height:70px; flex-shrink:0; border-radius:50%; border:4px solid rgba(255,255,255,.9); background:rgba(255,255,255,.25); cursor:pointer; padding:0; }
-.cam-shutter:active { transform:scale(.94); }
-.cam-action { flex:1; max-width:200px; padding:14px; border-radius:12px; font-size:14px; font-weight:700; cursor:pointer; border:1px solid var(--line); }
 .mono { font-family:'Space Mono',ui-monospace,monospace; }
 @media (prefers-reduced-motion: no-preference){ .fade-up{ animation:fadeUp .42s cubic-bezier(.2,.7,.2,1) both; } .reel-detail-enter{ animation:detailIn .3s cubic-bezier(.2,.8,.2,1) both; } }
 @keyframes fadeUp{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;} }
@@ -795,11 +666,25 @@ function AddSheet({ onClose, onSave, existingIds }) {
   const [selected, setSelected] = useState(null);
   const [note, setNote] = useState("");
   const [image, setImage] = useState(null);
-  const [camOpen, setCamOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [picking, setPicking] = useState(false);
   const inputRef = useRef(null);
+  const fileRef = useRef(null);
   const sheetRef = useRef(null);
   const [confirmLeave, setConfirmLeave] = useState(false);
+
+  // OS標準の選択画面（「写真を撮る」「フォトライブラリ」等）をそのまま出す。
+  // captureは付けない（付けるとカメラ起動に固定され、ライブラリから選べなく
+  // なるブラウザがあるため）。選んだ画像は9:16に中央クロップして縮小する。
+  const pickImage = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setPicking(true);
+    try { setImage(await cropImageFileToAspect(file, 9 / 16, { maxDim: 1000, quality: 0.75 })); }
+    catch { alert("写真を読み込めませんでした。別の画像で試してください。"); }
+    setPicking(false);
+  };
 
   useEffect(() => {
     const q = query.trim();
@@ -906,19 +791,20 @@ function AddSheet({ onClose, onSave, existingIds }) {
             <textarea value={note} onChange={e=>setNote(e.target.value)} rows={4} placeholder="観て感じたこと、思い出など" style={{ ...inp, resize:"vertical", lineHeight:1.6 }} />
 
             <label style={lbl}>おもいで（必須・写真1枚）</label>
+            <input ref={fileRef} type="file" accept="image/*" onChange={pickImage} style={{ display:"none" }} />
             {image ? (
               <div style={{ position:"relative", marginBottom:18 }}>
                 <img src={image} alt="" draggable={false} style={{ width:"100%", borderRadius:12, display:"block", maxHeight:320, objectFit:"cover" }} />
-                <button className="reel-tap" onClick={()=>setCamOpen(true)}
-                  style={{ position:"absolute", top:8, right:8, background:"rgba(12,13,22,.82)", color:"var(--ink)", border:"1px solid var(--line)", borderRadius:8, padding:"6px 12px", fontSize:13, cursor:"pointer" }}>撮り直す</button>
+                <button className="reel-tap" onClick={()=>fileRef.current?.click()} disabled={picking}
+                  style={{ position:"absolute", top:8, right:8, background:"rgba(12,13,22,.82)", color:"var(--ink)", border:"1px solid var(--line)", borderRadius:8, padding:"6px 12px", fontSize:13, cursor:"pointer" }}>写真を変更</button>
               </div>
             ) : (
-              <button className="reel-tap" onClick={()=>setCamOpen(true)}
+              <button className="reel-tap" onClick={()=>fileRef.current?.click()} disabled={picking}
                 style={{ width:"100%", marginBottom:8, padding:"18px", border:"1px dashed var(--line)", borderRadius:12, background:"var(--surface)", color:"var(--ink-dim)", cursor:"pointer", fontSize:14 }}>
-                📷 写真を撮る（チケット・劇場など）
+                {picking ? "読み込み中…" : "＋ 写真を追加（チケット・劇場など）"}
               </button>
             )}
-            {!image && <p style={{ margin:"0 0 18px", color:"var(--ink-dim)", fontSize:12, lineHeight:1.7 }}>写真を1枚撮ると記録できます。</p>}
+            {!image && <p style={{ margin:"0 0 18px", color:"var(--ink-dim)", fontSize:12, lineHeight:1.7 }}>写真を1枚追加すると記録できます。</p>}
 
             <button className="reel-btn" disabled={busy || !image} onClick={save}
               style={{ width:"100%", padding:"15px", borderRadius:12, border:"none", cursor: (busy || !image) ? "default" : "pointer", fontSize:15, fontWeight:700,
@@ -928,13 +814,6 @@ function AddSheet({ onClose, onSave, existingIds }) {
           </>
         )}
       </div>
-
-      {/* 写真は必須。「この写真を使う」を押すまで記録できない（仕様書§5・§6） */}
-      {camOpen && (
-        <div onClick={e=>e.stopPropagation()}>
-          <CameraCapture onCancel={()=>setCamOpen(false)} onUse={(d)=>{ setImage(d); setCamOpen(false); }} />
-        </div>
-      )}
 
       {confirmLeave && (
         <div style={{ position:"fixed", inset:0, zIndex:90, display:"flex", alignItems:"center", justifyContent:"center", background:"rgba(4,5,10,.7)", padding:24 }} onClick={e=>e.stopPropagation()}>
