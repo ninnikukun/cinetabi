@@ -964,7 +964,12 @@ function searchLinks(title) {
 function PostCard({ m, onShare, onDelete, onEdit, readOnly }) {
   const [swapped, setSwapped] = useState(false); // true: ポスターをメインに入れ替え
   const [sheet, setSheet] = useState(false);
-  const dragRef = useRef(null);
+  const sheetRef = useRef(null);
+  const handleRef = useRef(null);
+  const dragStartRef = useRef(null); // { startClientY, baseY, closedY }
+  const dragMovedRef = useRef(false);
+  const [dragY, setDragY] = useState(null); // px。ドラッグ中／着地アニメ中だけ使う。通常はnull（CSSのcalc()に任せる）
+  const [dragging, setDragging] = useState(false);
   const del = () => onDelete(m.id);
   const openExt = (url) => { try { window.open(url, "_blank", "noopener"); } catch {} };
   const posterUrl = m.posterPath ? TMDB_IMG + m.posterPath : null;
@@ -995,13 +1000,45 @@ function PostCard({ m, onShare, onDelete, onEdit, readOnly }) {
     </>
   );
 
-  // ハンドルを下方向にドラッグするとシートがせり上がる（目安40px）
-  const onHandleStart = (e) => { dragRef.current = e.touches[0].clientY; };
-  const onHandleMove = (e) => {
-    if (dragRef.current == null) return;
-    if (e.touches[0].clientY - dragRef.current > 40) { setSheet(true); dragRef.current = null; }
+  // ハンドルをドラッグするとシートが指に追従して連続的に動く（DetailViewの引っ張り閉じと同じ考え方）。
+  // border-radius/box-shadowのような重いプロパティは使わず、transformのpx値だけを毎フレーム更新する。
+  const onHandleStart = (e) => {
+    const sheetEl = sheetRef.current, handleEl = handleRef.current;
+    if (!sheetEl || !handleEl) return;
+    const closedY = sheetEl.offsetHeight - handleEl.offsetHeight; // ハンドル分だけ残して隠れる位置
+    const baseY = sheet ? 0 : closedY;
+    dragStartRef.current = { startClientY: e.touches[0].clientY, baseY, closedY };
+    dragMovedRef.current = false;
+    setDragging(true);
+    setDragY(baseY);
   };
-  const onHandleEnd = () => { dragRef.current = null; };
+  const onHandleMove = (e) => {
+    const st = dragStartRef.current;
+    if (!st) return;
+    const dy = e.touches[0].clientY - st.startClientY;
+    if (Math.abs(dy) > 4) dragMovedRef.current = true;
+    setDragY(Math.max(0, Math.min(st.closedY, st.baseY + dy)));
+  };
+  const onHandleEnd = () => {
+    const st = dragStartRef.current;
+    dragStartRef.current = null;
+    if (!st) return;
+    if (!dragMovedRef.current) {
+      // 実質ドラッグしていない＝ただのタップ。開閉はonClickに任せ、位置は現在の状態に戻すだけ。
+      setDragging(false);
+      setDragY(null);
+      return;
+    }
+    // 動いた向き・量から、指を離した位置がどちらに「寄っていた」かで開閉を決める（目安40px）。
+    const moved = (dragY ?? st.baseY) - st.baseY;
+    const wasOpen = st.baseY === 0;
+    const shouldOpen = wasOpen ? !(moved > 40) : moved < -40;
+    setSheet(shouldOpen);
+    setDragging(false);
+    // 最終位置を明示してtransitionで滑らかに着地させる。着地後はonTransitionEndでnullに戻し、
+    // 以降はCSSのcalc(100% - var(--safe-bot))に委ねる（リサイズ等で測定値が古くならないように）。
+    setDragY(shouldOpen ? 0 : st.closedY);
+  };
   const stop = (e) => e.stopPropagation();
 
   return (
@@ -1023,8 +1060,13 @@ function PostCard({ m, onShare, onDelete, onEdit, readOnly }) {
         </button>
       )}
 
-      <div className="bereal-sheet" style={{ transform: sheet ? "translateY(0)" : "translateY(calc(100% - var(--safe-bot)))" }}>
-        <button className={"bereal-handle" + (sheet ? "" : " bereal-handle-anim")} onClick={()=>setSheet(s=>!s)}
+      <div ref={sheetRef} className="bereal-sheet"
+        style={{
+          transform: dragY != null ? `translateY(${dragY}px)` : (sheet ? "translateY(0)" : "translateY(calc(100% - var(--safe-bot)))"),
+          transition: dragging ? "none" : "transform .28s cubic-bezier(.22,.68,0,1)",
+        }}
+        onTransitionEnd={() => setDragY(null)}>
+        <button ref={handleRef} className={"bereal-handle" + (sheet || dragging ? "" : " bereal-handle-anim")} onClick={()=>setSheet(s=>!s)}
           onTouchStart={onHandleStart} onTouchMove={onHandleMove} onTouchEnd={onHandleEnd}
           aria-label={sheet ? "詳細を閉じる" : "詳細をひらく"}>
           <span className="bar" />
