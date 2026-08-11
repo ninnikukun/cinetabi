@@ -330,10 +330,14 @@ function RecordRow({ m, onClick }) {
           )}
         </div>
         <div className="rec-cell">
-          {/* 新規の記録は写真必須（§5）だが、それ以前に作られた写真の無い記録が残っているため、
-              その場合は無地で埋める（既存データを壊さないためのフォールバック） */}
-          {m.image
-            ? <img className="fill" src={m.image} alt="" loading="lazy" draggable={false} />
+          {/* 一覧はthumbnail（軽量版）を使う。records.image列は一覧取得時には
+              読み込まず、詳細画面を開いた時だけ個別に取得する（通信量削減）。
+              thumbnailが無い場合（端末保存モード・バックフィル前の既存記録）は
+              imageにフォールバックする。新規の記録は写真必須（§5）だが、
+              それ以前に作られた写真の無い記録が残っているため、その場合は
+              無地で埋める（既存データを壊さないためのフォールバック） */}
+          {(m.thumbnail || m.image)
+            ? <img className="fill" src={m.thumbnail || m.image} alt="" loading="lazy" draggable={false} />
             : <div className="fill" style={{ background:"var(--surface2)" }} />}
         </div>
       </div>
@@ -373,6 +377,26 @@ function resizeImage(file, maxDim = 1000, quality = 0.72) {
       img.onerror = reject; img.src = e.target.result;
     };
     reader.onerror = reject; reader.readAsDataURL(file);
+  });
+}
+
+/* ── 一覧表示用の軽量サムネイルを作る（既存のdataURLをさらに縮小）──
+   記録一覧はrecords.thumbnailだけを取得してimage列は読まないため、
+   フルサイズの写真とは別に、これを保存しておく。 */
+function dataUrlToThumbnail(dataUrl, maxDim = 240, quality = 0.7) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      let { width, height } = img;
+      if (width >= height && width > maxDim) { height = Math.round(height * maxDim / width); width = maxDim; }
+      else if (height > maxDim) { width = Math.round(width * maxDim / height); height = maxDim; }
+      const canvas = document.createElement("canvas");
+      canvas.width = width; canvas.height = height;
+      canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+      resolve(canvas.toDataURL("image/jpeg", quality));
+    };
+    img.onerror = reject;
+    img.src = dataUrl;
   });
 }
 
@@ -796,7 +820,8 @@ function AddSheet({ onClose, onSave, existingIds }) {
   const save = async () => {
     if (!selected || !image) return; // 写真は必須（仕様書§5）
     setBusy(true);
-    await onSave({ id:"m"+Date.now(), filmId:selected.id, title:selected.title, year:selected.year, posterPath:selected.posterPath, genres:selected.genres, note:note.trim(), image, watchedAt:new Date().toISOString() });
+    const thumbnail = await dataUrlToThumbnail(image).catch(() => null);
+    await onSave({ id:"m"+Date.now(), filmId:selected.id, title:selected.title, year:selected.year, posterPath:selected.posterPath, genres:selected.genres, note:note.trim(), image, thumbnail, watchedAt:new Date().toISOString() });
     setBusy(false); onClose();
   };
 
@@ -957,7 +982,11 @@ function EditSheet({ movie, onClose, onSave }) {
     setBusy(true);
     let watchedAt = movie.watchedAt;
     if (date) { const d = new Date(date + "T12:00:00"); if (!isNaN(d)) watchedAt = d.toISOString(); }
-    await onSave({ ...movie, note: note.trim(), image, watchedAt });
+    // 写真が変わった時だけサムネイルを作り直す（変わっていなければ既存のthumbnailを維持）
+    const thumbnail = image !== (movie.image || null)
+      ? (image ? await dataUrlToThumbnail(image).catch(() => null) : null)
+      : (movie.thumbnail || null);
+    await onSave({ ...movie, note: note.trim(), image, thumbnail, watchedAt });
     setBusy(false);
     onClose();
   };
@@ -1148,6 +1177,35 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate, readO
   const feedRef = useRef(null);
   const [editingId, setEditingId] = useState(null);
 
+  // 一覧はimage列を読んでいない（thumbnailのみ）ため、詳細画面を開いた時点で
+  // このフィード分（movies全件）のimageだけをまとめて個別取得する。
+  // 1件ずつ都度リクエストするのではなく、開いた時に1回のクエリでまとめて取る形。
+  const [images, setImages] = useState({}); // id -> image dataURL
+  // imagesLoadedがfalseの間は編集を開かせない：EditSheetはmovie.imageを初期値に
+  // 使うため、取得が終わる前に開くと「元々写真があったのにnullで保存されて
+  // 消える」事故になりうる（editボタンを押した瞬間だけの短いガード）。
+  const [imagesLoaded, setImagesLoaded] = useState(!supabase); // 端末保存モードは元から不要
+  useEffect(() => {
+    if (!supabase) return; // 端末保存モードはmoviesに元々フルサイズのimageが入っている
+    const ids = movies.map(m => m.id);
+    if (ids.length === 0) { setImagesLoaded(true); return; }
+    let alive = true;
+    (async () => {
+      const { data } = await supabase.from("records").select("id, image").in("id", ids);
+      if (alive && data) {
+        const map = {};
+        data.forEach(r => { map[r.id] = r.image; });
+        setImages(map);
+      }
+      if (alive) setImagesLoaded(true);
+    })();
+    return () => { alive = false; };
+  }, []); // 開いた時点のmoviesに対して1回だけ取得する
+
+  const enrichedMovies = movies.map(m => (
+    m.id in images ? { ...m, image: images[m.id] } : m
+  ));
+
   useEffect(() => {
     const el = feedRef.current;
     const child = el?.children?.[index];
@@ -1191,7 +1249,7 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate, readO
 
   const del = (id) => { onDelete(id); };
   const ownerName = owner?.name || "";
-  const editingMovie = movies.find(x => x.id === editingId) || null;
+  const editingMovie = enrichedMovies.find(x => x.id === editingId) || null;
   const closeProgress = Math.min(1, pull / 220);
   const cardRadius = closing ? 30 : Math.round(closeProgress * 26);
   const cardScale = closing ? 0.9 : 1 - closeProgress * 0.075;
@@ -1222,7 +1280,7 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate, readO
           style={{ right:0, width:56, border:"none", background:"transparent", color:"#fff", fontSize:18, fontWeight:900, cursor:"pointer", justifyContent:"center" }}>✕</button>
         <div ref={feedRef} className="reel-feed" style={{ height:"100%", overflowY:"auto", scrollSnapType:"y mandatory", WebkitOverflowScrolling:"touch", touchAction:"pan-y" }}
           onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
-          {movies.map(m => <PostCard key={m.id} m={m} readOnly={readOnly} onShare={onShare} onDelete={del} onEdit={()=>setEditingId(m.id)} />)}
+          {enrichedMovies.map(m => <PostCard key={m.id} m={m} readOnly={readOnly} onShare={onShare} onDelete={del} onEdit={()=>{ if (imagesLoaded) setEditingId(m.id); }} />)}
         </div>
       </div>
       {editingMovie && <EditSheet movie={editingMovie} onClose={()=>setEditingId(null)} onSave={onUpdate} />}
@@ -1597,8 +1655,27 @@ function LocalApp() {
 }
 
 /* ─────────── クラウドモード（Supabase：メールログイン＋クラウド保存） ─────────── */
-const toApp = (r) => ({ id:r.id, filmId:r.tmdb_id, title:r.title, year:r.year, posterPath:r.poster_path, genres:r.genres || [], note:r.note || "", image:r.image || null, watchedAt:r.watched_at });
-const toRow = (m, uid) => ({ user_id:uid, tmdb_id:m.filmId, title:m.title, year:m.year || null, poster_path:m.posterPath || null, genres:m.genres || [], note:m.note || "", image:m.image || null, watched_at:m.watchedAt });
+// 一覧取得のSELECT文で明示的に指定する列（imageを含めない。詳細表示時に別途取得する）
+const RECORD_LIST_COLUMNS = "id, tmdb_id, title, year, poster_path, genres, note, thumbnail, watched_at";
+const toApp = (r) => ({ id:r.id, filmId:r.tmdb_id, title:r.title, year:r.year, posterPath:r.poster_path, genres:r.genres || [], note:r.note || "", image:r.image || null, thumbnail:r.thumbnail || null, watchedAt:r.watched_at });
+const toRow = (m, uid) => ({ user_id:uid, tmdb_id:m.filmId, title:m.title, year:m.year || null, poster_path:m.posterPath || null, genres:m.genres || [], note:m.note || "", image:m.image || null, thumbnail:m.thumbnail || null, watched_at:m.watchedAt });
+
+// thumbnail列が無かった時期に作られた記録（image はあるがthumbnailが無い）を、
+// ログイン時に裏で1件ずつ補完する。本人のRLS（records_update_own）でしか
+// 更新できないため、対象ユーザー本人が開いた時にしか埋まらない
+// （フレンドの記録は読み取り専用のため、フレンド本人が開くまで補完されない）。
+async function backfillThumbnails(uid, onThumb) {
+  try {
+    const { data: rows } = await supabase.from("records").select("id, image").eq("user_id", uid).is("thumbnail", null).not("image", "is", null);
+    for (const r of rows || []) {
+      try {
+        const thumbnail = await dataUrlToThumbnail(r.image);
+        const { error } = await supabase.from("records").update({ thumbnail }).eq("id", r.id);
+        if (!error) onThumb?.(r.id, thumbnail);
+      } catch { /* 1件失敗しても他の記録の補完は続ける */ }
+    }
+  } catch { /* バックフィルはベストエフォート。失敗しても一覧表示自体には影響しない */ }
+}
 
 function Gate({ children }) {
   return (
@@ -1871,7 +1948,7 @@ function FriendView({ row, profile, onClose, onRemove }) {
     if (!accepted) { setRecs([]); return; }
     let alive = true;
     (async () => {
-      const { data } = await supabase.from("records").select("*").eq("user_id", row.followee_id).order("watched_at", { ascending:false });
+      const { data } = await supabase.from("records").select(RECORD_LIST_COLUMNS).eq("user_id", row.followee_id).order("watched_at", { ascending:false });
       if (alive) setRecs((data || []).map(toApp));
     })();
     return () => { alive = false; };
@@ -2167,9 +2244,13 @@ function CloudApp() {
       setProfile(prof || null);
       if (prof) {
         // 自分の記録だけに絞る（フォロー機能のRLS拡張で、承認済みフォロー相手の記録も
-        // 読める＝select("*")だけだと他人の記録が自分のログに混ざるため）
-        const { data: recs } = await supabase.from("records").select("*").eq("user_id", session.user.id).order("watched_at", { ascending: false });
+        // 読める＝select("*")だけだと他人の記録が自分のログに混ざるため）。
+        // image列は一覧では読まず、thumbnailだけを取得する（詳細表示時に個別取得）。
+        const { data: recs } = await supabase.from("records").select(RECORD_LIST_COLUMNS).eq("user_id", session.user.id).order("watched_at", { ascending: false });
         setMovies((recs || []).map(toApp));
+        backfillThumbnails(session.user.id, (id, thumbnail) => {
+          setMovies(prev => prev.map(x => x.id === id ? { ...x, thumbnail } : x));
+        });
       }
       setLoading(false);
     })();
@@ -2191,9 +2272,9 @@ function CloudApp() {
     setMovies(prev => prev.filter(x => x.id !== id));
   };
   const updateMovie = async (m) => {
-    const { error } = await supabase.from("records").update({ note:m.note, image:m.image, watched_at:m.watchedAt }).eq("id", m.id);
+    const { error } = await supabase.from("records").update({ note:m.note, image:m.image, thumbnail:m.thumbnail, watched_at:m.watchedAt }).eq("id", m.id);
     if (error) { alert("保存に失敗しました：" + error.message); return; }
-    setMovies(prev => prev.map(x => x.id === m.id ? { ...x, note:m.note, image:m.image, watchedAt:m.watchedAt } : x));
+    setMovies(prev => prev.map(x => x.id === m.id ? { ...x, note:m.note, image:m.image, thumbnail:m.thumbnail, watchedAt:m.watchedAt } : x));
   };
   const finishOnboarding = async (records) => {
     if (records.length) {
