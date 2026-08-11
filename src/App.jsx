@@ -391,6 +391,14 @@ img { -webkit-user-drag:none; user-select:none; }
 .bereal-topbar { position:absolute; top:0; height:var(--safe-top); padding-top:env(safe-area-inset-top, 0px); box-sizing:border-box; display:flex; align-items:center; z-index:8; }
 .bereal-main { position:absolute; top:var(--safe-top); bottom:var(--safe-bot); left:0; right:0; overflow:hidden; background:#0b0b12; }
 .bereal-main .fill { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+/* thumbnailで仮表示中→フル画像に差し替わる時のクロスフェード。transform/opacityと違いfilterの
+   遷移はGPU合成されないが、切り替わりは1回きり（連続アニメーションではない）なので許容している。 */
+.bereal-main .fill, .bereal-inset .ifill { transition:filter .35s ease; }
+/* 仮表示中であることを示す控えめなシマー。transform(translateX)とopacityだけで動かし、
+   スクロール・ドラッグ中の追従性に影響しないようにする（合成のみで完結、再描画を伴わない）。 */
+.photo-loading::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg, transparent, rgba(255,255,255,.14), transparent); transform:translateX(-100%); opacity:.9; animation:photoShimmer 1.6s ease-in-out infinite; pointer-events:none; z-index:2; }
+@keyframes photoShimmer { 0%{ transform:translateX(-100%); } 100%{ transform:translateX(100%); } }
+@media (prefers-reduced-motion: reduce) { .photo-loading::after { animation:none; display:none; } }
 /* ポスターのぼかし背景＋中央配置。メイン領域とワイプ枠の両方で使う。
    ここを .bereal-main だけにスコープすると、ワイプ枠内のポスターが通常フローで
    原寸表示され、枠の高さ（aspect-ratio）を押し広げてしまう。 */
@@ -961,7 +969,11 @@ function PostCard({ m, onShare, onDelete, onEdit, readOnly }) {
   const openExt = (url) => { try { window.open(url, "_blank", "noopener"); } catch {} };
   const posterUrl = m.posterPath ? TMDB_IMG + m.posterPath : null;
   const c = posterColors(m.title);
-  const hasPhoto = !!m.image;
+  // 一覧が持っているthumbnail（低解像度）を先に出し、詳細画面がフルサイズのimageを
+  // 取得し終えたら差し替える。thumbnailがある＝元々写真がある記録、という判定に使う。
+  const hasPhoto = !!(m.image || m.thumbnail);
+  const photoSrc = m.image || m.thumbnail;
+  const photoIsPreview = !!m.thumbnail && !m.image; // まだフル画像が届いていない（thumbnailで仮表示中）
   // 新規の記録は写真必須（§5）だが、それ以前の写真の無い記録が残っているため、
   // その場合はポスターをメインにし、インセットは出さない（既存データ向けのフォールバック）
   const mainIsPhoto = hasPhoto && !swapped;
@@ -994,9 +1006,10 @@ function PostCard({ m, onShare, onDelete, onEdit, readOnly }) {
 
   return (
     <section className="reel-post" style={{ scrollSnapAlign:"start", position:"relative", overflow:"hidden", background:"#000" }}>
-      <div className="bereal-main">
+      <div className={"bereal-main" + (mainIsPhoto && photoIsPreview ? " photo-loading" : "")}>
         {mainIsPhoto
-          ? <img className="fill" src={m.image} alt="" draggable={false} />
+          ? <img className="fill" src={photoSrc} alt="" draggable={false}
+              style={photoIsPreview ? { filter:"blur(14px)", transform:"scale(1.08)" } : undefined} />
           : posterLayer(false)}
       </div>
 
@@ -1005,7 +1018,8 @@ function PostCard({ m, onShare, onDelete, onEdit, readOnly }) {
           style={{ top:"calc(var(--safe-top) + 12px)", left:12, zIndex:3 }}>
           {mainIsPhoto
             ? posterLayer(true)
-            : <img className="ifill" src={m.image} alt="" draggable={false} />}
+            : <img className="ifill" src={photoSrc} alt="" draggable={false}
+                style={photoIsPreview ? { filter:"blur(6px)", transform:"scale(1.08)" } : undefined} />}
         </button>
       )}
 
@@ -1130,9 +1144,12 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate, readO
   const ownerName = owner?.name || "";
   const editingMovie = enrichedMovies.find(x => x.id === editingId) || null;
   const closeProgress = Math.min(1, pull / 220);
-  const cardRadius = closing ? 30 : Math.round(closeProgress * 26);
   const cardScale = closing ? 0.9 : 1 - closeProgress * 0.075;
-  const cardShadow = pull>4 || closing ? `0 ${18+closeProgress*20}px ${50+closeProgress*40}px rgba(0,0,0,${0.25+closeProgress*0.25})` : "none";
+  // border-radius・box-shadowはtransform/opacityと違ってGPU合成されず、値を連続的に変え続けると
+  // touchmoveのたびに再描画（ペイント）が走って追従性が落ちる。ドラッグ中はpull量に比例させず
+  // 「引っ張り始めたか／閉じ切ったか」の2値だけで切り替え、実際に毎フレーム動くのはtransformだけにする。
+  const cardRadius = closing ? 30 : (pull > 4 ? 26 : 0);
+  const cardShadow = closing || pull > 4 ? "0 30px 70px rgba(0,0,0,.4)" : "none";
 
   return (
     <div style={{ position:"fixed", inset:0, zIndex:70, background:"var(--bg)" }}>
