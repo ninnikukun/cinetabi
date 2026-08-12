@@ -116,7 +116,8 @@ return origin + "/s#" + payload;
 
 `records.image` を、非公開Storageバケット（`record-photos`）内の相対パス参照に変更する実装をブランチ上で完了。アクセス制御はサーバー側の関数を新設せず、`storage.objects` のRLSに `records` と同じ「本人 or 承認済みフォロワー」条件を設定し、認証済みブラウザから直接 `createSignedUrl`（期限付き）を発行する設計。実装の詳細は `docs/IMPLEMENTATION_SPEC.md` §9 を参照。
 
-- ⚠️ 本番Supabaseプロジェクトへの `record_photos_storage.sql` / `records_image_path_guard.sql` の適用、および「承認済みフォロワーが署名付きURLを発行できるか」の実機確認（本人だけでなく2アカウントでの検証が必須）は未実施。これが確認できるまで、この項目は完了とみなさないこと。
+- ⚠️ 本番Supabaseプロジェクトへの `record_photos_storage.sql` の適用、および「承認済みフォロワーが署名付きURLを発行できるか」の実機確認（本人だけでなく2アカウントでの検証が必須）は未実施。これが確認できるまで、この項目は完了とみなさないこと。
+- ⚠️ `records_image_path_guard.sql` は既存base64データの移行が全ユーザー分完了するまで適用しないこと。当初「該当2件のみ・削除して撮り直す」想定だったが、実際は15件・自分以外に3ユーザー分の実データがあることが判明したため、`src/App.jsx`の`migrateLegacyBase64Photos()`が各ユーザーの次回ログイン時に自動移行する方式に変更した（詳細は`docs/IMPLEMENTATION_SPEC.md`§9）。全員がアプリを開き終え、`select count(*) from public.records where image like 'data:%';`が0件になったのを確認してから適用すること。
 
 ### 8. `request_follow` RPCに呼び出し頻度の制限が無い
 
