@@ -22,9 +22,9 @@
 
 ---
 
-## 対応状況（2026-08-10更新）
+## 対応状況（2026-08-13更新）
 
-中程度の指摘のうち項目1・2・4、低程度の指摘のうち項目5・6・8を対応済み。項目3（共有リンク）・項目7（base64保存の移行）はスコープ外として未対応。
+中程度の指摘のうち項目1・2・4・7、低程度の指摘のうち項目5・6・8を対応済み。項目3（共有リンク）はスコープ外として未対応。
 
 - **項目1・2**（`api/lib/guard.js`・`vercel.json`）: PR [#4](https://github.com/ninnikukun/cinetabi/pull/4) にて実装し、`main` へマージ・本番反映済み
 - **項目4・8**（`supabase/records_image_guard.sql`・`supabase/follow_rate_limit.sql`）: claude.aiのSupabase MCP（コネクタ）経由で本番Supabaseプロジェクトに適用済み（Success確認済み）
@@ -112,9 +112,9 @@ return origin + "/s#" + payload;
 
 ### 7. 写真データをオブジェクトストレージではなくDBのテキスト列にbase64で保存している
 
-**該当箇所**: `records.image`（`toRow`/`toApp` 参照）
+**✅ 対応済み（2026-08-13、`supabase/record_photos_storage.sql` / `records_image_path_guard.sql`）**
 
-セキュリティ上の直接の脆弱性ではありませんが、RLS越しとはいえバイナリに近いデータが主要テーブルに混在することで、DBエクスポート・バックアップ・将来の分析用途などでの取り扱い範囲が広がります。`CLAUDE.md` の今後のタスクにも「おもいで写真をSupabase Storageへ移行」と記載されており、既に認識済みの課題です。移行時にアクセス制御（署名付きURL等）の設計も合わせて検討することを推奨します。
+`records.image` を、非公開Storageバケット（`record-photos`）内の相対パス参照に変更した。アクセス制御はサーバー側の関数を新設せず、`storage.objects` のRLSに `records` と同じ「本人 or 承認済みフォロワー」条件を設定し、認証済みブラウザから直接 `createSignedUrl`（期限付き）を発行できるようにした。実装の詳細は `docs/IMPLEMENTATION_SPEC.md` §9 を参照。
 
 ### 8. `request_follow` RPCに呼び出し頻度の制限が無い
 
