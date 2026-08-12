@@ -1649,7 +1649,11 @@ const RECORD_PHOTO_SIGNED_URL_TTL = 3600; // 秒。フィードを1時間以上�
 
 // dataURL（cropImageFileToAspect等の出力）をStorageにアップロードし、保存用のパスを返す。
 async function uploadRecordPhoto(uid, dataUrl) {
-  const blob = await (await fetch(dataUrl)).blob();
+  // fetch(dataUrl)はvercel.jsonのCSP（connect-srcにdata:を許可していない）で本番ブロックされるため、
+  // atobで直接デコードする（開発環境では気づけない差なので要注意）。
+  const base64 = dataUrl.slice(dataUrl.indexOf(",") + 1);
+  const bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+  const blob = new Blob([bytes], { type: "image/jpeg" });
   const path = `${uid}/${crypto.randomUUID()}.jpg`;
   const { error } = await supabase.storage.from(RECORD_PHOTOS_BUCKET).upload(path, blob, { contentType: "image/jpeg" });
   if (error) throw error;
@@ -2378,11 +2382,12 @@ function CloudApp() {
   const updateMovie = async (m) => {
     const photo = m.photo || { changed: false };
     const patch = { note: m.note, watched_at: m.watchedAt };
+    let oldPath = null;
     if (photo.changed) {
       // クライアント側はDBの実パスを持っていない（movie.imageは署名付きURLのみ）ため、
-      // 差し替え前に現在のパスを取得してから、アップロード→古いファイルの削除を行う。
+      // 差し替え前に現在のパスを取得しておく（削除はDB更新が成功してから行う）。
       const { data: cur } = await supabase.from("records").select("image").eq("id", m.id).maybeSingle();
-      const oldPath = cur?.image || null;
+      oldPath = cur?.image || null;
       if (photo.dataUrl) {
         let newPath;
         try { newPath = await uploadRecordPhoto(session.user.id, photo.dataUrl); }
@@ -2393,11 +2398,18 @@ function CloudApp() {
         patch.image = null;
         patch.thumbnail = null;
       }
-      if (oldPath) await supabase.storage.from(RECORD_PHOTOS_BUCKET).remove([oldPath]).catch(() => {});
     }
     const { error } = await supabase.from("records").update(patch).eq("id", m.id);
-    if (error) { alert("保存に失敗しました：" + error.message); return; }
-    setMovies(prev => prev.map(x => x.id === m.id ? { ...x, note:m.note, watchedAt:m.watchedAt, ...(photo.changed ? { thumbnail: patch.thumbnail } : {}) } : x));
+    if (error) {
+      // DB更新が失敗した場合、records.imageは古いパスを指したままなので、
+      // アップロードした新しいファイルがあればそちらを孤立させて古い方は残す（データを消さない）。
+      if (photo.changed && patch.image) await supabase.storage.from(RECORD_PHOTOS_BUCKET).remove([patch.image]).catch(() => {});
+      alert("保存に失敗しました：" + error.message);
+      return;
+    }
+    // DB更新が確定してから、古いファイルを削除する（先に消すと更新失敗時に写真が失われるため）。
+    if (photo.changed && oldPath) await supabase.storage.from(RECORD_PHOTOS_BUCKET).remove([oldPath]).catch(() => {});
+    setMovies(prev => prev.map(x => x.id === m.id ? { ...x, note:m.note, watchedAt:m.watchedAt, ...(photo.changed ? { thumbnail: patch.thumbnail, image: photo.dataUrl || null } : {}) } : x));
   };
   const finishOnboarding = async (records) => {
     if (records.length) {

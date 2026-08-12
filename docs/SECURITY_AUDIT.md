@@ -24,7 +24,7 @@
 
 ## 対応状況（2026-08-13更新）
 
-中程度の指摘のうち項目1・2・4・7、低程度の指摘のうち項目5・6・8を対応済み。項目3（共有リンク）はスコープ外として未対応。
+中程度の指摘のうち項目1・2・4、低程度の指摘のうち項目5・6・8を対応済み。項目7（base64保存の移行）は実装済みだが本番未適用・未検証（詳細は項目7参照）。項目3（共有リンク）はスコープ外として未対応。
 
 - **項目1・2**（`api/lib/guard.js`・`vercel.json`）: PR [#4](https://github.com/ninnikukun/cinetabi/pull/4) にて実装し、`main` へマージ・本番反映済み
 - **項目4・8**（`supabase/records_image_guard.sql`・`supabase/follow_rate_limit.sql`）: claude.aiのSupabase MCP（コネクタ）経由で本番Supabaseプロジェクトに適用済み（Success確認済み）
@@ -112,9 +112,11 @@ return origin + "/s#" + payload;
 
 ### 7. 写真データをオブジェクトストレージではなくDBのテキスト列にbase64で保存している
 
-**✅ 対応済み（2026-08-13、`supabase/record_photos_storage.sql` / `records_image_path_guard.sql`）**
+**🔧 実装済み・適用待ち（2026-08-13、`feature/record-photos-storage`ブランチ）**
 
-`records.image` を、非公開Storageバケット（`record-photos`）内の相対パス参照に変更した。アクセス制御はサーバー側の関数を新設せず、`storage.objects` のRLSに `records` と同じ「本人 or 承認済みフォロワー」条件を設定し、認証済みブラウザから直接 `createSignedUrl`（期限付き）を発行できるようにした。実装の詳細は `docs/IMPLEMENTATION_SPEC.md` §9 を参照。
+`records.image` を、非公開Storageバケット（`record-photos`）内の相対パス参照に変更する実装をブランチ上で完了。アクセス制御はサーバー側の関数を新設せず、`storage.objects` のRLSに `records` と同じ「本人 or 承認済みフォロワー」条件を設定し、認証済みブラウザから直接 `createSignedUrl`（期限付き）を発行する設計。実装の詳細は `docs/IMPLEMENTATION_SPEC.md` §9 を参照。
+
+- ⚠️ 本番Supabaseプロジェクトへの `record_photos_storage.sql` / `records_image_path_guard.sql` の適用、および「承認済みフォロワーが署名付きURLを発行できるか」の実機確認（本人だけでなく2アカウントでの検証が必須）は未実施。これが確認できるまで、この項目は完了とみなさないこと。
 
 ### 8. `request_follow` RPCに呼び出し頻度の制限が無い
 
