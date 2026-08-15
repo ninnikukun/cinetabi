@@ -22,9 +22,9 @@
 
 ---
 
-## 対応状況（2026-08-13更新）
+## 対応状況（2026-08-15更新）
 
-中程度の指摘のうち項目1・2・4、低程度の指摘のうち項目5・6・8を対応済み。項目7（base64保存の移行）は実装済みだが本番未適用・未検証（詳細は項目7参照）。項目3（共有リンク）はスコープ外として未対応。
+中程度の指摘のうち項目1・2・4・7、低程度の指摘のうち項目5・6・8を対応済み。項目3（共有リンク）はスコープ外として未対応。
 
 - **項目1・2**（`api/lib/guard.js`・`vercel.json`）: PR [#4](https://github.com/ninnikukun/cinetabi/pull/4) にて実装し、`main` へマージ・本番反映済み
 - **項目4・8**（`supabase/records_image_guard.sql`・`supabase/follow_rate_limit.sql`）: claude.aiのSupabase MCP（コネクタ）経由で本番Supabaseプロジェクトに適用済み（Success確認済み）
@@ -112,12 +112,13 @@ return origin + "/s#" + payload;
 
 ### 7. 写真データをオブジェクトストレージではなくDBのテキスト列にbase64で保存している
 
-**🔧 実装済み・適用待ち（2026-08-13、`feature/record-photos-storage`ブランチ）**
+**✅ 対応済み（2026-08-15、本番適用・検証済み）**
 
-`records.image` を、非公開Storageバケット（`record-photos`）内の相対パス参照に変更する実装をブランチ上で完了。アクセス制御はサーバー側の関数を新設せず、`storage.objects` のRLSに `records` と同じ「本人 or 承認済みフォロワー」条件を設定し、認証済みブラウザから直接 `createSignedUrl`（期限付き）を発行する設計。実装の詳細は `docs/IMPLEMENTATION_SPEC.md` §9 を参照。
+`records.image` を、非公開Storageバケット（`record-photos`）内の相対パス参照に変更した。アクセス制御はサーバー側の関数を新設せず、`storage.objects` のRLSに `records` と同じ「本人 or 承認済みフォロワー」条件を設定し、認証済みブラウザから直接 `createSignedUrl`（期限付き）を発行する設計。実装の詳細は `docs/IMPLEMENTATION_SPEC.md` §9 を参照。
 
-- ⚠️ 本番Supabaseプロジェクトへの `record_photos_storage.sql` の適用、および「承認済みフォロワーが署名付きURLを発行できるか」の実機確認（本人だけでなく2アカウントでの検証が必須）は未実施。これが確認できるまで、この項目は完了とみなさないこと。
-- ⚠️ `records_image_path_guard.sql` は既存base64データの移行が全ユーザー分完了するまで適用しないこと。当初「該当2件のみ・削除して撮り直す」想定だったが、実際は15件・自分以外に3ユーザー分の実データがあることが判明したため、`src/App.jsx`の`migrateLegacyBase64Photos()`が各ユーザーの次回ログイン時に自動移行する方式に変更した（詳細は`docs/IMPLEMENTATION_SPEC.md`§9）。全員がアプリを開き終え、`select count(*) from public.records where image like 'data:%';`が0件になったのを確認してから適用すること。
+- `record_photos_storage.sql` / `records_image_path_guard.sql` とも本番Supabaseプロジェクトに適用済み。
+- 既存base64データ（自分以外に3ユーザー分・計15件）は、各ユーザーの次回ログイン時に自動でStorageへ移行する一時コード（`migrateLegacyBase64Photos()`）で対応。移行しきれず残った4件は手動削除で対応。全ユーザー分の移行完了を確認後、一時コードは削除済み。
+- 本人・承認済みフォロワー・無関係な第三者の3パターンで署名付きURLのアクセス制御を実機検証済み。
 
 ### 8. `request_follow` RPCに呼び出し頻度の制限が無い
 

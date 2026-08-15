@@ -171,10 +171,12 @@
   - `backfillThumbnails`（旧・thumbnail自動補完処理）は `records.image` を直接 `<img>` に読み込む実装だったため、パス移行後は機能しなくなる。既存記録には全件thumbnailが入っている前提で削除した。
   - 共有画像の書き出し（`ShareSheet`の`drawCard`）は、写真が別オリジン（Storageの署名付きURL）になったことで`canvas`が汚染されないよう、読み込み前に `Image.crossOrigin = "anonymous"` を明示した。
 
-### 既存データの移行
+### 既存データの移行（完了）
 
 当初は該当記録が2件のみという想定で「削除して撮り直す」運用を予定していたが、実際にDBを確認したところ15件・自分以外に3ユーザー（え・ひんと・うなぎ）分の実データがあることが判明し、他ユーザーの投稿を勝手に消せないため方針を変更した。
 
-`src/App.jsx` の `migrateLegacyBase64Photos(uid)` を、`CloudApp` がプロフィール確定後に1回だけ自動実行する形で仕込んである。ログイン中ユーザー自身の `records`（RLSにより他人の行はUPDATE不可のため、これしか選択肢がない）のうち `image` が `data:` から始まるものだけを対象に、Storageへアップロードしパス参照へ書き換える。各ユーザーが次回アプリを開いたタイミングで自動的に自分の分が移行される。
+`CloudApp` がプロフィール確定後に1回だけ自動実行する一時関数 `migrateLegacyBase64Photos(uid)` を仕込み、ログイン中ユーザー自身の `records`（RLSにより他人の行はUPDATE不可のため、これしか選択肢がない）のうち `image` が `data:` から始まるものをStorageへアップロードしパス参照へ書き換える形にした。
 
-`records_image_path_guard.sql` は、全ユーザー（自分含め4人）がアプリを一度開き終えて `select count(*) from public.records where image like 'data:%';` が0件になったのを確認してから適用すること。適用後、`migrateLegacyBase64Photos` とその呼び出し箇所（`ponytail:` コメント付き）は不要になるので削除してよい。
+適用時、`records.image` には旧base64専用のCHECK制約（`records_image_size_check`、`image like 'data:image/%'` 必須）がまだ残っており、移行によるUPDATE（パス文字列への書き換え）がこの制約に違反して失敗する問題が起きた（アップロードは成功するがDB更新だけ失敗し、無音でロールバックされる設計だったため症状が分かりにくかった）。`records_image_size_check` を先に外してから移行をやり直し、全ユーザー分の移行完了後、残り4件は手動削除で対応した上で `records_image_path_guard.sql` を適用した。
+
+移行完了・全パターン（本人／承認済みフォロワー／無関係な第三者）の実機検証完了に伴い、`migrateLegacyBase64Photos` と呼び出し箇所は削除済み。

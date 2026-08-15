@@ -1660,29 +1660,6 @@ async function uploadRecordPhoto(uid, dataUrl) {
   return path;
 }
 
-// ponytail: 旧base64直置きデータの一回限りの自動移行。ログイン中ユーザー自身の
-// records（他人の行はRLSでUPDATE不可なので対象外）を対象に、image列がまだ
-// data:で始まっているものだけStorageへアップロードしパス参照に書き換える。
-// 全ユーザーがアプリを開き終えて対象0件になったのを確認したら、この関数と
-// 呼び出し元（CloudApp内のuseEffect）ごと削除してよい（records_image_path_guard.sql
-// はこの移行が全員分完了してから適用すること）。
-async function migrateLegacyBase64Photos(uid) {
-  const { data: rows, error } = await supabase.from("records").select("id, image").eq("user_id", uid).like("image", "data:%");
-  if (error || !rows || rows.length === 0) return;
-  for (const row of rows) {
-    try {
-      const path = await uploadRecordPhoto(uid, row.image);
-      const { error: updErr } = await supabase.from("records").update({ image: path }).eq("id", row.id);
-      if (updErr) {
-        await supabase.storage.from(RECORD_PHOTOS_BUCKET).remove([path]).catch(() => {});
-        console.error("[migrateLegacyBase64Photos] update failed", row.id, updErr);
-      }
-    } catch (err) {
-      console.error("[migrateLegacyBase64Photos] upload failed", row.id, err);
-    }
-  }
-}
-
 // records.imageに入っているパスの配列から、まとめて署名付きURLを発行する（id -> url）。
 // 権限が無いパス（RLSで弾かれるもの）はdataがnullで返ってくるため、その分は結果に含めない。
 async function fetchRecordPhotoUrls(idPathPairs) {
@@ -2365,7 +2342,6 @@ function CloudApp() {
       setProfile(prof || null);
       // recordsの取得自体はuseRecordsPagination（一覧の無限スクロール用）が別途行う。
       setLoading(false);
-      if (prof) migrateLegacyBase64Photos(session.user.id); // ponytail: 旧base64データの一回限り自動移行。詳細はmigrateLegacyBase64Photos定義部を参照
     })();
   }, [sessionUserKey]);
 
