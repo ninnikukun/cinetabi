@@ -180,3 +180,31 @@
 適用時、`records.image` には旧base64専用のCHECK制約（`records_image_size_check`、`image like 'data:image/%'` 必須）がまだ残っており、移行によるUPDATE（パス文字列への書き換え）がこの制約に違反して失敗する問題が起きた（アップロードは成功するがDB更新だけ失敗し、無音でロールバックされる設計だったため症状が分かりにくかった）。`records_image_size_check` を先に外してから移行をやり直し、全ユーザー分の移行完了後、残り4件は手動削除で対応した上で `records_image_path_guard.sql` を適用した。
 
 移行完了・全パターン（本人／承認済みフォロワー／無関係な第三者）の実機検証完了に伴い、`migrateLegacyBase64Photos` と呼び出し箇所は削除済み。
+
+## 9.5 共有リンク機能（`feature/share-link`、docs/SECURITY_AUDIT.md項目3）
+
+### 要件
+
+- 特定の1件の記録のみ、ログイン不要のリンクで公開できる。
+- 公開モードは記録ごとに選択：a) リンクを知っていれば誰でも閲覧可、b) 英数字4桁のパスワードが必要。
+- 共有ページに「フォロー申請する」ボタンを出し、押すとログイン/新規登録を促し、ログイン後に既存の`request_follow`を呼ぶ。
+- 非公開に戻す機能は無し（一度公開したら不変）。
+
+### 設計
+
+- `records`テーブルに直接`share_token`・`password_hash`列を追加すると、`records_select_accepted_followers`（行単位RLS）により承認済みフォロワーがそのカラムまで読めてしまう（相手はどのみち記録を見られる立場だが、リンクの転載や4桁パスワードのオフライン総当たりが可能になってしまう）。これを避けるため、専用テーブル`record_shares`（`supabase/record_share.sql`）に分離し、本人のみ閲覧・作成可のRLSを設定した。
+- 実際のデータ配信・パスワード照合はクライアントから直接Supabaseを叩かず、`/api/share.js`（Vercelサーバーレス関数、`SUPABASE_SERVICE_ROLE_KEY`でRLSをバイパス）を経由する。レスポンスはallowlist方式（`password_hash`・Storageの実パスは絶対に含めない）。
+  - `GET /api/share?token=`：パスワード不要モードなら記録を即返す。パスワードモードなら`{needsPassword:true}`のみ返す。
+  - `POST /api/share {token, password}`：`bcryptjs`でハッシュ照合。
+  - 「リンクが無効」と「パスワードが違う」は区別せず、常に`{error:"invalid"}`を返す。
+  - パスワード照合の試行はDBテーブル`record_share_attempts`でtoken単位に記録し、1分5回を超えたらブロックする（サーバーレス関数はインスタンスが複数に分かれうるため、既存の`api/lib/guard.js`のin-memoryレート制限だけでは4桁パスワードの総当たりを防ぎきれないと判断した）。
+  - 写真（`records.image`）はStorageのパスなので、`/api/share.js`側でservice_role鍵により`createSignedUrl`を発行して返す。
+- パスワードのハッシュ化はクライアント側（`bcryptjs`、ブラウザでも動作する純JS実装）で行い、`record_shares`へのINSERTは本人のみ許可のRLSに任せる（新規サーバーコード不要。ハッシュを弱くできるのは記録の所有者本人だけであり、脅威にならない）。
+- 共有ページのURLは`https://cinetabi.vercel.app/?s={share_token}`（React Router未導入のためクエリパラメータ形式）。`App()`のトップレベルで`?s=`を検出し、ログイン状態やCloudApp/LocalAppの別を問わず`SharePage`を表示する。
+- 「フォロー申請する」ボタンは新規実装をせず、既存の招待リンク（`#f=…`）の仕組みにそのまま合流させる。`/api/share.js`のレスポンスに含めた`owner.publicId`・`owner.name`を`localStorage`の`cinetabi_follow_link`にstashしてアプリへ遷移するだけで、ログイン促進・匿名ユーザーのブロック・`request_follow`呼び出しは既存フローがそのまま処理する。
+
+### 未実施（本番反映前に必ず行うこと）
+
+- `supabase/record_share.sql`の本番適用。
+- Vercelダッシュボードでの環境変数`SUPABASE_SERVICE_ROLE_KEY`追加（`VITE_SUPABASE_URL`は既存の値を流用）。
+- 実機での確認：公開（誰でも/パスワード）・共有ページでの閲覧・パスワード間違い時の表示・フォロー申請導線・非公開記録のtokenが第三者に漏れていないこと。

@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react";
+import bcrypt from "bcryptjs";
 import { supabase } from "./supabase.js";
 
 /* ─────────────────────────────────────────────────────────────
@@ -497,17 +498,54 @@ function Onboarding({ onDone }) {
 }
 
 /* ─────────── 共有 ─────────── */
-function ShareSheet({ movie, user, onClose }) {
+function ShareSheet({ movie, user, ownerId, onClose }) {
   const film = { title:movie.title, posterPath:movie.posterPath || null, year:movie.year };
   const [copied, setCopied] = useState(false);
 
-  const link = useMemo(() => {
-    const origin = typeof window !== "undefined" ? window.location.origin : "";
+  // 公開リンク（record_shares）：この記録専用の1件だけをログイン不要で外部公開できる。
+  // 一度公開すると非公開に戻す機能は無いため、record_id にunique制約を張った上で
+  // 「無ければ作る・あれば再利用」で扱う。
+  const [share, setShare] = useState(undefined); // undefined=読込中, "none"=未公開, {token,hasPassword}=公開済み
+  const [mode, setMode] = useState("open"); // open | password
+  const [pwd, setPwd] = useState("");
+  const [publishing, setPublishing] = useState(false);
+  const [shareErr, setShareErr] = useState("");
+
+  useEffect(() => {
+    if (!ownerId) { setShare(null); return; }
+    let alive = true;
+    (async () => {
+      const { data } = await supabase.from("record_shares").select("share_token, password_hash").eq("record_id", movie.id).maybeSingle();
+      if (alive) setShare(data ? { token: data.share_token, hasPassword: !!data.password_hash } : "none");
+    })();
+    return () => { alive = false; };
+  }, [movie.id, ownerId]);
+
+  const publish = async () => {
+    if (publishing) return;
+    if (mode === "password" && !/^[a-zA-Z0-9]{4}$/.test(pwd)) { setShareErr("パスワードは英数字4桁で入力してください。"); return; }
+    setPublishing(true); setShareErr("");
     try {
-      const payload = btoa(unescape(encodeURIComponent(JSON.stringify({ t:movie.title, n:movie.note, f:movie.filmId, u:user?.name }))));
-      return origin + "/s#" + payload;
-    } catch { return origin; }
-  }, [movie, user]);
+      const passwordHash = mode === "password" ? await bcrypt.hash(pwd, 10) : null;
+      const { data, error } = await supabase.from("record_shares")
+        .insert({ record_id: movie.id, owner_id: ownerId, password_hash: passwordHash })
+        .select("share_token, password_hash").single();
+      if (error) throw error;
+      setShare({ token: data.share_token, hasPassword: !!data.password_hash });
+    } catch {
+      setShareErr("公開に失敗しました。時間をおいてお試しください。");
+    } finally {
+      setPublishing(false);
+    }
+  };
+
+  const shareUrl = useMemo(() => {
+    if (!share || share === "none") return null;
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    return `${origin}/?s=${share.token}`;
+  }, [share]);
+
+  const link = shareUrl || (typeof window !== "undefined" ? window.location.origin : "");
 
   const shareText = `「${movie.title}」を観た${movie.note ? " — " + movie.note.slice(0,50) : ""}`;
 
@@ -620,17 +658,44 @@ function ShareSheet({ movie, user, onClose }) {
 
         <button className="reel-btn" onClick={shareImage} style={{ width:"100%", padding:"15px", borderRadius:12, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:15, cursor:"pointer", marginBottom:10 }}>画像にして共有</button>
 
-        <div style={{ display:"flex", gap:10, marginBottom:14 }}>
-          <button className="reel-tap" onClick={()=>open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(link)}`)} style={snsBtn}>X で共有</button>
-          <button className="reel-tap" onClick={()=>open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(link)}&text=${encodeURIComponent(shareText)}`)} style={snsBtn}>LINE で共有</button>
-        </div>
-
-        <label style={lbl}>共有リンク</label>
-        <div style={{ display:"flex", gap:8 }}>
-          <input readOnly value={link} onFocus={e=>e.target.select()} style={{ ...inp, marginBottom:0, fontSize:13, flex:1 }} />
-          <button className="reel-tap" onClick={copyLink} style={{ flexShrink:0, padding:"0 16px", borderRadius:10, border:"1px solid var(--line)", background: copied?"var(--amber)":"var(--surface)", color: copied?"#1a1305":"var(--ink)", fontWeight:700, fontSize:13, cursor:"pointer" }}>{copied ? "コピー済" : "コピー"}</button>
-        </div>
-        <p style={{ margin:"10px 0 0", color:"var(--ink-dim)", fontSize:12, lineHeight:1.6 }}>※ リンク先の共有ページは未実装です（画像での共有は使えます）。</p>
+        {ownerId && (
+          <>
+            <label style={lbl}>公開リンク</label>
+            {share === undefined ? (
+              <p style={{ margin:"0 0 14px", color:"var(--ink-dim)", fontSize:13 }}>読み込み中…</p>
+            ) : share === "none" ? (
+              <div style={{ background:"var(--surface)", border:"1px solid var(--line)", borderRadius:12, padding:14, marginBottom:18 }}>
+                <p style={{ margin:"0 0 12px", color:"var(--ink-dim)", fontSize:12.5, lineHeight:1.7 }}>この記録だけをログイン不要のリンクで公開できます。<b style={{ color:"var(--ink)" }}>一度公開すると非公開には戻せません</b>（おもいで写真も見えます）。</p>
+                <div style={{ display:"flex", gap:8, marginBottom: mode==="password" ? 10 : 14 }}>
+                  <button onClick={()=>setMode("open")} style={chip(mode==="open")}>誰でも見れる</button>
+                  <button onClick={()=>setMode("password")} style={chip(mode==="password")}>パスワードで保護</button>
+                </div>
+                {mode === "password" && (
+                  <input value={pwd} onChange={e=>setPwd(e.target.value.slice(0,4))} placeholder="英数字4桁" maxLength={4}
+                    autoCapitalize="off" autoCorrect="off" spellCheck={false}
+                    style={{ ...inp, marginBottom:14, fontFamily:"'Space Mono',ui-monospace,monospace", letterSpacing:".2em" }} />
+                )}
+                {shareErr && <p style={{ margin:"-6px 0 12px", color:"var(--rose)", fontSize:12.5 }}>{shareErr}</p>}
+                <button className="reel-tap" disabled={publishing} onClick={publish}
+                  style={{ width:"100%", padding:"12px", borderRadius:10, border:"1px solid var(--line)", background: publishing?"var(--surface2)":"var(--surface)", color:"var(--ink)", fontWeight:700, fontSize:13.5, cursor:"pointer" }}>
+                  {publishing ? "公開中…" : "この記録を公開する"}
+                </button>
+              </div>
+            ) : (
+              <>
+                <div style={{ display:"flex", gap:10, marginBottom:14 }}>
+                  <button className="reel-tap" onClick={()=>open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(link)}`)} style={snsBtn}>X で共有</button>
+                  <button className="reel-tap" onClick={()=>open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(link)}&text=${encodeURIComponent(shareText)}`)} style={snsBtn}>LINE で共有</button>
+                </div>
+                <div style={{ display:"flex", gap:8 }}>
+                  <input readOnly value={link} onFocus={e=>e.target.select()} style={{ ...inp, marginBottom:0, fontSize:13, flex:1 }} />
+                  <button className="reel-tap" onClick={copyLink} style={{ flexShrink:0, padding:"0 16px", borderRadius:10, border:"1px solid var(--line)", background: copied?"var(--amber)":"var(--surface)", color: copied?"#1a1305":"var(--ink)", fontWeight:700, fontSize:13, cursor:"pointer" }}>{copied ? "コピー済" : "コピー"}</button>
+                </div>
+                {share.hasPassword && <p style={{ margin:"10px 0 0", color:"var(--ink-dim)", fontSize:12, lineHeight:1.6 }}>※ パスワード保護あり（設定した4桁を相手に伝えてください）。</p>}
+              </>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
@@ -1580,7 +1645,7 @@ function Shell({ user, movies, loading, hasMoreMovies, loadingMoreMovies, onLoad
       )}
 
       {adding && <AddSheet onClose={()=>setAdding(false)} onSave={onAddMovie} existingIds={movies.map(m=>m.filmId).filter(Boolean)} />}
-      {sharing && <ShareSheet movie={sharing} user={user} onClose={()=>setSharing(null)} />}
+      {sharing && <ShareSheet movie={sharing} user={user} ownerId={followInfo?.uid || null} onClose={()=>setSharing(null)} />}
       {connecting && <ConnectSheet onClose={()=>setConnecting(false)} />}
       {followLink && followInfo && (
         <LinkConfirmSheet payload={followLink} isAnonymous={isAnonymous}
@@ -2441,7 +2506,123 @@ function CloudApp() {
 }
 
 /* ─────────── ルート：Supabase設定があればクラウド、無ければ端末保存 ─────────── */
+/* ─────────── 記録の共有ページ（?s=token、ログイン不要） ───────────
+   /api/share.js を叩くだけで、ログイン状態・CloudApp/LocalAppの別を
+   問わず表示できる。フォロー申請ボタンは既存の招待リンク（#f=…）の
+   仕組みにそのまま合流させる（cinetabi_follow_linkにstashしてアプリへ）。 */
+function SharePage({ token }) {
+  const [phase, setPhase] = useState("loading"); // loading | needsPassword | ready | error
+  const [data, setData] = useState(null);
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [errMsg, setErrMsg] = useState("");
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const r = await fetch(`/api/share?token=${encodeURIComponent(token)}`);
+        const d = await r.json();
+        if (!alive) return;
+        if (d.error) { setErrMsg(d.error === "invalid" ? "このリンクは無効です。" : "読み込みに失敗しました。時間をおいてお試しください。"); setPhase("error"); return; }
+        if (d.needsPassword) { setPhase("needsPassword"); return; }
+        setData(d); setPhase("ready");
+      } catch {
+        if (alive) { setErrMsg("読み込みに失敗しました。時間をおいてお試しください。"); setPhase("error"); }
+      }
+    })();
+    return () => { alive = false; };
+  }, [token]);
+
+  const submitPassword = async () => {
+    if (!password.trim() || busy) return;
+    setBusy(true); setErrMsg("");
+    try {
+      const r = await fetch("/api/share", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, password: password.trim() }),
+      });
+      const d = await r.json();
+      setBusy(false);
+      if (d.error) { setErrMsg(d.error === "rate_limited" ? "試行回数が多すぎます。しばらくしてからお試しください。" : "パスワードが違います。"); return; }
+      setData(d); setPhase("ready");
+    } catch {
+      setBusy(false); setErrMsg("通信に失敗しました。時間をおいてお試しください。");
+    }
+  };
+
+  const goFollow = () => {
+    if (!data?.owner) return;
+    store.set("cinetabi_follow_link", { i: data.owner.publicId, n: data.owner.name });
+    window.location.href = "/";
+  };
+
+  return (
+    <div className="reel-root">
+      <style>{STYLES}</style>
+      <div style={{ minHeight:"100dvh", display:"flex", alignItems:"center", justifyContent:"center", padding:24, background:"var(--bg)" }}>
+      <div className="fade-up" style={{ width:"100%", maxWidth:400 }}>
+        <div className="reel-mark" style={{ letterSpacing:".2em", fontSize:12, color:"var(--amber)", textAlign:"center", marginBottom:20 }}>CINETABI ／ 記録の共有</div>
+
+        {phase === "loading" && (
+          <p style={{ textAlign:"center", color:"var(--ink-dim)", fontSize:14 }}>読み込み中…</p>
+        )}
+
+        {phase === "error" && (
+          <div style={{ textAlign:"center", background:"var(--surface)", border:"1px solid var(--line)", borderRadius:16, padding:"40px 24px" }}>
+            <p style={{ margin:0, color:"var(--ink-dim)", fontSize:14, lineHeight:1.8 }}>{errMsg}</p>
+          </div>
+        )}
+
+        {phase === "needsPassword" && (
+          <div style={{ background:"var(--surface)", border:"1px solid var(--line)", borderRadius:16, padding:"28px 22px" }}>
+            <p style={{ margin:"0 0 16px", color:"var(--ink-dim)", fontSize:13.5, lineHeight:1.8 }}>このリンクにはパスワードが設定されています。教えてもらったパスワードを入力してください。</p>
+            <input value={password} onChange={e=>setPassword(e.target.value)} placeholder="パスワード" maxLength={4}
+              autoCapitalize="off" autoCorrect="off" spellCheck={false}
+              style={{ ...inp, textAlign:"center", fontFamily:"'Space Mono',ui-monospace,monospace", fontSize:20, letterSpacing:".2em" }} />
+            {errMsg && <p style={{ margin:"-8px 0 14px", color:"var(--rose)", fontSize:13 }}>{errMsg}</p>}
+            <button className="reel-btn" disabled={!password.trim()||busy} onClick={submitPassword}
+              style={{ width:"100%", padding:"14px", borderRadius:12, border:"none", cursor:"pointer", fontSize:15, fontWeight:700,
+                background: password.trim()&&!busy?"var(--amber)":"var(--surface2)", color: password.trim()&&!busy?"#1a1305":"var(--ink-dim)" }}>
+              {busy ? "確認中…" : "見る"}
+            </button>
+          </div>
+        )}
+
+        {phase === "ready" && data && (
+          <div style={{ background:"var(--surface)", border:"1px solid var(--line)", borderRadius:16, overflow:"hidden" }}>
+            {data.image ? (
+              <img src={data.image} alt="" style={{ width:"100%", aspectRatio:"1/1", objectFit:"cover", display:"block" }} />
+            ) : data.posterPath ? (
+              <img src={`${TMDB_IMG}${data.posterPath}`} alt="" style={{ width:"100%", aspectRatio:"2/3", objectFit:"cover", display:"block" }} />
+            ) : null}
+            <div style={{ padding:"18px 20px 22px" }}>
+              <div style={{ fontWeight:700, fontSize:18, marginBottom:4 }}>{data.title}</div>
+              <div className="reel-mark" style={{ fontSize:12, color:"var(--ink-dim)", marginBottom:12 }}>
+                {data.year}{data.genres.length ? "・" + data.genres.join("／") : ""}
+              </div>
+              {data.note && <p style={{ margin:"0 0 16px", color:"var(--ink)", fontSize:14, lineHeight:1.8, whiteSpace:"pre-wrap" }}>{data.note}</p>}
+              {data.owner && (
+                <p style={{ margin:"0 0 18px", color:"var(--ink-dim)", fontSize:12.5 }}>{data.owner.name} さんの記録</p>
+              )}
+              {data.owner && (
+                <button className="reel-btn" onClick={goFollow}
+                  style={{ width:"100%", padding:"13px", borderRadius:12, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:14, cursor:"pointer" }}>
+                  「{data.owner.name}」さんをフォロー申請する
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
+  const shareToken = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("s") : null;
+  if (shareToken) return <SharePage token={shareToken} />;
   return supabase ? <CloudApp /> : <LocalApp />;
 }
 
