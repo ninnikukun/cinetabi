@@ -642,7 +642,7 @@ function ShareSheet({ movie, user, ownerId, onClose }) {
   const open = (url) => { try { window.open(url, "_blank", "noopener"); } catch {} };
 
   return (
-    <div style={{ position:"fixed", inset:0, zIndex:60, display:"flex", flexDirection:"column", justifyContent:"flex-end", alignItems:"center", background:"rgba(4,5,10,.66)" }} onClick={onClose}>
+    <div style={{ position:"fixed", inset:0, zIndex:75, display:"flex", flexDirection:"column", justifyContent:"flex-end", alignItems:"center", background:"rgba(4,5,10,.66)" }} onClick={onClose}>
       <div className="fade-up reel-sheet" onClick={e=>e.stopPropagation()} style={{ background:"var(--bg2)", borderTop:"1px solid var(--line)", borderRadius:"22px 22px 0 0", maxHeight:"92vh", overflowY:"auto", touchAction:"pan-y", overscrollBehaviorX:"none", padding:"8px 20px 28px" }}>
         <div style={{ width:42, height:4, borderRadius:4, background:"var(--line)", margin:"10px auto 18px" }} />
         <div className="reel-mark" style={{ letterSpacing:".18em", fontSize:12, color:"var(--amber)", marginBottom:14 }}>SHARE ／ この記録を共有</div>
