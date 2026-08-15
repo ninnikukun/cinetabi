@@ -81,6 +81,7 @@
 - 投稿（記録追加）フローで、写真の選択をスキップできないようにする。
 - ポスターのみでの投稿は不可。
 - 写真の追加は `<input type="file" accept="image/*">`（`capture`属性なし）を直接開く形にしており、OS標準の選択画面（「写真を撮る」「フォトライブラリ」等）がそのまま表示される（§6参照）。選んだ画像は9:16に中央クロップ・縮小してから保存する。
+- 保存先はDBの `records.image` 列そのもの（base64）ではなく、Supabase Storageの非公開バケット。`records.image` にはStorage内の相対パスだけが入る（§9参照）。
 - ただし§5適用前に作られた記録（写真が無いもの）は既存データとして残るため、表示側のフォールバック（一覧では右側を無地に、詳細画面ではポスターをメインにしてワイプを出さない）は維持する。新規記録では発生しないが、削除はしないこと。
 
 ---
@@ -138,3 +139,44 @@
 - ~~サイト内カメラ撮影コンポーネント~~：実装したが撤回・削除済み（§6参照）
 
 実際のファイル構成・コンポーネント分割は現行コードに合わせて判断してください。
+
+---
+
+## 9. おもいで写真のSupabase Storage移行（docs/SECURITY_AUDIT.md 項目7）
+
+### 背景
+
+これまで `records.image` にbase64のdata URLをそのままDBに保存していた（§5）。件数・サイズが増えるとDBの行サイズ・バックアップ容量を圧迫するため、実体はSupabase Storageの非公開バケットに置き、`records.image` には「バケット内の相対パス」だけを保存する形に変更した。
+
+### 設計判断：署名付きURLの発行にサーバー側の関数を使わない
+
+当初は「Edge Function経由で署名付きURLを発行し、その中で`records`と同じ権限チェックを行う」案があったが、以下の理由からRLSのみで完結させる設計に変更した。
+
+- Supabaseの `createSignedUrl` は `storage.objects` のRLS（SELECT）に従う。`records` と全く同じ「本人 or 承認済みフォロワー」の条件をStorage側のポリシーにも設定すれば、権限チェックのロジックを重複実装せずに済む（RLSが唯一の判定ロジックになる）。
+- このプロジェクトにはSupabase Edge Functions用のCLI/デプロイ環境が無く、新設すると別のデプロイパイプラインが増える。Vercelの`api/*.js`だけで完結する既存の構成に馴染まない。
+- 結果として、ブラウザの認証済みSupabaseクライアントから直接 `supabase.storage.from('record-photos').createSignedUrl(...)` を呼ぶだけで完結する（アバター機能と同じ「クライアント→Supabase直」のパターン）。
+
+### 実装内容
+
+- 新規バケット `record-photos`（非公開・`file_size_limit: 2MB`・`allowed_mime_types: ['image/jpeg']`）。パスは `{user_id}/{ランダムなuuid}.jpg` 固定、上書きはしない（差し替え時は新パスでアップロードし、古いオブジェクトを削除する）。
+- `storage.objects` のポリシー（`supabase/record_photos_storage.sql`）：
+  - SELECT（署名付きURL発行も含む）：`records.image = 対象パス` を条件に `records` を参照し、本人 or 承認済みフォロワーだけ許可。
+  - INSERT/DELETE：`{自分のuser_id}/…` 配下のみ。写真は匿名ユーザーでも必須（§5）のため、アバター（`avatars`）と違い匿名ユーザーの書き込み制限は付けていない。
+- `records.image` のサーバー側チェック（`records_image_guard.sql`）は、base64形式の検証だったため実態と合わなくなった。パス形式（`{uuid}/{uuid}.jpg`）を検証する `records_image_path_guard.sql` に置き換えた。
+- クライアント側（`src/App.jsx`）：
+  - `AddSheet`/`EditSheet` 自体はこれまで通りdataURLを扱う（`LocalApp`＝端末保存モードと共有しているため、Storage関連の処理はここに置かない）。
+  - アップロード・削除・署名付きURL発行は `CloudApp` の `addMovie`/`updateMovie`/`deleteMovie`、および `DetailView` の写真取得処理に集約した。
+  - `EditSheet` の保存内容は `image` を直接渡す形から `photo: { changed, dataUrl }` に変更した。`movie.image` が実体ではなく署名付きURL（毎回文字列が変わりうる）になったため、値の比較では「変更したか」を判定できないための対応。
+  - `records.image` を直接SELECTしていた `DetailView` の一括取得処理を、「パスを取得 → 署名付きURLをまとめて発行」の2段階に変更。
+  - `backfillThumbnails`（旧・thumbnail自動補完処理）は `records.image` を直接 `<img>` に読み込む実装だったため、パス移行後は機能しなくなる。既存記録には全件thumbnailが入っている前提で削除した。
+  - 共有画像の書き出し（`ShareSheet`の`drawCard`）は、写真が別オリジン（Storageの署名付きURL）になったことで`canvas`が汚染されないよう、読み込み前に `Image.crossOrigin = "anonymous"` を明示した。
+
+### 既存データの移行（完了）
+
+当初は該当記録が2件のみという想定で「削除して撮り直す」運用を予定していたが、実際にDBを確認したところ15件・自分以外に3ユーザー（え・ひんと・うなぎ）分の実データがあることが判明し、他ユーザーの投稿を勝手に消せないため方針を変更した。
+
+`CloudApp` がプロフィール確定後に1回だけ自動実行する一時関数 `migrateLegacyBase64Photos(uid)` を仕込み、ログイン中ユーザー自身の `records`（RLSにより他人の行はUPDATE不可のため、これしか選択肢がない）のうち `image` が `data:` から始まるものをStorageへアップロードしパス参照へ書き換える形にした。
+
+適用時、`records.image` には旧base64専用のCHECK制約（`records_image_size_check`、`image like 'data:image/%'` 必須）がまだ残っており、移行によるUPDATE（パス文字列への書き換え）がこの制約に違反して失敗する問題が起きた（アップロードは成功するがDB更新だけ失敗し、無音でロールバックされる設計だったため症状が分かりにくかった）。`records_image_size_check` を先に外してから移行をやり直し、全ユーザー分の移行完了後、残り4件は手動削除で対応した上で `records_image_path_guard.sql` を適用した。
+
+移行完了・全パターン（本人／承認済みフォロワー／無関係な第三者）の実機検証完了に伴い、`migrateLegacyBase64Photos` と呼び出し箇所は削除済み。

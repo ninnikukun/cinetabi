@@ -587,6 +587,10 @@ function ShareSheet({ movie, user, onClose }) {
 
     if (movie.image) {
       const im = new Image();
+      // movie.imageはStorageの署名付きURL（別オリジン）。crossOrigin無しでcanvasに描画すると
+      // 「汚染された」扱いになりtoBlob()が失敗するため、CORS経由での読み込みを明示する
+      // （Supabase StorageのレスポンスはCORSを許可しているため通常は問題なく読み込める）。
+      im.crossOrigin = "anonymous";
       im.onload = () => render(im);
       im.onerror = () => render(null);
       im.src = movie.image;
@@ -848,7 +852,12 @@ function withViewTransition(fn) {
 
 function EditSheet({ movie, onClose, onSave }) {
   const [note, setNote] = useState(movie.note || "");
+  // imageは「表示用」の値（既存写真は署名付きURL、変更後は新しく選んだ写真のdataURL）。
+  // movie.imageはStorageの署名付きURLであって実体のパスではないため、「変更したかどうか」を
+  // 値の比較では判定できない（署名付きURLは同じ写真でも毎回文字列が変わりうる）。
+  // 代わりにimageChangedで明示的に管理する。
   const [image, setImage] = useState(movie.image || null);
+  const [imageChanged, setImageChanged] = useState(false);
   const [date, setDate] = useState(() => { try { return new Date(movie.watchedAt).toISOString().slice(0,10); } catch { return ""; } });
   const [busy, setBusy] = useState(false);
   const fileRef = useRef(null);
@@ -856,24 +865,24 @@ function EditSheet({ movie, onClose, onSave }) {
   const [confirmLeave, setConfirmLeave] = useState(false);
 
   const origDate = (() => { try { return new Date(movie.watchedAt).toISOString().slice(0,10); } catch { return ""; } })();
-  const isDirty = note !== (movie.note || "") || image !== (movie.image || null) || date !== origDate;
+  const isDirty = note !== (movie.note || "") || imageChanged || date !== origDate;
   const requestClose = () => { if (isDirty) setConfirmLeave(true); else onClose(); };
 
   const pickImage = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    try { setImage(await resizeImage(file)); } catch { alert("写真の読み込みに失敗しました"); }
+    try { setImage(await resizeImage(file)); setImageChanged(true); } catch { alert("写真の読み込みに失敗しました"); }
     e.target.value = "";
   };
+  const removeImage = () => { setImage(null); setImageChanged(true); };
   const save = async () => {
     setBusy(true);
     let watchedAt = movie.watchedAt;
     if (date) { const d = new Date(date + "T12:00:00"); if (!isNaN(d)) watchedAt = d.toISOString(); }
-    // 写真が変わった時だけサムネイルを作り直す（変わっていなければ既存のthumbnailを維持）
-    const thumbnail = image !== (movie.image || null)
-      ? (image ? await dataUrlToThumbnail(image).catch(() => null) : null)
-      : (movie.thumbnail || null);
-    await onSave({ ...movie, note: note.trim(), image, thumbnail, watchedAt });
+    // 写真を変更・削除した時だけ、CloudApp側でStorageへのアップロード／削除を行う。
+    // 触っていない場合はphoto.changed=falseにし、既存のimage/thumbnail列には一切触れない
+    // （imageは署名付きURLしか持っていないため、ここでそのままDBに書くと壊れてしまう）。
+    await onSave({ ...movie, note: note.trim(), watchedAt, photo: imageChanged ? { changed:true, dataUrl:image } : { changed:false } });
     setBusy(false);
     onClose();
   };
@@ -923,7 +932,7 @@ function EditSheet({ movie, onClose, onSave }) {
             <img src={image} alt="" draggable={false} style={{ width:"100%", borderRadius:12, display:"block", maxHeight:320, objectFit:"cover" }} />
             <div style={{ display:"flex", gap:8, marginTop:8 }}>
               <button className="reel-tap" onClick={()=>fileRef.current?.click()} style={{ flex:1, padding:"10px", borderRadius:9, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:13, cursor:"pointer" }}>写真を変更</button>
-              <button className="reel-tap" onClick={()=>setImage(null)} style={{ flex:1, padding:"10px", borderRadius:9, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:13, cursor:"pointer" }}>写真を削除</button>
+              <button className="reel-tap" onClick={removeImage} style={{ flex:1, padding:"10px", borderRadius:9, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:13, cursor:"pointer" }}>写真を削除</button>
             </div>
           </div>
         ) : (
@@ -1118,10 +1127,13 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate, readO
   const [editingId, setEditingId] = useState(null);
 
   // 一覧はimage列を読んでいない（thumbnailのみ）ため、詳細画面を開いた時点で
-  // このフィード分のimageだけをまとめて個別取得する。1件ずつ都度リクエストするのではなく、
+  // このフィード分の写真だけをまとめて個別取得する。1件ずつ都度リクエストするのではなく、
   // その時点でまだ取得していないid分だけをまとめて取る形（無限スクロールで後からmoviesに
   // 追加された分にも対応できるよう、movies変化のたびに「未取得分だけ」を見る）。
-  const [images, setImages] = useState({}); // id -> image dataURL
+  // records.imageはStorageの相対パスなので、まずパスをrecordsから引いてから、
+  // 署名付きURLをまとめて発行する2段階になる（写真が無い記録はnullのまま記録し、
+  // 「確認済みだが写真無し」を「まだ未取得」と区別する）。
+  const [images, setImages] = useState({}); // id -> 署名付きURL（写真無しはnull）
   // imagesLoadedがfalseの間は編集を開かせない：EditSheetはmovie.imageを初期値に
   // 使うため、取得が終わる前に開くと「元々写真があったのにnullで保存されて
   // 消える」事故になりうる（editボタンを押した瞬間だけの短いガード）。
@@ -1134,9 +1146,11 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate, readO
     setImagesLoaded(false);
     (async () => {
       const { data } = await supabase.from("records").select("id, image").in("id", missingIds);
-      if (alive && data) {
+      const rows = data || [];
+      const urlById = await fetchRecordPhotoUrls(rows.map(r => [r.id, r.image])).catch(() => ({}));
+      if (alive) {
         const map = {};
-        data.forEach(r => { map[r.id] = r.image; });
+        rows.forEach(r => { map[r.id] = urlById[r.id] || null; });
         setImages(prev => ({ ...prev, ...map }));
       }
       if (alive) setImagesLoaded(true);
@@ -1229,7 +1243,13 @@ function DetailView({ movies, index, onClose, onShare, onDelete, onUpdate, readO
           {onLoadMore && <InfiniteScrollSentinel onLoadMore={onLoadMore} hasMore={hasMore} loadingMore={loadingMore} />}
         </div>
       </div>
-      {editingMovie && <EditSheet movie={editingMovie} onClose={()=>setEditingId(null)} onSave={onUpdate} />}
+      {editingMovie && <EditSheet movie={editingMovie} onClose={()=>setEditingId(null)} onSave={async (m) => {
+        // 写真を変更・削除した場合、このフィード内のキャッシュ（署名付きURL）は
+        // 古いまま（差し替え前のURL、しかも実体は削除済み）になってしまうため、
+        // 保存した新しいdataURL（またはnull）でここも即座に更新しておく。
+        if (m.photo?.changed) setImages(prev => ({ ...prev, [m.id]: m.photo.dataUrl || null }));
+        await onUpdate(m);
+      }} />}
     </div>
   );
 }
@@ -1591,7 +1611,17 @@ function LocalApp() {
   };
   const addMovie = (m) => persist([m, ...movies]);
   const deleteMovie = (id) => persist(movies.filter(x => x.id !== id));
-  const updateMovie = (m) => persist(movies.map(x => x.id === m.id ? m : x));
+  // EditSheetはimageを直接ではなくphoto({changed, dataUrl})で渡してくる（Storage移行後の
+  // CloudApp向けの契約に合わせたもの）。端末保存モードはStorageを使わないので、ここで
+  // その場でimage/thumbnailに解決する。photo.changedがfalseなら元のimage/thumbnailを維持する。
+  const updateMovie = async (m) => {
+    const { photo, ...rest } = m;
+    if (photo?.changed) {
+      rest.image = photo.dataUrl || null;
+      rest.thumbnail = photo.dataUrl ? await dataUrlToThumbnail(photo.dataUrl).catch(() => null) : null;
+    }
+    persist(movies.map(x => x.id === m.id ? rest : x));
+  };
   const registerUser = (u) => { setUser(u); setOnboarded(false); store.set("cinetabi_user", u); };
   const finishOnboarding = (records) => {
     setOnboarded(true); store.set("cinetabi_onboarded", true);
@@ -1608,6 +1638,41 @@ function LocalApp() {
 const RECORD_LIST_COLUMNS = "id, tmdb_id, title, year, poster_path, genres, note, thumbnail, watched_at";
 const toApp = (r) => ({ id:r.id, filmId:r.tmdb_id, title:r.title, year:r.year, posterPath:r.poster_path, genres:r.genres || [], note:r.note || "", image:r.image || null, thumbnail:r.thumbnail || null, watchedAt:r.watched_at });
 const toRow = (m, uid) => ({ user_id:uid, tmdb_id:m.filmId, title:m.title, year:m.year || null, poster_path:m.posterPath || null, genres:m.genres || [], note:m.note || "", image:m.image || null, thumbnail:m.thumbnail || null, watched_at:m.watchedAt });
+
+// ─── おもいで写真：Supabase Storage（非公開バケット record-photos） ───
+// records.imageには実体（base64）ではなく、バケット内の相対パス（{user_id}/{uuid}.jpg）
+// だけを保存する。閲覧は署名付きURL（期限付き）を都度発行する形にしており、発行の可否は
+// サーバー側の関数ではなくstorage.objectsのRLS（record_photos_storage.sql）に任せている
+// （records自体のRLSと同じ「本人 or 承認済みフォロワー」条件をStorage側にも設定済み）。
+const RECORD_PHOTOS_BUCKET = "record-photos";
+const RECORD_PHOTO_SIGNED_URL_TTL = 3600; // 秒。フィードを1時間以上開きっぱなしにすると再度開き直しが必要になる
+
+// dataURL（cropImageFileToAspect等の出力）をStorageにアップロードし、保存用のパスを返す。
+async function uploadRecordPhoto(uid, dataUrl) {
+  // fetch(dataUrl)はvercel.jsonのCSP（connect-srcにdata:を許可していない）で本番ブロックされるため、
+  // atobで直接デコードする（開発環境では気づけない差なので要注意）。
+  const base64 = dataUrl.slice(dataUrl.indexOf(",") + 1);
+  const bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+  const blob = new Blob([bytes], { type: "image/jpeg" });
+  const path = `${uid}/${crypto.randomUUID()}.jpg`;
+  const { error } = await supabase.storage.from(RECORD_PHOTOS_BUCKET).upload(path, blob, { contentType: "image/jpeg" });
+  if (error) throw error;
+  return path;
+}
+
+// records.imageに入っているパスの配列から、まとめて署名付きURLを発行する（id -> url）。
+// 権限が無いパス（RLSで弾かれるもの）はdataがnullで返ってくるため、その分は結果に含めない。
+async function fetchRecordPhotoUrls(idPathPairs) {
+  const targets = idPathPairs.filter(([, path]) => !!path);
+  if (targets.length === 0) return {};
+  const { data } = await supabase.storage.from(RECORD_PHOTOS_BUCKET)
+    .createSignedUrls(targets.map(([, path]) => path), RECORD_PHOTO_SIGNED_URL_TTL);
+  const urlByPath = {};
+  (data || []).forEach(d => { if (d?.signedUrl && !d.error) urlByPath[d.path] = d.signedUrl; });
+  const result = {};
+  targets.forEach(([id, path]) => { if (urlByPath[path]) result[id] = urlByPath[path]; });
+  return result;
+}
 
 // 一覧は無限スクロールで少しずつ取得する（一度に全件は読まない）。
 const RECORDS_PAGE_SIZE = 20;
@@ -1690,23 +1755,6 @@ function InfiniteScrollSentinel({ onLoadMore, hasMore, loadingMore }) {
       {loadingMore ? "読み込み中…" : ""}
     </div>
   );
-}
-
-// thumbnail列が無かった時期に作られた記録（image はあるがthumbnailが無い）を、
-// ログイン時に裏で1件ずつ補完する。本人のRLS（records_update_own）でしか
-// 更新できないため、対象ユーザー本人が開いた時にしか埋まらない
-// （フレンドの記録は読み取り専用のため、フレンド本人が開くまで補完されない）。
-async function backfillThumbnails(uid, onThumb) {
-  try {
-    const { data: rows } = await supabase.from("records").select("id, image").eq("user_id", uid).is("thumbnail", null).not("image", "is", null);
-    for (const r of rows || []) {
-      try {
-        const thumbnail = await dataUrlToThumbnail(r.image);
-        const { error } = await supabase.from("records").update({ thumbnail }).eq("id", r.id);
-        if (!error) onThumb?.(r.id, thumbnail);
-      } catch { /* 1件失敗しても他の記録の補完は続ける */ }
-    }
-  } catch { /* バックフィルはベストエフォート。失敗しても一覧表示自体には影響しない */ }
 }
 
 function Gate({ children }) {
@@ -2292,13 +2340,7 @@ function CloudApp() {
       setLoading(true);
       const { data: prof } = await supabase.from("profiles").select("*").eq("id", session.user.id).maybeSingle();
       setProfile(prof || null);
-      if (prof) {
-        // recordsの取得自体はuseRecordsPagination（一覧の無限スクロール用）が
-        // 別途行う。ここではthumbnail補完だけ（一覧のページングとは独立した処理）。
-        backfillThumbnails(session.user.id, (id, thumbnail) => {
-          setMovies(prev => prev.map(x => x.id === id ? { ...x, thumbnail } : x));
-        });
-      }
+      // recordsの取得自体はuseRecordsPagination（一覧の無限スクロール用）が別途行う。
       setLoading(false);
     })();
   }, [sessionUserKey]);
@@ -2314,22 +2356,60 @@ function CloudApp() {
     setProfile(data);
   };
   const addMovie = async (m) => {
-    const { data, error } = await supabase.from("records").insert(toRow(m, session.user.id)).select().single();
-    if (error) { alert("保存に失敗しました：" + error.message); return; }
-    setMovies(prev => [toApp(data), ...prev]);
+    // 写真は必須（AddSheet側でチェック済み）。先にStorageへアップロードし、
+    // 発行されたパスをrecords.imageに保存する（実体はDBに置かない）。
+    let imagePath;
+    try { imagePath = await uploadRecordPhoto(session.user.id, m.image); }
+    catch (err) { alert("写真のアップロードに失敗しました：" + (err?.message || err)); return; }
+    const { data, error } = await supabase.from("records").insert(toRow({ ...m, image: imagePath }, session.user.id)).select().single();
+    if (error) {
+      alert("保存に失敗しました：" + error.message);
+      await supabase.storage.from(RECORD_PHOTOS_BUCKET).remove([imagePath]).catch(() => {}); // 孤立ファイルを残さない
+      return;
+    }
+    // 表示にはアップロード前の元のdataURLをそのまま使う（署名付きURLの発行を待たず即表示できる）。
+    setMovies(prev => [{ ...toApp(data), image: m.image }, ...prev]);
     setYearCount(c => c == null ? c : c + (new Date(data.watched_at).getFullYear() === new Date().getFullYear() ? 1 : 0));
   };
   const deleteMovie = async (id) => {
     const target = movies.find(x => x.id === id);
-    const { error } = await supabase.from("records").delete().eq("id", id);
+    const { data, error } = await supabase.from("records").delete().eq("id", id).select("image").maybeSingle();
     if (error) { alert("削除に失敗しました：" + error.message); return; }
     setMovies(prev => prev.filter(x => x.id !== id));
     if (target) setYearCount(c => c == null ? c : c - (new Date(target.watchedAt).getFullYear() === new Date().getFullYear() ? 1 : 0));
+    if (data?.image) await supabase.storage.from(RECORD_PHOTOS_BUCKET).remove([data.image]).catch(() => {});
   };
   const updateMovie = async (m) => {
-    const { error } = await supabase.from("records").update({ note:m.note, image:m.image, thumbnail:m.thumbnail, watched_at:m.watchedAt }).eq("id", m.id);
-    if (error) { alert("保存に失敗しました：" + error.message); return; }
-    setMovies(prev => prev.map(x => x.id === m.id ? { ...x, note:m.note, image:m.image, thumbnail:m.thumbnail, watchedAt:m.watchedAt } : x));
+    const photo = m.photo || { changed: false };
+    const patch = { note: m.note, watched_at: m.watchedAt };
+    let oldPath = null;
+    if (photo.changed) {
+      // クライアント側はDBの実パスを持っていない（movie.imageは署名付きURLのみ）ため、
+      // 差し替え前に現在のパスを取得しておく（削除はDB更新が成功してから行う）。
+      const { data: cur } = await supabase.from("records").select("image").eq("id", m.id).maybeSingle();
+      oldPath = cur?.image || null;
+      if (photo.dataUrl) {
+        let newPath;
+        try { newPath = await uploadRecordPhoto(session.user.id, photo.dataUrl); }
+        catch (err) { alert("写真のアップロードに失敗しました：" + (err?.message || err)); return; }
+        patch.image = newPath;
+        patch.thumbnail = await dataUrlToThumbnail(photo.dataUrl).catch(() => null);
+      } else {
+        patch.image = null;
+        patch.thumbnail = null;
+      }
+    }
+    const { error } = await supabase.from("records").update(patch).eq("id", m.id);
+    if (error) {
+      // DB更新が失敗した場合、records.imageは古いパスを指したままなので、
+      // アップロードした新しいファイルがあればそちらを孤立させて古い方は残す（データを消さない）。
+      if (photo.changed && patch.image) await supabase.storage.from(RECORD_PHOTOS_BUCKET).remove([patch.image]).catch(() => {});
+      alert("保存に失敗しました：" + error.message);
+      return;
+    }
+    // DB更新が確定してから、古いファイルを削除する（先に消すと更新失敗時に写真が失われるため）。
+    if (photo.changed && oldPath) await supabase.storage.from(RECORD_PHOTOS_BUCKET).remove([oldPath]).catch(() => {});
+    setMovies(prev => prev.map(x => x.id === m.id ? { ...x, note:m.note, watchedAt:m.watchedAt, ...(photo.changed ? { thumbnail: patch.thumbnail, image: photo.dataUrl || null } : {}) } : x));
   };
   const finishOnboarding = async (records) => {
     if (records.length) {

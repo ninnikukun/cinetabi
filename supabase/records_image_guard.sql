@@ -4,6 +4,13 @@
 --
 -- ✅ 適用済み（2026-08-10、本番Supabaseプロジェクトに適用・Success確認済み）
 --
+-- ⚠️ 超過済み（2026-08-13〜）：records.imageをbase64直置きからSupabase
+--    Storageのパス参照に移行したため（docs/SECURITY_AUDIT.md項目7）、
+--    ここで定義しているbase64形式チェックは実態と合わなくなった。
+--    record_photos_storage.sql → records_image_path_guard.sql の順で
+--    適用し、このファイルの制約は records_image_path_guard.sql 側で
+--    drop constraint されて置き換わる。このファイル自体は経緯の記録として残す。
+--
 -- Supabase ダッシュボード → SQL Editor に全文貼り付けて実行してください。
 -- 何度実行しても安全なように if not exists / 冪等な書き方にしています。
 --
