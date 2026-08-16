@@ -26,15 +26,17 @@ function adminClient() {
 // ponytail: 403の原因切り分け用の一時ログ。原因判明後は削除すること。
 async function requireAdmin(sb, req) {
   const authHeader = req.headers?.authorization || "";
-  console.log("[admin-reports] authHeader present:", !!authHeader, "startsWithBearer:", authHeader.startsWith("Bearer "));
+  // user.id・token本体はログに残さない（機密情報）。判定結果のbooleanだけ出す。
+  console.log("[admin-reports]", JSON.stringify({ authHeaderPresent: !!authHeader, startsWithBearer: authHeader.startsWith("Bearer ") }));
   const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
   if (!token) { console.log("[admin-reports] no token -> reject"); return null; }
   const { data, error } = await sb.auth.getUser(token);
-  console.log("[admin-reports] getUser error:", error?.message || null, "userId:", data?.user?.id || null);
+  console.log("[admin-reports]", JSON.stringify({ getUserError: error?.message || null, hasUser: !!data?.user }));
   if (error || !data?.user) { console.log("[admin-reports] getUser failed -> reject"); return null; }
   const adminIds = (process.env.ADMIN_USER_IDS || "").split(",").map(s => s.trim()).filter(Boolean);
-  console.log("[admin-reports] adminIds count:", adminIds.length, "userId in list:", adminIds.includes(data.user.id));
-  if (adminIds.length === 0 || !adminIds.includes(data.user.id)) { console.log("[admin-reports] not in admin list -> reject"); return null; }
+  const isAdmin = adminIds.includes(data.user.id);
+  console.log("[admin-reports]", JSON.stringify({ adminIdsCount: adminIds.length, userIsInList: isAdmin }));
+  if (adminIds.length === 0 || !isAdmin) { console.log("[admin-reports] not in admin list -> reject"); return null; }
   return data.user;
 }
 
@@ -92,7 +94,8 @@ async function listReports(sb) {
 
 export default async function handler(req, res) {
   // ponytail: 403の原因切り分け用の一時ログ。原因判明後は削除すること。
-  console.log("[admin-reports] method:", req.method, "origin:", req.headers?.origin, "host:", req.headers?.host);
+  // JSON.stringifyでヘッダー値を包み、改行等によるログ偽装（log injection）を防ぐ。
+  console.log("[admin-reports]", JSON.stringify({ method: req.method, origin: req.headers?.origin || null, host: req.headers?.host || null }));
   if (!isAllowedOrigin(req)) { console.log("[admin-reports] rejected by isAllowedOrigin"); return res.status(403).json({ error: "forbidden_origin" }); }
   if (!rateLimit(req, { max: 30, windowMs: 60_000, key: "admin-reports" })) return res.status(429).json({ error: "rate_limited" });
 
