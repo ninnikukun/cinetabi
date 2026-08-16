@@ -498,6 +498,61 @@ function Onboarding({ onDone }) {
 }
 
 /* ─────────── 共有 ─────────── */
+// 他人の投稿を通報する（reporter_idはDB側でauth.uid()に固定されるため、
+// クライアントはrecord_idとreason（任意）だけを送る）。
+// record_reportsはRLSでSELECTを一切許可していないため、「既に通報済みか」
+// をクライアント側で事前確認する手段が無い。unique制約違反（23505）を
+// 送信時に検知して「既に報告済みです」と表示するのが唯一の手段になる。
+function ReportSheet({ movie, onClose }) {
+  const [reason, setReason] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [phase, setPhase] = useState("form"); // form | done | already | error
+
+  const send = async () => {
+    if (busy) return;
+    setBusy(true);
+    const { error } = await supabase.from("record_reports").insert({ record_id: movie.id, reason: reason.trim() || null });
+    setBusy(false);
+    if (!error) { setPhase("done"); return; }
+    setPhase(error.code === "23505" ? "already" : "error");
+  };
+
+  return (
+    <div style={{ position:"fixed", inset:0, zIndex:75, display:"flex", flexDirection:"column", justifyContent:"flex-end", alignItems:"center", background:"rgba(4,5,10,.66)" }} onClick={onClose}>
+      <div className="fade-up reel-sheet" onClick={e=>e.stopPropagation()}
+        onTouchStart={e=>e.stopPropagation()} onTouchMove={e=>e.stopPropagation()} onTouchEnd={e=>e.stopPropagation()}
+        style={{ background:"var(--bg2)", borderTop:"1px solid var(--line)", borderRadius:"22px 22px 0 0", maxHeight:"92vh", overflowY:"auto", touchAction:"pan-y", overscrollBehaviorX:"none", padding:"8px 20px 28px" }}>
+        <div style={{ width:42, height:4, borderRadius:4, background:"var(--line)", margin:"10px auto 18px" }} />
+        <div className="reel-mark" style={{ letterSpacing:".18em", fontSize:12, color:"var(--amber)", marginBottom:14 }}>REPORT ／ この記録を報告</div>
+
+        {phase === "done" ? (
+          <>
+            <p style={{ margin:"0 0 20px", fontSize:14.5, lineHeight:1.8 }}>報告を受け付けました。ご協力ありがとうございます。</p>
+            <button className="reel-btn" onClick={onClose} style={{ width:"100%", padding:"13px", borderRadius:10, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:14, cursor:"pointer" }}>閉じる</button>
+          </>
+        ) : phase === "already" ? (
+          <>
+            <p style={{ margin:"0 0 20px", fontSize:14.5, lineHeight:1.8 }}>この記録はすでに報告済みです。</p>
+            <button className="reel-tap" onClick={onClose} style={{ width:"100%", padding:"13px", borderRadius:10, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:14, cursor:"pointer" }}>閉じる</button>
+          </>
+        ) : (
+          <>
+            <p style={{ margin:"0 0 16px", color:"var(--ink-dim)", fontSize:13, lineHeight:1.8 }}>不適切な内容（スパム・著作権侵害・迷惑行為など）があれば教えてください。運営が内容を確認します。</p>
+            <label style={lbl}>理由（任意）</label>
+            <textarea value={reason} onChange={e=>setReason(e.target.value)} rows={3} maxLength={500} placeholder="具体的な内容があれば書いてください"
+              style={{ ...inp, resize:"vertical", lineHeight:1.7 }} />
+            {phase === "error" && <p style={{ margin:"-8px 0 14px", color:"var(--rose)", fontSize:13 }}>送信に失敗しました。時間をおいてお試しください。</p>}
+            <button className="reel-btn" disabled={busy} onClick={send}
+              style={{ width:"100%", padding:"14px", borderRadius:12, border:"none", cursor:"pointer", fontSize:15, fontWeight:700, background: busy?"var(--surface2)":"var(--amber)", color: busy?"var(--ink-dim)":"#1a1305" }}>
+              {busy ? "送信中…" : "報告する"}
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function ShareSheet({ movie, user, ownerId, onClose }) {
   const film = { title:movie.title, posterPath:movie.posterPath || null, year:movie.year };
   const [copied, setCopied] = useState(false);
@@ -1038,6 +1093,7 @@ function searchLinks(title) {
 function PostCard({ m, onShare, onDelete, onEdit, readOnly }) {
   const [swapped, setSwapped] = useState(false); // true: ポスターをメインに入れ替え
   const [sheet, setSheet] = useState(false);
+  const [reporting, setReporting] = useState(false);
   const sheetRef = useRef(null);
   const handleRef = useRef(null);
   const dragStartRef = useRef(null); // { startClientY, baseY, closedY }
@@ -1174,15 +1230,20 @@ function PostCard({ m, onShare, onDelete, onEdit, readOnly }) {
             ))}
           </div>
 
-          {!readOnly && (
+          {!readOnly ? (
             <div style={{ display:"flex", gap:10, marginTop:14 }}>
               <button className="reel-btn" onClick={(e)=>{ stop(e); onShare(m); }} style={{ flex:1, padding:"13px", borderRadius:11, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:14, cursor:"pointer" }}>共有する</button>
               <button className="reel-tap" onClick={(e)=>{ stop(e); onEdit(); }} style={{ padding:"13px 18px", borderRadius:11, border:"1px solid var(--line)", background:"transparent", color:"var(--ink)", fontSize:14, fontWeight:700, cursor:"pointer" }}>編集</button>
               <button className="reel-tap" onClick={(e)=>{ stop(e); del(); }} style={{ padding:"13px 18px", borderRadius:11, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:14, cursor:"pointer" }}>削除</button>
             </div>
+          ) : (
+            <div style={{ marginTop:14 }}>
+              <button className="reel-tap" onClick={(e)=>{ stop(e); setReporting(true); }} style={{ padding:"9px 14px", borderRadius:10, border:"1px solid var(--line)", background:"transparent", color:"var(--ink-dim)", fontSize:12.5, cursor:"pointer" }}>報告する</button>
+            </div>
           )}
         </div>
       </div>
+      {reporting && <ReportSheet movie={m} onClose={()=>setReporting(false)} />}
     </section>
   );
 }
@@ -2340,6 +2401,95 @@ function NameSetup({ onDone }) {
   );
 }
 
+/* ─────────── 通報管理画面（隠しルート ?admin=reports、ナビには出さない） ───────────
+   管理者かどうかはクライアントでは判定しない（ADMIN_USER_IDSはサーバー側の
+   環境変数のみ）。ログイン中セッションのaccess_tokenを付けて/api/admin-reports
+   を呼び、403ならその場で「権限がありません」を表示するだけにする。 */
+function AdminReportsPage({ accessToken }) {
+  const [phase, setPhase] = useState("loading"); // loading | forbidden | ready | error
+  const [reports, setReports] = useState([]);
+
+  const load = async () => {
+    try {
+      const r = await fetch("/api/admin-reports", { headers: { Authorization: `Bearer ${accessToken}` } });
+      if (r.status === 403) { setPhase("forbidden"); return; }
+      const d = await r.json();
+      if (d.error) { setPhase("error"); return; }
+      setReports(d.reports || []);
+      setPhase("ready");
+    } catch {
+      setPhase("error");
+    }
+  };
+  useEffect(() => { load(); }, []);
+
+  const resolve = async (reportId) => {
+    setReports(prev => prev.map(r => r.id === reportId ? { ...r, resolved: true } : r));
+    try {
+      const r = await fetch("/api/admin-reports", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ reportId }),
+      });
+      if (!r.ok) throw new Error("failed");
+    } catch {
+      // 失敗時は楽観的更新を巻き戻す（UI上だけ対応済みに見えてDBは未対応、という食い違いを防ぐ）
+      setReports(prev => prev.map(r => r.id === reportId ? { ...r, resolved: false } : r));
+      alert("対応済みへの更新に失敗しました。時間をおいてお試しください。");
+    }
+  };
+
+  return (
+    <div className="reel-root">
+      <style>{STYLES}</style>
+      <div style={{ maxWidth:640, margin:"0 auto", padding:"calc(env(safe-area-inset-top, 0px) + 20px) 16px 60px" }}>
+        <div className="reel-mark" style={{ letterSpacing:".18em", fontSize:12, color:"var(--amber)", marginBottom:16 }}>ADMIN ／ 通報一覧</div>
+
+        {phase === "loading" && <p style={{ textAlign:"center", color:"var(--ink-dim)", padding:"40px 0" }}>読み込み中…</p>}
+        {phase === "forbidden" && <p style={{ textAlign:"center", color:"var(--ink-dim)", padding:"40px 0" }}>権限がありません。</p>}
+        {phase === "error" && <p style={{ textAlign:"center", color:"var(--ink-dim)", padding:"40px 0" }}>読み込みに失敗しました。</p>}
+
+        {phase === "ready" && (reports.length === 0 ? (
+          <p style={{ textAlign:"center", color:"var(--ink-dim)", padding:"40px 0" }}>通報はありません。</p>
+        ) : (
+          <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+            {reports.map(r => (
+              <div key={r.id} style={{ background:"var(--surface)", border:"1px solid var(--line)", borderRadius:14, padding:16, opacity: r.resolved ? 0.5 : 1 }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
+                  <span className="mono" style={{ fontSize:11, color:"var(--ink-dim)" }}>{new Date(r.createdAt).toLocaleString("ja-JP")}</span>
+                  {r.resolved ? (
+                    <span style={{ fontSize:11.5, fontWeight:700, color:"var(--ink-dim)" }}>対応済み</span>
+                  ) : (
+                    <button className="reel-tap" onClick={()=>resolve(r.id)} style={{ padding:"6px 12px", borderRadius:9, border:"1px solid var(--line)", background:"var(--surface2)", color:"var(--ink)", fontSize:12, fontWeight:700, cursor:"pointer" }}>対応済みにする</button>
+                  )}
+                </div>
+
+                {r.record ? (
+                  <div style={{ display:"flex", gap:12, marginBottom:10 }}>
+                    {r.record.image && <img src={r.record.image} alt="" style={{ width:64, height:64, borderRadius:8, objectFit:"cover", flexShrink:0 }} />}
+                    <div style={{ minWidth:0 }}>
+                      <div style={{ fontWeight:700, fontSize:15 }}>{r.record.title}</div>
+                      {r.record.note && <div style={{ fontSize:13, color:"var(--ink-dim)", marginTop:4, whiteSpace:"pre-wrap" }}>{r.record.note}</div>}
+                      <div style={{ fontSize:12, color:"var(--ink-dim)", marginTop:4 }}>投稿者：{r.record.owner?.name || "不明"}（{r.record.owner?.publicId || "-"}）</div>
+                    </div>
+                  </div>
+                ) : (
+                  <p style={{ margin:"0 0 10px", fontSize:13, color:"var(--ink-dim)" }}>対象の記録はすでに削除されています。</p>
+                )}
+
+                <div style={{ fontSize:12.5, color:"var(--ink-dim)", borderTop:"1px solid var(--line)", paddingTop:10 }}>
+                  通報者：{r.reporter?.name || "不明"}（{r.reporter?.publicId || "-"}）
+                  {r.reason && <div style={{ marginTop:4, color:"var(--ink)" }}>理由：{r.reason}</div>}
+                </div>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function CloudApp() {
   const [session, setSession] = useState(undefined); // undefined=確認中, null=未ログイン
   const [profile, setProfile] = useState(undefined); // undefined=確認中, null=未作成
@@ -2497,6 +2647,8 @@ function CloudApp() {
   if (!combinedLoading && !profile.onboarded && movies.length === 0) return <Gate><Onboarding onDone={finishOnboarding} /></Gate>;
 
   const isAnonymous = !!session.user?.is_anonymous;
+  const isAdminRoute = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("admin") === "reports";
+  if (isAdminRoute) return <AdminReportsPage accessToken={session.access_token} />;
   return <Shell user={{ name: profile.display_name, avatarUrl: profile.avatar_url || null }} movies={movies} loading={combinedLoading}
     hasMoreMovies={hasMoreMovies} loadingMoreMovies={loadingMoreMovies} onLoadMoreMovies={loadMoreMovies} yearCount={yearCount}
     onAddMovie={addMovie} onDeleteMovie={deleteMovie} onUpdateMovie={updateMovie} onLogout={isAnonymous ? undefined : logout} isAnonymous={isAnonymous}

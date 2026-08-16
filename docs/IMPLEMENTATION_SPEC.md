@@ -209,3 +209,26 @@
 - `supabase/record_share.sql`の本番適用。
 - Vercelダッシュボードでの環境変数`SUPABASE_SERVICE_ROLE_KEY`追加（`VITE_SUPABASE_URL`は既存の値を流用）。
 - 実機での確認：公開（誰でも/パスワード）・共有ページでの閲覧・パスワード間違い時の表示・フォロー申請導線・非公開記録のtokenが第三者に漏れていないこと。
+
+## 10. 不適切な投稿の通報・管理機能（`feature/record-reports`）
+
+### 要件
+
+- 他人の投稿を「報告する」ボタンで通報できる（自分の投稿には出さない）。同じ人が同じ記録を複数回通報できない。
+- 隠しルート（`?admin=reports`、ナビには出さない）の管理画面で、`ADMIN_USER_IDS`環境変数に含まれるユーザーだけが通報一覧を見て「対応済み」にできる。
+
+### 設計
+
+- `record_reports`（`supabase/record_reports.sql`）：`record_id`・`reporter_id`（`default auth.uid()`固定、クライアントに値を渡させずなりすましを防ぐ）・`reason`（任意）・`resolved`・`(record_id, reporter_id)` unique。RLSは本人のみINSERT可、SELECT/UPDATEポリシーは一切作らない（管理画面はservice_role経由でRLSごとバイパスするため、テーブル自体をクライアントに公開する必要が無い＝通報された側は自分が通報されたか知りようがない）。
+  - SELECTポリシーが無いため、クライアント側は`.insert(...).select()`のようにRETURNINGを求めるとRLSに阻まれて失敗する。素の`.insert()`でerrorだけ見る実装にしている。
+  - 「既に通報済みか」を事前にクライアントから確認する手段が無いため、送信時のunique制約違反（`error.code === "23505"`）を検知して「既に報告済みです」と表示するのが唯一のハンドリング手段。
+- `ReportSheet`（`src/App.jsx`）は`PostCard`の`<section>`内（DetailViewの子孫）でレンダリングされるため、`bereal-sheet`と同じ理由でタッチイベントに`stopPropagation`が必要（f955970で踏んだのと同じ穴。ShareSheetはDetailViewと兄弟関係なので当時は不要だった）。
+- `/api/admin-reports.js`：`Authorization: Bearer <access_token>`を`supabase.auth.getUser(token)`で検証し、`ADMIN_USER_IDS`（カンマ区切り）に含まれるかチェック。トークン不正・未設定・不一致はすべて同じ403（fail-closed）。GETは通報一覧＋対象記録＋投稿者・通報者のプロフィールをバッチ取得してJS側で結合し、写真はservice_role鍵で署名付きURLを発行して返す。POST`{reportId}`で`resolved=true`に更新。
+- `AdminReportsPage`は`CloudApp`内、セッション確定後に`?admin=reports`を検出して表示する（管理者かどうかはクライアントで判定できないため、常に叩いてみて403なら「権限がありません」と表示するだけ）。`SharePage`と同様、`.reel-root`＋`<style>{STYLES}</style>`で明示的にラップしないとCSS変数が効かず無スタイルになる（Storage移行時に踏んだのと同じ穴）。対応済み操作は楽観的更新後、失敗したら表示を巻き戻す（サイレントな食い違いを防ぐ）。
+
+### 未実施（本番反映前に必ず行うこと）
+
+- `supabase/record_reports.sql`の本番適用。
+- Vercel環境変数`ADMIN_USER_IDS`の追加（今回の新規環境変数はこれのみ。`SUPABASE_SERVICE_ROLE_KEY`は共有リンク機能で設定済み）。
+- 実機での確認：他人の記録にのみ「報告する」が出る・自分の記録には出ない・二重通報時に「報告済み」表示・シート内スワイプでDetailViewが閉じないこと・管理画面での一覧表示と対応済み操作・非adminアカウントで`?admin=reports`が「権限がありません」になること。
+- 通報された記録が投稿者自身に削除された場合、`record_reports`もcascade削除される（＝「消えた」ことをもって解決済みとする仕様として受容）。
