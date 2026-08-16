@@ -23,20 +23,14 @@ function adminClient() {
 
 // ADMIN_USER_IDS未設定・トークン不正・リスト不一致はすべて同じ403
 // （fail-closed。「鍵が無いから素通し」を絶対にしない）。
-// ponytail: 403の原因切り分け用の一時ログ。原因判明後は削除すること。
 async function requireAdmin(sb, req) {
   const authHeader = req.headers?.authorization || "";
-  // user.id・token本体はログに残さない（機密情報）。判定結果のbooleanだけ出す。
-  console.log("[admin-reports]", JSON.stringify({ authHeaderPresent: !!authHeader, startsWithBearer: authHeader.startsWith("Bearer ") }));
   const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
-  if (!token) { console.log("[admin-reports] no token -> reject"); return null; }
+  if (!token) return null;
   const { data, error } = await sb.auth.getUser(token);
-  console.log("[admin-reports]", JSON.stringify({ getUserError: error?.message || null, hasUser: !!data?.user }));
-  if (error || !data?.user) { console.log("[admin-reports] getUser failed -> reject"); return null; }
+  if (error || !data?.user) return null;
   const adminIds = (process.env.ADMIN_USER_IDS || "").split(",").map(s => s.trim()).filter(Boolean);
-  const isAdmin = adminIds.includes(data.user.id);
-  console.log("[admin-reports]", JSON.stringify({ adminIdsCount: adminIds.length, userIsInList: isAdmin }));
-  if (adminIds.length === 0 || !isAdmin) { console.log("[admin-reports] not in admin list -> reject"); return null; }
+  if (adminIds.length === 0 || !adminIds.includes(data.user.id)) return null;
   return data.user;
 }
 
@@ -93,10 +87,7 @@ async function listReports(sb) {
 }
 
 export default async function handler(req, res) {
-  // ponytail: 403の原因切り分け用の一時ログ。原因判明後は削除すること。
-  // JSON.stringifyでヘッダー値を包み、改行等によるログ偽装（log injection）を防ぐ。
-  console.log("[admin-reports]", JSON.stringify({ method: req.method, origin: req.headers?.origin || null, host: req.headers?.host || null }));
-  if (!isAllowedOrigin(req)) { console.log("[admin-reports] rejected by isAllowedOrigin"); return res.status(403).json({ error: "forbidden_origin" }); }
+  if (!isAllowedOrigin(req)) return res.status(403).json({ error: "forbidden_origin" });
   if (!rateLimit(req, { max: 30, windowMs: 60_000, key: "admin-reports" })) return res.status(429).json({ error: "rate_limited" });
 
   const sb = adminClient();
