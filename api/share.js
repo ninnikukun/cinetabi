@@ -14,8 +14,12 @@ import { isAllowedOrigin, rateLimit } from "./lib/guard.js";
 
 const BUCKET = "record-photos";
 const SIGNED_URL_TTL = 3600;
-const PASSWORD_RATE_LIMIT_MAX = 5;
-const PASSWORD_RATE_LIMIT_WINDOW_MS = 60_000;
+// 1分5回のスライディングウィンドウは、試行間隔を10〜20秒空けるだけで
+// 実質無制限に試行を続けられてしまう（古い記録がウィンドウから抜けて
+// 枠が回復するため）ことが実機検証で判明したため、1時間10回に強化した
+// （数字4桁なら約42日、英数字4桁ならほぼ非現実的な時間が必要になる）。
+const PASSWORD_RATE_LIMIT_MAX = 10;
+const PASSWORD_RATE_LIMIT_WINDOW_MS = 60 * 60_000;
 
 function adminClient() {
   const url = process.env.VITE_SUPABASE_URL;
@@ -27,15 +31,28 @@ function adminClient() {
 // パスワード照合の試行回数をDBで管理する（サーバーレス関数はインスタンスが
 // 複数に分かれうるため、guard.jsのin-memory rateLimitだけでは4桁パスワードの
 // 総当たりを防ぎきれない。record_share_attemptsテーブルにtoken単位で記録する）。
+// ponytail: 並行実行されたリクエスト同士でcount確認とinsertの間にraceがあり、
+// 一時的に上限を超えて通る可能性がある。厳密に防ぐならrequest_follow同様の
+// atomicなSQL関数（security definer）に置き換える必要があるが、この規模の
+// アプリでは許容範囲と判断し見送る。
 async function checkPasswordRateLimit(sb, token) {
   const cutoff = new Date(Date.now() - PASSWORD_RATE_LIMIT_WINDOW_MS).toISOString();
   await sb.from("record_share_attempts").delete().lt("attempted_at", cutoff);
-  const { count } = await sb.from("record_share_attempts")
+  const { count, error } = await sb.from("record_share_attempts")
     .select("id", { count: "exact", head: true })
     .eq("share_token", token).gte("attempted_at", cutoff);
-  if ((count ?? 0) >= PASSWORD_RATE_LIMIT_MAX) return false;
+  // countが取れなかった場合にfail-open（許可）してしまうと、レート制限が
+  // まるごと無効化されるのと同じになる。取得失敗時はfail-closed（拒否）する。
+  if (error || count == null) return false;
+  if (count >= PASSWORD_RATE_LIMIT_MAX) return false;
   await sb.from("record_share_attempts").insert({ share_token: token });
   return true;
+}
+
+// 正しいパスワードが送られたら、そのtokenの試行記録を消す。正規の閲覧者が
+// 何度かタイプミスしても、それが累積してロックアウトに繋がらないようにする。
+async function resetPasswordRateLimit(sb, token) {
+  await sb.from("record_share_attempts").delete().eq("share_token", token);
 }
 
 async function buildRecordPayload(sb, share) {
@@ -93,6 +110,7 @@ export default async function handler(req, res) {
 
   const match = password && (await bcrypt.compare(password, share.password_hash));
   if (!match) return res.status(403).json({ error: "invalid" });
+  await resetPasswordRateLimit(sb, token);
 
   const payload = await buildRecordPayload(sb, share);
   if (!payload) return res.status(404).json({ error: "invalid" });

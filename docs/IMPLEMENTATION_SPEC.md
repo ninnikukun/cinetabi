@@ -197,7 +197,8 @@
   - `GET /api/share?token=`：パスワード不要モードなら記録を即返す。パスワードモードなら`{needsPassword:true}`のみ返す。
   - `POST /api/share {token, password}`：`bcryptjs`でハッシュ照合。
   - 「リンクが無効」と「パスワードが違う」は区別せず、常に`{error:"invalid"}`を返す。
-  - パスワード照合の試行はDBテーブル`record_share_attempts`でtoken単位に記録し、1分5回を超えたらブロックする（サーバーレス関数はインスタンスが複数に分かれうるため、既存の`api/lib/guard.js`のin-memoryレート制限だけでは4桁パスワードの総当たりを防ぎきれないと判断した）。
+  - パスワード照合の試行はDBテーブル`record_share_attempts`でtoken単位に記録し、1時間10回を超えたらブロックする（サーバーレス関数はインスタンスが複数に分かれうるため、既存の`api/lib/guard.js`のin-memoryレート制限だけでは4桁パスワードの総当たりを防ぎきれないと判断した）。正しいパスワードが送られたら該当tokenの試行記録をリセットし、正規閲覧者のタイプミスがロックアウトに累積しないようにしている。
+    - 実機検証で「1分5回」だと試行間隔を10〜20秒空けるだけで実質無制限に試行できる不備が見つかり、1時間10回・fail-closed（カウント取得失敗時は許可ではなく拒否）に修正した（2026-08-16）。
   - 写真（`records.image`）はStorageのパスなので、`/api/share.js`側でservice_role鍵により`createSignedUrl`を発行して返す。
 - パスワードのハッシュ化はクライアント側（`bcryptjs`、ブラウザでも動作する純JS実装）で行い、`record_shares`へのINSERTは本人のみ許可のRLSに任せる（新規サーバーコード不要。ハッシュを弱くできるのは記録の所有者本人だけであり、脅威にならない）。
 - 共有ページのURLは`https://cinetabi.vercel.app/?s={share_token}`（React Router未導入のためクエリパラメータ形式）。`App()`のトップレベルで`?s=`を検出し、ログイン状態やCloudApp/LocalAppの別を問わず`SharePage`を表示する。

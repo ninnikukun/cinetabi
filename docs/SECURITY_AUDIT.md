@@ -68,7 +68,8 @@ Content-Security-Policy、X-Frame-Options（またはCSPの`frame-ancestors`）�
 
 - 本文・写真は `/api/share.js`（Vercelサーバーレス関数、service_role鍵）経由でのみ配信し、URLやクライアントに直接埋め込まない。
 - `record_shares` は本人のみ閲覧・作成可のRLS（`records`に直置きしなかった理由は`supabase/record_share.sql`のコメント参照）。パスワードはbcryptjs（クライアント側でハッシュ化してから送信、平文パスワードはDBに一切保存しない）。
-- パスワード照合はDBベースのレート制限（`record_share_attempts`、token単位1分5回）で総当たりを抑止。「リンクが無効」と「パスワードが違う」は同じ`invalid`エラーで統一し、有効なトークンの存在を推測させない。
+- パスワード照合はDBベースのレート制限（`record_share_attempts`、token単位1時間10回）で総当たりを抑止。「リンクが無効」と「パスワードが違う」は同じ`invalid`エラーで統一し、有効なトークンの存在を推測させない。
+  - ⚠️ 実機検証で「1分5回」のスライディングウィンドウでは、試行間隔を10〜20秒空けるだけで古い記録がウィンドウから抜けて枠が回復し、実質無制限に試行できてしまう不備が見つかり、1時間10回に強化した（2026-08-16）。あわせて、レート制限カウント取得に失敗した場合に誤って許可してしまうfail-openのバグも修正（fail-closedに変更）。
 - ⚠️ 本番Supabaseプロジェクトへの `record_share.sql` の適用、Vercel環境変数への `SUPABASE_SERVICE_ROLE_KEY` 追加、実機での公開・閲覧・パスワード保護・フォロー導線の確認は未実施。これが完了するまで、この項目は完了とみなさないこと。
 
 ### 4. `records.image`（写真データ）にサーバー側のサイズ・形式チェックが無い
