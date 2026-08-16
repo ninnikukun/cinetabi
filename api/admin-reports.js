@@ -23,14 +23,18 @@ function adminClient() {
 
 // ADMIN_USER_IDS未設定・トークン不正・リスト不一致はすべて同じ403
 // （fail-closed。「鍵が無いから素通し」を絶対にしない）。
+// ponytail: 403の原因切り分け用の一時ログ。原因判明後は削除すること。
 async function requireAdmin(sb, req) {
   const authHeader = req.headers?.authorization || "";
+  console.log("[admin-reports] authHeader present:", !!authHeader, "startsWithBearer:", authHeader.startsWith("Bearer "));
   const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
-  if (!token) return null;
+  if (!token) { console.log("[admin-reports] no token -> reject"); return null; }
   const { data, error } = await sb.auth.getUser(token);
-  if (error || !data?.user) return null;
+  console.log("[admin-reports] getUser error:", error?.message || null, "userId:", data?.user?.id || null);
+  if (error || !data?.user) { console.log("[admin-reports] getUser failed -> reject"); return null; }
   const adminIds = (process.env.ADMIN_USER_IDS || "").split(",").map(s => s.trim()).filter(Boolean);
-  if (adminIds.length === 0 || !adminIds.includes(data.user.id)) return null;
+  console.log("[admin-reports] adminIds count:", adminIds.length, "userId in list:", adminIds.includes(data.user.id));
+  if (adminIds.length === 0 || !adminIds.includes(data.user.id)) { console.log("[admin-reports] not in admin list -> reject"); return null; }
   return data.user;
 }
 
@@ -87,7 +91,9 @@ async function listReports(sb) {
 }
 
 export default async function handler(req, res) {
-  if (!isAllowedOrigin(req)) return res.status(403).json({ error: "forbidden_origin" });
+  // ponytail: 403の原因切り分け用の一時ログ。原因判明後は削除すること。
+  console.log("[admin-reports] method:", req.method, "origin:", req.headers?.origin, "host:", req.headers?.host);
+  if (!isAllowedOrigin(req)) { console.log("[admin-reports] rejected by isAllowedOrigin"); return res.status(403).json({ error: "forbidden_origin" }); }
   if (!rateLimit(req, { max: 30, windowMs: 60_000, key: "admin-reports" })) return res.status(429).json({ error: "rate_limited" });
 
   const sb = adminClient();
