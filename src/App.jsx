@@ -1862,6 +1862,73 @@ function useRecordsPagination(userId) {
   return { records, setRecords, hasMore, loadingMore, initialLoading, loadMore };
 }
 
+// フォロー中一覧（follows: follower_id=自分）の無限スクロール取得。records版と同型のパターン。
+// 「とどいた申請」はrequest_follow RPCのレート制限で件数が実質抑えられているため全件取得のまま、
+// フォロワー数・フォロー中数の集計もここでは持たず別途count専用クエリに分離する（下のuseFollowCounts）。
+const FOLLOWS_PAGE_SIZE = 20;
+async function fetchOutgoingFollowsPage(meUid, from, to) {
+  const { data, error } = await supabase.from("follows").select("*")
+    .eq("follower_id", meUid).order("created_at", { ascending: false }).range(from, to);
+  if (error) throw error;
+  return data || [];
+}
+
+// refreshKeyが変わるたびに先頭ページから読み直す（accept/reject/解除後の丸ごと再取得用）。
+function useFollowsPagination(meUid, refreshKey) {
+  const [rows, setRows] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const fetchedCountRef = useRef(0);
+
+  useEffect(() => {
+    if (!meUid) { setRows([]); setHasMore(false); setInitialLoading(false); return; }
+    let alive = true;
+    fetchedCountRef.current = 0;
+    setInitialLoading(true);
+    (async () => {
+      try {
+        const page = await fetchOutgoingFollowsPage(meUid, 0, FOLLOWS_PAGE_SIZE - 1);
+        if (!alive) return;
+        fetchedCountRef.current = page.length;
+        setRows(page);
+        setHasMore(page.length === FOLLOWS_PAGE_SIZE);
+      } finally {
+        if (alive) setInitialLoading(false);
+      }
+    })();
+    return () => { alive = false; };
+  }, [meUid, refreshKey]);
+
+  const loadMore = async () => {
+    if (loadingMore || !hasMore || !meUid) return;
+    setLoadingMore(true);
+    try {
+      const from = fetchedCountRef.current;
+      const page = await fetchOutgoingFollowsPage(meUid, from, from + FOLLOWS_PAGE_SIZE - 1);
+      fetchedCountRef.current += page.length;
+      setRows(prev => {
+        const seen = new Set(prev.map(x => x.id));
+        return [...prev, ...page.filter(x => !seen.has(x.id))];
+      });
+      setHasMore(page.length === FOLLOWS_PAGE_SIZE);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  return { rows, hasMore, loadingMore, initialLoading, loadMore };
+}
+
+// フォロー中・フォロワーの人数だけを軽量に取得する（一覧のページングとは無関係に常に正確な値を出す）。
+async function fetchFollowCounts(meUid) {
+  const [{ count: followingCount }, { count: followersCount }] = await Promise.all([
+    supabase.from("follows").select("id", { count: "exact", head: true }).eq("follower_id", meUid).eq("status", "accepted"),
+    supabase.from("follows").select("id", { count: "exact", head: true }).eq("followee_id", meUid).eq("status", "accepted"),
+  ]);
+  return { followingCount: followingCount ?? 0, followersCount: followersCount ?? 0 };
+}
+
 // スクロールでリストの下端付近まで来たらonLoadMoreを呼ぶための監視用コンポーネント。
 // 空のdivをIntersectionObserverで見張るだけ（レイアウトに影響しない高さ1px）。
 function InfiniteScrollSentinel({ onLoadMore, hasMore, loadingMore }) {
@@ -2206,7 +2273,6 @@ function FriendView({ row, profile, onClose, onRemove }) {
 
 /* ── 「フォロー」タブ本体：自分のプロフィール・申請の承認/拒否・フォロー中一覧 ── */
 function FollowView({ me, onAvatarChange }) {
-  const [rows, setRows] = useState(null);     // follows の自分が当事者の行（null=読み込み中）
   const [people, setPeople] = useState({});   // 相手のプロフィール { uid: {display_name, public_id} }
   const [requesting, setRequesting] = useState(false);
   const [viewing, setViewing] = useState(null); // フォロー中一覧でタップした follows 行
@@ -2214,6 +2280,11 @@ function FollowView({ me, onAvatarChange }) {
   const [avatarUrl, setAvatarUrl] = useState(me.avatarUrl || null);
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef(null);
+  // accept/reject/解除のたびにインクリメントし、フォロー中一覧・とどいた申請・件数を丸ごと読み直す。
+  // 5箇所から呼ばれる操作それぞれで楽観的更新を個別管理すると整合性が崩れやすいための割り切り
+  // （再取得後は一覧が先頭ページに戻るが、操作直後の挙動として許容する）。
+  const [refreshKey, setRefreshKey] = useState(0);
+  const refresh = () => setRefreshKey(k => k + 1);
 
   // アバター画像を選んでアップロード。avatars/{user_id}.jpg に上書き保存する。
   const pickAvatar = async (e) => {
@@ -2241,42 +2312,74 @@ function FollowView({ me, onAvatarChange }) {
     setUploading(false);
   };
 
-  const load = async () => {
-    const { data } = await supabase.from("follows").select("*")
-      .or(`follower_id.eq.${me.uid},followee_id.eq.${me.uid}`)
-      .order("created_at", { ascending:false });
-    const fs = data || [];
-    const ids = [...new Set(fs.map(r => r.follower_id === me.uid ? r.followee_id : r.follower_id))];
-    const map = {};
-    if (ids.length) {
-      const { data: ps } = await supabase.from("profiles").select("id, display_name, public_id, avatar_url").in("id", ids);
-      (ps || []).forEach(p => { map[p.id] = p; });
-    }
-    setPeople(map); setRows(fs);
-  };
-  useEffect(() => { load(); }, []);
+  // フォロー中（申請中も含む）一覧は無限スクロールで少しずつ取得する。
+  const { rows: outgoing, hasMore, loadingMore, initialLoading, loadMore } = useFollowsPagination(me.uid, refreshKey);
+  const followingCount0 = outgoing.filter(r => r.status === "accepted").length; // countsが届くまでの概算表示用
+  // 「とどいた申請」は件数が多くならない前提（RPCのレート制限で抑制済み）なので全件取得のまま。
+  const [requestsIn, setRequestsIn] = useState([]);
+  // フォロー中・フォロワーの人数は一覧のページングと切り離し、count(exact,head)で正確な値を取る。
+  const [counts, setCounts] = useState(null);
 
-  const incoming = (rows || []).filter(r => r.followee_id === me.uid);
-  const requestsIn = incoming.filter(r => r.status === "pending"); // とどいた申請
-  const followers = incoming.filter(r => r.status === "accepted");  // フォロワー（数のみ表示）
-  const outgoing = (rows || []).filter(r => r.follower_id === me.uid); // フォロー中＋申請中
-  const followingCount = outgoing.filter(r => r.status === "accepted").length;
+  useEffect(() => {
+    if (!me.uid) { setRequestsIn([]); return; }
+    let alive = true;
+    (async () => {
+      const { data } = await supabase.from("follows").select("*")
+        .eq("followee_id", me.uid).eq("status", "pending").order("created_at", { ascending: false });
+      if (alive) setRequestsIn(data || []);
+    })();
+    return () => { alive = false; };
+  }, [me.uid, refreshKey]);
+
+  useEffect(() => {
+    if (!me.uid) { setCounts(null); return; }
+    let alive = true;
+    (async () => {
+      const c = await fetchFollowCounts(me.uid);
+      if (alive) setCounts(c);
+    })();
+    return () => { alive = false; };
+  }, [me.uid, refreshKey]);
+
+  // outgoing・requestsInに出てくる相手のうち、まだpeopleに無いidだけ追加取得する。
+  useEffect(() => {
+    const ids = [...new Set([
+      ...outgoing.map(r => r.followee_id),
+      ...requestsIn.map(r => r.follower_id),
+    ])];
+    const missing = ids.filter(id => !(id in people));
+    if (!missing.length) return;
+    let alive = true;
+    (async () => {
+      const { data: ps } = await supabase.from("profiles").select("id, display_name, public_id, avatar_url").in("id", missing);
+      if (!alive) return;
+      setPeople(prev => {
+        const next = { ...prev };
+        (ps || []).forEach(p => { next[p.id] = p; });
+        return next;
+      });
+    })();
+    return () => { alive = false; };
+  }, [outgoing, requestsIn]);
+
+  const followingCount = counts?.followingCount ?? followingCount0;
+  const followersCount = counts?.followersCount ?? 0;
 
   const accept = async (id) => {
     const { error } = await supabase.from("follows").update({ status:"accepted" }).eq("id", id);
     if (error) { alert("承認に失敗しました：" + error.message); return; }
-    load();
+    refresh();
   };
   const reject = async (id) => {
     if (!confirm("この申請を削除しますか？（相手に通知はされません）")) return;
     const { error } = await supabase.from("follows").delete().eq("id", id);
     if (error) { alert("削除に失敗しました：" + error.message); return; }
-    load();
+    refresh();
   };
   const removeFollow = async (id) => {
     const { error } = await supabase.from("follows").delete().eq("id", id);
     if (error) { alert("解除に失敗しました：" + error.message); return; }
-    setViewing(null); load();
+    setViewing(null); refresh();
   };
 
   const link = inviteLink(me);
@@ -2293,7 +2396,7 @@ function FollowView({ me, onAvatarChange }) {
           <Avatar url={avatarUrl} name={me.name} size={44} fontSize={19} />
           <div style={{ minWidth:0, flex:1 }}>
             <div style={{ fontWeight:900, fontSize:17 }}>{me.name}</div>
-            <div style={{ fontSize:12.5, color:"var(--ink-dim)", marginTop:2 }}>フォロー中 {followingCount} ・ フォロワー {followers.length}<span style={{ fontSize:11, marginLeft:6, opacity:.8 }}>（あなたにだけ表示）</span></div>
+            <div style={{ fontSize:12.5, color:"var(--ink-dim)", marginTop:2 }}>フォロー中 {followingCount} ・ フォロワー {followersCount}<span style={{ fontSize:11, marginLeft:6, opacity:.8 }}>（あなたにだけ表示）</span></div>
           </div>
           {/* 「その場で撮る」は仕様書§6のカメラコンポーネント実装後に追加する。
               スマホでは画像選択のシートから「写真を撮る」も選べるため、今は画像選択のみ。 */}
@@ -2344,7 +2447,7 @@ function FollowView({ me, onAvatarChange }) {
       {/* フォロー中（申請中も含む） */}
       <div style={{ background:"var(--surface)", border:"1px solid var(--line)", borderRadius:16, padding:"16px", marginBottom:18 }}>
         <div className="reel-mark" style={{ letterSpacing:".16em", fontSize:11, color:"var(--ink-dim)", marginBottom:12 }}>FOLLOWING ／ フォロー中</div>
-        {rows === null ? (
+        {initialLoading ? (
           <p style={{ margin:0, textAlign:"center", color:"var(--ink-dim)", fontSize:13, padding:"14px 0" }}>読み込み中…</p>
         ) : outgoing.length === 0 ? (
           <p style={{ margin:0, color:"var(--ink-dim)", fontSize:13, lineHeight:1.8 }}>まだ誰もフォローしていません。<br/>下のボタンから、相手のIDと名前で申請できます。</p>
@@ -2366,6 +2469,7 @@ function FollowView({ me, onAvatarChange }) {
                 </button>
               );
             })}
+            <InfiniteScrollSentinel onLoadMore={loadMore} hasMore={hasMore} loadingMore={loadingMore} />
           </div>
         )}
       </div>
@@ -2374,7 +2478,7 @@ function FollowView({ me, onAvatarChange }) {
         style={{ width:"100%", padding:"15px", borderRadius:12, border:"none", background:"var(--amber)", color:"#1a1305", fontWeight:700, fontSize:15, cursor:"pointer" }}>＋ フォローを申請</button>
       <p style={{ textAlign:"center", color:"var(--ink-dim)", fontSize:11.5, margin:"10px 0 0", lineHeight:1.7 }}>ユーザー検索はできません。相手からIDと名前を教えてもらって申請します。</p>
 
-      {requesting && <FollowRequestSheet onClose={()=>{ setRequesting(false); load(); }} />}
+      {requesting && <FollowRequestSheet onClose={()=>{ setRequesting(false); refresh(); }} />}
       {viewing && <FriendView row={viewing} profile={people[viewing.followee_id]} onClose={()=>setViewing(null)} onRemove={removeFollow} />}
     </div>
   );
