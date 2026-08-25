@@ -1921,12 +1921,17 @@ function useFollowsPagination(meUid, refreshKey) {
 }
 
 // フォロー中・フォロワーの人数だけを軽量に取得する（一覧のページングとは無関係に常に正確な値を出す）。
+// head:trueのHEADリクエスト（ボディが空でContent-Length等が付かない特殊な形）は、
+// 一部の環境（ブラウザ拡張・セキュリティソフトのHTTPS傍受など）で応答が化けて503扱いになることが
+// あるため、limit(0)のGETで同じcontent-rangeの件数情報だけ受け取る形にしている。
+// 失敗時はcountがundefinedのまま返し、呼び出し側の`?? 概算値`フォールバックに委ねる
+// （ここで0にすり替えると「取得失敗」と「本当に0件」が区別できなくなる）。
 async function fetchFollowCounts(meUid) {
   const [{ count: followingCount }, { count: followersCount }] = await Promise.all([
-    supabase.from("follows").select("id", { count: "exact", head: true }).eq("follower_id", meUid).eq("status", "accepted"),
-    supabase.from("follows").select("id", { count: "exact", head: true }).eq("followee_id", meUid).eq("status", "accepted"),
+    supabase.from("follows").select("id", { count: "exact" }).limit(0).eq("follower_id", meUid).eq("status", "accepted"),
+    supabase.from("follows").select("id", { count: "exact" }).limit(0).eq("followee_id", meUid).eq("status", "accepted"),
   ]);
-  return { followingCount: followingCount ?? 0, followersCount: followersCount ?? 0 };
+  return { followingCount, followersCount };
 }
 
 // スクロールでリストの下端付近まで来たらonLoadMoreを呼ぶための監視用コンポーネント。
@@ -2603,16 +2608,20 @@ function CloudApp() {
   const { records: movies, setRecords: setMovies, hasMore: hasMoreMovies, loadingMore: loadingMoreMovies,
     initialLoading: moviesInitialLoading, loadMore: loadMoreMovies } = useRecordsPagination(recordsUserId);
   // 「今年N本」の表示は一覧の取得件数（ページングで少しずつしか読まない）と切り離し、
-  // 件数だけを別途正確に取得する（headリクエストなのでデータ本体は転送しない）。
+  // 件数だけを別途正確に取得する。head:trueのHEADリクエスト（ボディが空でContent-Length等が
+  // 付かない特殊な形）は一部の環境（ブラウザ拡張・セキュリティソフトのHTTPS傍受など）で応答が
+  // 化けて503扱いになることがあるため、limit(0)のGETで同じcontent-rangeの件数情報だけ受け取る。
+  // 失敗時はnullのままにし、下のdisplayYearCountで一覧からの概算にフォールバックさせる
+  // （ここで0にすり替えると「取得失敗」と「今年0本」が区別できなくなる）。
   const [yearCount, setYearCount] = useState(null);
   useEffect(() => {
     if (!recordsUserId) { setYearCount(null); return; }
     let alive = true;
     const y = new Date().getFullYear();
     (async () => {
-      const { count } = await supabase.from("records").select("id", { count:"exact", head:true })
+      const { count } = await supabase.from("records").select("id", { count:"exact" }).limit(0)
         .eq("user_id", recordsUserId).gte("watched_at", `${y}-01-01`).lt("watched_at", `${y+1}-01-01`);
-      if (alive) setYearCount(count ?? 0);
+      if (alive) setYearCount(count);
     })();
     return () => { alive = false; };
   }, [recordsUserId]);
