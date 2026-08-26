@@ -232,3 +232,18 @@
 - Vercel環境変数`ADMIN_USER_IDS`の追加（今回の新規環境変数はこれのみ。`SUPABASE_SERVICE_ROLE_KEY`は共有リンク機能で設定済み）。
 - 実機での確認：他人の記録にのみ「報告する」が出る・自分の記録には出ない・二重通報時に「報告済み」表示・シート内スワイプでDetailViewが閉じないこと・管理画面での一覧表示と対応済み操作・非adminアカウントで`?admin=reports`が「権限がありません」になること。
 - 通報された記録が投稿者自身に削除された場合、`record_reports`もcascade削除される（＝「消えた」ことをもって解決済みとする仕様として受容）。
+
+## 11. フォロー一覧のページネーション対応（`feature/follows-pagination`）
+
+### 背景
+
+- `FollowView`の`load()`が`follows`テーブルを`.or(follower_id.eq.…,followee_id.eq.…)`で毎回全件取得し、フォロー中・フォロワー数もその結果をクライアント側でフィルタして数えていた。以前は「規模が小さい・集計が一覧取得結果に依存している」という理由でページネーション対応を見送っていたが、`records`一覧と同じ無限スクロール方式を流用しつつ集計だけ分離する形で対応した。
+
+### 設計
+
+- DBスキーマ変更は無し（既存の`follows`テーブル・RLSをそのまま利用）。
+- `useFollowsPagination(meUid, refreshKey)`（`src/App.jsx`）：`fetchOutgoingFollowsPage`で`follower_id = meUid`の行を`range()`で20件ずつ取得する、`useRecordsPagination`と同型のフック。「フォロー中」一覧（UIで個別行表示される唯一のリスト）にのみ適用。
+- 「とどいた申請」（`followee_id = meUid AND status = 'pending'`）は`request_follow` RPCのレート制限で件数が実質抑えられているため、従来どおり全件取得のまま。
+- フォロー中・フォロワーの人数表示は、一覧の取得結果から数えるのをやめ、`fetchFollowCounts()`で`count:"exact", head:true`の軽量クエリ2本（`follower_id`側・`followee_id`側、いずれも`status='accepted'`）に分離。一覧が何ページ読み込まれていても常に正確な人数を表示する。
+- 承認・拒否・フォロー解除・フォロー申請送信後は、5箇所それぞれで個別に楽観的更新を管理する複雑さを避け、`refreshKey`をインクリメントして一覧・申請・件数を丸ごと読み直す方式にした（操作直後は一覧が先頭ページに戻るが、UX上許容）。
+- 相手のプロフィール（`people`）は、outgoing・とどいた申請に出てくる相手idのうち`people`にまだ無いものだけを追加取得する増分方式（`DetailView`の画像取得effectと同型）。
