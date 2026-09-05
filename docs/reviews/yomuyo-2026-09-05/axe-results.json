@@ -1,0 +1,103 @@
+{
+  "01-onboarding": [],
+  "02-onboarding-token-issued": [],
+  "03-scan-search-tab-empty": [],
+  "04-scan-search-results": [],
+  "06-scan-confirm-card": [],
+  "07-scan-saved-post-actions": [],
+  "08-scan-tab-camera-denied": [],
+  "09-scan-tab-camera-granted": [],
+  "10-booklist-grid": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": [
+        {
+          "target": "a:nth-child(1) > div",
+          "html": "<div style=\"width: 100%; aspect-ratio: 2 / 3; background: rgb(238, 238, 238); display: flex; align-items: center; justify-content: center; color: rgb(153, 153, "
+        },
+        {
+          "target": "a:nth-child(6) > div",
+          "html": "<div style=\"width: 100%; aspect-ratio: 2 / 3; background: rgb(238, 238, 238); display: flex; align-items: center; justify-content: center; color: rgb(153, 153, "
+        }
+      ],
+      "count": 2
+    }
+  ],
+  "11-booklist-by-tag": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": [
+        {
+          "target": "a:nth-child(1) > div",
+          "html": "<div style=\"width: 100%; aspect-ratio: 2 / 3; background: rgb(238, 238, 238); display: flex; align-items: center; justify-content: center; color: rgb(153, 153, "
+        },
+        {
+          "target": "a:nth-child(2) > div",
+          "html": "<div style=\"width: 100%; aspect-ratio: 2 / 3; background: rgb(238, 238, 238); display: flex; align-items: center; justify-content: center; color: rgb(153, 153, "
+        }
+      ],
+      "count": 2
+    }
+  ],
+  "15-bookdetail-aozora-collapsed": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": [
+        {
+          "target": "p:nth-child(14) > button",
+          "html": "<button type=\"button\" style=\"color: crimson;\">削除</button>"
+        }
+      ],
+      "count": 1
+    }
+  ],
+  "16-bookdetail-aozora-expanded": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": [
+        {
+          "target": "li:nth-child(1) > div",
+          "html": "<div style=\"font-size: 0.75rem; color: rgb(136, 136, 136);\">うまく開けない場合は<a href=\"https://www.aozora.gr.jp/cards/000879/card127.html\" target=\"_blank\" rel=\"noreferr"
+        },
+        {
+          "target": "li:nth-child(2) > div",
+          "html": "<div style=\"font-size: 0.75rem; color: rgb(136, 136, 136);\">うまく開けない場合は<a href=\"https://www.aozora.gr.jp/cards/000879/card42.html\" target=\"_blank\" rel=\"noreferre"
+        },
+        {
+          "target": "p:nth-child(14) > button",
+          "html": "<button type=\"button\" style=\"color: crimson;\">削除</button>"
+        }
+      ],
+      "count": 3
+    }
+  ],
+  "18-bookdetail-after-status-change": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": [
+        {
+          "target": "li > div",
+          "html": "<div style=\"font-size: 0.75rem; color: rgb(136, 136, 136);\">うまく開けない場合は<a href=\"https://www.aozora.gr.jp/cards/000148/card773.html\" target=\"_blank\" rel=\"noreferr"
+        },
+        {
+          "target": "p:nth-child(15) > button",
+          "html": "<button type=\"button\" style=\"color: crimson;\">削除</button>"
+        }
+      ],
+      "count": 2
+    }
+  ],
+  "21-settings": [],
+  "24-recover-empty": [],
+  "25-recover-error": []
+}
